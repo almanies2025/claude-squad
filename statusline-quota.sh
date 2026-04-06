@@ -67,18 +67,26 @@ fmt_tokens() {
     fi
 }
 
+# Detect if THIS terminal is a csq-managed terminal
+# (CLAUDE_CONFIG_DIR points to ~/.claude/accounts/config-N)
+is_csq_terminal=false
+if [ -n "${CLAUDE_CONFIG_DIR:-}" ] && [[ "$CLAUDE_CONFIG_DIR" == "$HOME/.claude/accounts/config-"* ]]; then
+    is_csq_terminal=true
+fi
+
 # Build the status line
 status_parts=()
 
-# Add Claude account information first (most prominent)
+# Add csq marker + account information first (most prominent)
 claude_account=$(get_claude_account)
-if [ -n "$claude_account" ]; then
-    local_creds=$(ls "$HOME/.claude/accounts/credentials/"*.json 2>/dev/null | wc -l | tr -d ' ')
-    if [ "$local_creds" -ge 2 ]; then
-        status_parts+=("⚡${claude_account}")
+if $is_csq_terminal; then
+    if [ -n "$claude_account" ]; then
+        status_parts+=("⚡csq ${claude_account}")
     else
-        status_parts+=("${claude_account}")
+        status_parts+=("⚡csq")
     fi
+elif [ -n "$claude_account" ]; then
+    status_parts+=("${claude_account}")
 fi
 
 # Context window: total tokens in current window + % used

@@ -86,12 +86,18 @@ with open(f, 'w') as fh:
 }
 
 cmd_run() {
-  local n="$1"; shift
-  [[ "$n" =~ ^[1-9][0-9]*$ ]] || die "account must be a positive integer, got: $n"
-
-  # Parse --profile/-p flag (everything else passes through to claude)
+  # Parse args: optional <N>, optional -p <profile>, rest pass through to claude.
+  # If <N> is omitted, auto-resolve based on number of configured accounts.
+  local n=""
   local profile=""
   local claude_args=()
+
+  # First positional may or may not be the account number
+  if [[ $# -gt 0 ]] && [[ "$1" =~ ^[1-9][0-9]*$ ]]; then
+    n="$1"
+    shift
+  fi
+
   while [[ $# -gt 0 ]]; do
     case "$1" in
       --profile|-p)
@@ -106,6 +112,37 @@ cmd_run() {
         ;;
     esac
   done
+
+  # Auto-resolve account number if not specified
+  if [[ -z "$n" ]]; then
+    local creds_dir="$ACCOUNTS_DIR/credentials"
+    local accounts=()
+    if [[ -d "$creds_dir" ]]; then
+      for f in "$creds_dir"/*.json; do
+        [[ -f "$f" ]] || continue
+        local base
+        base="$(basename "$f" .json)"
+        [[ "$base" =~ ^[1-9][0-9]*$ ]] && accounts+=("$base")
+      done
+    fi
+
+    case "${#accounts[@]}" in
+      0)
+        # No csq accounts configured — be invisible, just run vanilla claude
+        # (with the same profile overlay if -p was given, applied to ~/.claude directly)
+        if [[ -n "$profile" ]]; then
+          die "no csq accounts configured. -p only works with csq accounts."
+        fi
+        exec claude ${claude_args[@]+"${claude_args[@]}"}
+        ;;
+      1)
+        n="${accounts[0]}"
+        ;;
+      *)
+        die "multiple accounts configured (${accounts[*]}). Specify which: csq run <N>"
+        ;;
+    esac
+  fi
 
   local config_dir="$ACCOUNTS_DIR/config-$n"
   local cred_file="$ACCOUNTS_DIR/credentials/$n.json"
@@ -222,7 +259,7 @@ with open(output_path, 'w') as f:
   local profile_label=""
   [[ -n "$profile" ]] && profile_label=" [profile: $profile]"
   echo "Starting Claude Code on account $n${email:+ ($email)}${profile_label}"
-  exec env CLAUDE_CONFIG_DIR="$config_dir" claude "${claude_args[@]}"
+  exec env CLAUDE_CONFIG_DIR="$config_dir" claude ${claude_args[@]+"${claude_args[@]}"}
 }
 
 cmd_suggest() {
@@ -247,6 +284,17 @@ cmd_suggest() {
 }
 
 main() {
+  # No args → default to `csq run` (which auto-resolves accounts).
+  # First arg looks like a number or a flag → also treat as `csq run`.
+  if [[ $# -eq 0 ]]; then
+    cmd_run
+    return
+  fi
+  if [[ "$1" =~ ^[1-9][0-9]*$ ]] || [[ "$1" == -* ]]; then
+    cmd_run "$@"
+    return
+  fi
+
   local cmd="${1:-help}"
 
   case "$cmd" in
@@ -257,7 +305,6 @@ main() {
       ;;
     run|start)
       shift
-      [[ $# -ge 1 ]] || die "usage: csq run <N> [claude args...]"
       cmd_run "$@"
       ;;
     status|ls|quota)
@@ -280,10 +327,12 @@ main() {
       cat <<'HELP'
 csq — Claude Squad account manager
 
+  csq                            Start Claude Code (auto-resolves account)
+                                   0 accounts → vanilla claude
+                                   1 account  → that account
+                                   2+         → must specify N below
+  csq run [N] [-p <prof>] [args] Same, with explicit account / profile / claude args
   csq login <N>                  Save current account as slot N (+ set up keychain)
-  csq run <N> [-p <prof>] [args] Start Claude Code on account N
-                                   -p / --profile <name>: overlay ~/.claude/settings-<name>.json
-                                   any other args pass through to claude
   csq swap <N>                   Swap THIS terminal to account N (in-place, no restart)
   csq status                     Show all accounts + quota
   csq suggest                    Suggest which account to /login to

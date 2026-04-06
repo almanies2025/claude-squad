@@ -30,6 +30,19 @@ cd claude-squad
 bash install.sh
 ```
 
+## Quick start
+
+If you only have **one** Claude account, just run:
+
+```bash
+csq          # equivalent to vanilla `claude` — csq stays out of your way
+csq --resume # passes flags straight through
+```
+
+With zero csq accounts configured, `csq` is invisible — it just execs `claude`.
+
+If you only have one csq account configured, `csq` runs on that account automatically. Once you log in a second account, csq starts asking which one you want.
+
 ## Setup (one-time per account)
 
 Save each account's credentials to a numbered slot (any positive integer — 1, 2, 3, … 20, …):

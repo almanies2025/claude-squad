@@ -1,0 +1,47 @@
+## Session Notes [root] — updated 2026-04-07
+
+### Read These Files First (in order)
+
+1. `rotation-engine.py` — core engine: quota tracking, OAuth token refresh, per-terminal keychain write, auto-rotate
+2. `csq` — CLI: `csq login N` (browser OAuth + save), `csq run N` (isolated CC), `csq use <profile>`, `csq status/suggest`
+3. `statusline-quota.sh` — statusline hook: shows `ctx:241k 24% | $5.39`, feeds quota to engine
+4. `auto-rotate-hook.sh` — UserPromptSubmit hook: triggers rotation at 100% (only when CLAUDE_CONFIG_DIR set)
+5. `rotate.md` — /rotate skill: auto-swaps when config dir set, suggests /login otherwise
+6. `install.sh` — installer: files, config dirs, settings.json (statusline + hook)
+7. `README.md` — public-facing docs, install instructions, architecture explanation
+
+### Accomplished
+
+- **Per-terminal keychain isolation**: Each terminal uses `CLAUDE_CONFIG_DIR=~/.claude/accounts/config-N`, giving it a unique keychain entry `Claude Code-credentials-<sha256(dir)[:8]>`. Auto-rotate writes to THAT entry only.
+- **`csq login N`**: Opens browser via `claude auth login`, reads creds from keychain, saves to `credentials/N.json`. All 7 accounts logged in and verified (35/35 checks pass).
+- **`csq run N`**: Starts `claude` with isolated config dir. Survives reboots.
+- **`csq use <profile>`**: Swaps `settings.json` between named profiles (mm, zai, default).
+- **Statusline fix**: Now reads `current_usage` (cache_creation + cache_read + input + output) instead of `total_input_tokens` (which excluded cache). Shows `ctx:241k 24%` matching CC's own count.
+- **Red team convergence**: 4 rounds. Fixed shell injection (env vars), atomic writes, file locking (fcntl.flock), path traversal validation, stale docs. 2 consecutive clean rounds.
+- **Pushed to GitHub**: All commits on `terrene-foundation/claude-squad` main. Curl install works.
+- Renamed `cc` → `csq` (Rust linker conflict).
+
+### Outstanding
+
+- [ ] **Test auto-rotate end-to-end**: Start with `csq run N`, hit rate limit, verify `/rotate` auto-swaps to another account without affecting other terminals.
+- [ ] **Statusline still copies to old path**: `~/.claude/statusline-command.sh` is a copy. Settings.json points there. Should canonicalize to `~/.claude/accounts/statusline-quota.sh`.
+- [ ] **Remove debug dump**: `statusline-quota.sh` may still have `/tmp/csq-statusline-debug.json` write (check and remove if present).
+- [ ] **Accounts 5/6 swapped**: profiles.json now has 5=terrene.foundation, 6=integrum.global (was reversed). Not a bug — just re-logged in different order.
+
+### Oversight — Verify Before Starting
+
+- [ ] `csq status` shows all 7 accounts with emails
+- [ ] `csq run 1` starts CC on account 1 (check statusline shows `#1:jack.hong`)
+- [ ] All deployed files match repo: `diff ~/.claude/accounts/rotation-engine.py rotation-engine.py`
+- [ ] Settings.json has both statusline and UserPromptSubmit hook configured
+
+### Oversight — Verify After Completing
+
+- [ ] `csq suggest` outputs correct recommendation
+- [ ] `/rotate` works in a `csq run` terminal (auto-swaps, not just suggests)
+- [ ] Statusline shows correct context tokens (matches CC's own count)
+- [ ] No `/tmp/csq-statusline-debug.json` dump in production
+
+### Blockers
+
+- None. System is fully functional. End-to-end auto-rotate test pending natural rate limit hit.

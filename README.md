@@ -10,8 +10,10 @@ Claude Max has rolling rate limits (5-hour and 7-day windows). Heavy users hit t
 
 - **Auto-rotates** when you hit rate limits — refreshes OAuth token, writes to keychain, CC picks up new creds
 - **Per-terminal isolation** — each terminal gets its own keychain entry via `CLAUDE_CONFIG_DIR`, so rotating one terminal doesn't affect others
-- **Quota in statusline** — see `#3:jack 5h:42% 7d:71%` at a glance
+- **Shared history & memory** — conversations, projects, and auto-memory are symlinked from `~/.claude`, so `/resume` works across all accounts
+- **Context & cost in statusline** — see `ctx:241k 24% | $5.39` at a glance
 - **Smart account picking** — switches to the account with the most available quota
+- **Unlimited accounts** — log in as many accounts as you have (1, 7, 20 — no cap)
 - **Settings profiles** — swap between settings.json variants (e.g., different model configs)
 
 ## Install
@@ -30,17 +32,16 @@ bash install.sh
 
 ## Setup (one-time per account)
 
-Save each account's credentials to a numbered slot (1–7):
+Save each account's credentials to a numbered slot (any positive integer — 1, 2, 3, … 20, …):
 
 ```bash
-claude                        # start CC normally
-# inside CC: /login email@example.com
-# then from the CC prompt: ! csq login 1
-
-# repeat for each account:
-# /login another@example.com
-# ! csq login 2
+csq login 1   # opens browser, log in to account 1, saves creds
+csq login 2   # repeat for each account
+csq login 3
+# ...as many as you need
 ```
+
+You can also save the credentials of an already-logged-in CC session — just run `csq login N` from inside that CC instance and it captures the current keychain entry.
 
 ## Daily use
 
@@ -52,7 +53,15 @@ csq run 3     # terminal 2 → account 3 (separate keychain entry)
 csq run 5     # terminal 3 → account 5 (separate keychain entry)
 ```
 
-Each terminal survives reboots. The account assignment persists because the keychain entry is tied to the config directory, not the process.
+Any extra arguments are passed straight through to `claude`:
+
+```bash
+csq run 5 --resume          # resume the most recent conversation
+csq run 5 --resume <id>     # resume a specific session
+csq run 3 -p "summarize X"  # one-shot prompt
+```
+
+Each terminal survives reboots. The account assignment persists because the keychain entry is tied to the config directory, not the process. Conversation history, projects, and memory are shared across all accounts (symlinked from `~/.claude`), so `/resume` finds the same sessions regardless of which account you're on.
 
 ### When rate limited
 
@@ -92,6 +101,16 @@ csq run 3
   → keychain: Claude Code-credentials-41cfdf87
   → isolated from all other terminals
 ```
+
+### Shared artifacts
+
+Only credentials and account identity stay isolated. Everything else in `~/.claude` (projects, sessions, history, settings, plugins, commands, agents, skills, memory) is symlinked into each `config-N/` on every `csq run`. So all terminals see the same conversations, the same `/resume` list, and the same auto-memory — only the account changes.
+
+Files that stay isolated per config dir:
+
+- `.credentials.json` — OAuth tokens for this terminal's account
+- `.current-account` — slot number this terminal is on
+- `.claude.json` — onboarding state
 
 ### Auto-rotation flow
 

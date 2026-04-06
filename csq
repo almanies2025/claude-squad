@@ -17,7 +17,7 @@ die() { echo "error: $*" >&2; exit 1; }
 
 cmd_login() {
   local n="$1"
-  [[ "$n" =~ ^[1-7]$ ]] || die "account must be 1-7, got: $n"
+  [[ "$n" =~ ^[1-9][0-9]*$ ]] || die "account must be a positive integer, got: $n"
 
   local config_dir="$ACCOUNTS_DIR/config-$n"
   mkdir -p "$config_dir" "$ACCOUNTS_DIR/credentials"
@@ -57,6 +57,11 @@ if r.returncode == 0 and r.stdout.strip():
     with open(cred_file, 'w') as f:
         json.dump(creds, f, indent=2)
     os.chmod(cred_file, 0o600)
+    # Also write to config dir so CC interactive mode finds them
+    dot_creds = os.path.join(config_dir, '.credentials.json')
+    with open(dot_creds, 'w') as f:
+        json.dump(creds, f, indent=2)
+    os.chmod(dot_creds, 0o600)
     print(f'  Credentials saved to slot {n}')
 else:
     print('  warning: could not read credentials from keychain')
@@ -81,19 +86,81 @@ with open(f, 'w') as fh:
 }
 
 cmd_run() {
-  local n="$1"
-  [[ "$n" =~ ^[1-7]$ ]] || die "account must be 1-7, got: $n"
+  local n="$1"; shift
+  [[ "$n" =~ ^[1-9][0-9]*$ ]] || die "account must be a positive integer, got: $n"
 
   local config_dir="$ACCOUNTS_DIR/config-$n"
+  local cred_file="$ACCOUNTS_DIR/credentials/$n.json"
+  local default_dir="$HOME/.claude"
   mkdir -p "$config_dir"
 
+  [[ -f "$cred_file" ]] || die "no credentials for account $n — run: csq login $n"
+
+  # --- Symlink shared artifacts from ~/.claude ---
+  # Only credentials and account identity stay isolated in config-N.
+  # Everything else (history, projects/memory, settings, sessions, etc.)
+  # is symlinked so csq terminals see the same state as default terminals.
+  local isolated=(".credentials.json" ".current-account" ".claude.json" "accounts")
+  for item in "$default_dir"/* "$default_dir"/.*; do
+    local base
+    base="$(basename "$item")"
+
+    # Skip . and .. and .DS_Store
+    [[ "$base" == "." || "$base" == ".." || "$base" == ".DS_Store" ]] && continue
+
+    # Skip isolated files
+    local skip=false
+    for iso in "${isolated[@]}"; do
+      [[ "$base" == "$iso" ]] && { skip=true; break; }
+    done
+    $skip && continue
+
+    local target="$config_dir/$base"
+
+    # Already a correct symlink — skip
+    if [[ -L "$target" ]] && [[ "$(readlink "$target")" == "$item" ]]; then
+      continue
+    fi
+
+    # Remove existing real file/dir in config-N (replaced by symlink)
+    if [[ -e "$target" ]] && [[ ! -L "$target" ]]; then
+      rm -rf "$target"
+    fi
+
+    # Remove stale symlink
+    [[ -L "$target" ]] && rm -f "$target"
+
+    ln -s "$item" "$target"
+  done
+
+  # --- Account-specific setup ---
   # Write initial .current-account if not exists
   [[ -f "$config_dir/.current-account" ]] || echo "$n" > "$config_dir/.current-account"
+
+  # Ensure keychain has current credentials for this config dir
+  env CLAUDE_CONFIG_DIR="$config_dir" python3 "$ENGINE" init-keychain "$n" 2>/dev/null || true
+
+  # CC v2.1+ reads .credentials.json from config dir for interactive startup
+  cp "$cred_file" "$config_dir/.credentials.json"
+  chmod 600 "$config_dir/.credentials.json"
+
+  # Mark onboarding complete so CC doesn't show the setup wizard
+  CSQ_CONFIG="$config_dir/.claude.json" python3 -c "
+import json, os
+p = os.environ['CSQ_CONFIG']
+try:
+    with open(p) as f: d = json.load(f)
+except (FileNotFoundError, json.JSONDecodeError):
+    d = {}
+if not d.get('hasCompletedOnboarding'):
+    d['hasCompletedOnboarding'] = True
+    with open(p, 'w') as f: json.dump(d, f, indent=2)
+" 2>/dev/null || true
 
   local email
   email=$(python3 "$ENGINE" email "$n" 2>/dev/null)
   echo "Starting Claude Code on account $n${email:+ ($email)}"
-  exec env CLAUDE_CONFIG_DIR="$config_dir" claude
+  exec env CLAUDE_CONFIG_DIR="$config_dir" claude "$@"
 }
 
 cmd_use() {
@@ -158,13 +225,13 @@ main() {
   case "$cmd" in
     login)
       shift
-      [[ $# -ge 1 ]] || die "usage: csq login <1-7>"
+      [[ $# -ge 1 ]] || die "usage: csq login <N>"
       cmd_login "$1"
       ;;
     run|start)
       shift
-      [[ $# -ge 1 ]] || die "usage: csq run <1-7>"
-      cmd_run "$1"
+      [[ $# -ge 1 ]] || die "usage: csq run <N> [claude args...]"
+      cmd_run "$@"
       ;;
     status|ls|quota)
       python3 "$ENGINE" status
@@ -184,8 +251,8 @@ main() {
       cat <<'HELP'
 csq — Claude Squad account manager
 
-  csq login <N>     Save current account as slot N (+ set up keychain)
-  csq run <N>       Start Claude Code on account N (isolated keychain)
+  csq login <N>          Save current account as slot N (+ set up keychain)
+  csq run <N> [args...]  Start Claude Code on account N (flags passed through)
   csq status        Show all accounts + quota
   csq suggest       Suggest which account to /login to
   csq use <profile>  Switch settings (mm, zai, default)

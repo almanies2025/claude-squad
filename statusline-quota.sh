@@ -11,14 +11,19 @@ current_dir=$(echo "$input" | jq -r '.workspace.current_dir')
 model_name=$(echo "$input" | jq -r '.model.display_name')
 project_name=$(basename "$current_dir")
 
-# Extract token usage and cost
-total_in=$(echo "$input" | jq -r '.context_window.total_input_tokens // 0')
-total_out=$(echo "$input" | jq -r '.context_window.total_output_tokens // 0')
+# Extract context window usage (current turn — what's actually in the window)
+# cache_creation = new content being cached, cache_read = reused from cache
+# input_tokens = non-cached input, output_tokens = model output
+ctx_input=$(echo "$input" | jq -r '.context_window.current_usage.input_tokens // 0')
+ctx_output=$(echo "$input" | jq -r '.context_window.current_usage.output_tokens // 0')
+ctx_cache_create=$(echo "$input" | jq -r '.context_window.current_usage.cache_creation_input_tokens // 0')
+ctx_cache_read=$(echo "$input" | jq -r '.context_window.current_usage.cache_read_input_tokens // 0')
+ctx_used_pct=$(echo "$input" | jq -r '.context_window.used_percentage // 0')
+
+# Session cost
 session_cost=$(echo "$input" | jq -r '.cost.total_cost_usd // 0')
 
 # Feed quota data to rotation engine.
-# CLAUDE_CONFIG_DIR is inherited from the CC process — the engine reads it
-# to determine which account this terminal is on (no PID cache needed).
 echo "$input" | python3 "$HOME/.claude/accounts/rotation-engine.py" update 2>/dev/null &
 
 # Change to the current directory for git operations
@@ -26,15 +31,12 @@ cd "$current_dir" 2>/dev/null || cd ~
 
 # Function to get account + quota info
 get_claude_account() {
-    # rotation-engine.py statusline returns: #N:user 5h:X% 7d:Y%
-    # It reads CLAUDE_CONFIG_DIR to determine which account this terminal is on.
     local quota
     quota=$(python3 "$HOME/.claude/accounts/rotation-engine.py" statusline 2>/dev/null)
 
     if [ -n "$quota" ]; then
         echo "${quota}"
     elif [ -n "${CLAUDE_CONFIG_DIR:-}" ]; then
-        # Config dir set but no quota yet — show account number
         local dir_name
         dir_name=$(basename "$CLAUDE_CONFIG_DIR")
         echo "${dir_name##config-}"
@@ -71,7 +73,6 @@ status_parts=()
 # Add Claude account information first (most prominent)
 claude_account=$(get_claude_account)
 if [ -n "$claude_account" ]; then
-    # Squad indicator: ⚡ if auto-rotate is active (credentials exist for 2+ accounts)
     local_creds=$(ls "$HOME/.claude/accounts/credentials/"*.json 2>/dev/null | wc -l | tr -d ' ')
     if [ "$local_creds" -ge 2 ]; then
         status_parts+=("⚡${claude_account}")
@@ -80,14 +81,12 @@ if [ -n "$claude_account" ]; then
     fi
 fi
 
-# Token usage (this context) + session cost (all agents combined)
-if [ "$total_in" -gt 0 ] || [ "$total_out" -gt 0 ]; then
-    total=$((total_in + total_out))
-    tin=$(fmt_tokens "$total_in")
-    tout=$(fmt_tokens "$total_out")
-    ttotal=$(fmt_tokens "$total")
+# Context window: total tokens in current window + % used
+ctx_total=$((ctx_input + ctx_output + ctx_cache_create + ctx_cache_read))
+if [ "$ctx_total" -gt 0 ]; then
+    ctx_fmt=$(fmt_tokens "$ctx_total")
     cost_fmt=$(printf '$%.2f' "$session_cost")
-    status_parts+=("in:${tin} out:${tout} ctx:${ttotal} | ${cost_fmt}")
+    status_parts+=("ctx:${ctx_fmt} ${ctx_used_pct}% | ${cost_fmt}")
 fi
 
 # Model and project

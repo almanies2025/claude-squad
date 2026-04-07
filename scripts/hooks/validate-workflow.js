@@ -142,6 +142,19 @@ function validateFile(data) {
     if (stubBlocked) shouldBlock = true;
   }
 
+  // -- Foundation naming check (all file types, skip hooks dir) -----------
+  const isHookFile =
+    filePath.includes("/hooks/") || filePath.includes("/scripts/");
+  const oldName = "OC" + "EAN"; // split to avoid self-detection
+  const namingRe = new RegExp("\\b" + oldName + "\\s+Foundation\\b", "i");
+  if (!isPy && !isHookFile && namingRe.test(content)) {
+    messages.push(
+      `BLOCKED: Deprecated foundation name found in ${path.basename(filePath)}. ` +
+        `The correct name is "Terrene Foundation". See rules/terrene-naming.md.`,
+    );
+    shouldBlock = true;
+  }
+
   if (messages.length === 0) {
     messages.push("All patterns validated");
   }
@@ -290,8 +303,23 @@ function checkPythonPatterns(content, filePath, messages) {
     const line = lines[i];
     const trimmed = line.trim();
 
-    // Skip comments
-    if (trimmed.startsWith("#")) continue;
+    const isComment = trimmed.startsWith("#");
+
+    // BLOCKING: Deprecated foundation naming (check even in comments)
+    const pyNamingRe2 = new RegExp(
+      "\\b" + "OC" + "EAN" + "\\s+Foundation\\b",
+      "i",
+    );
+    if (pyNamingRe2.test(line)) {
+      messages.push(
+        `BLOCKED: Deprecated foundation name at ${path.basename(filePath)}:${i + 1}. ` +
+          `The correct name is "Terrene Foundation". See rules/terrene-naming.md.`,
+      );
+      hasBlocking = true;
+    }
+
+    // Skip comments for remaining checks
+    if (isComment) continue;
 
     // BLOCKING: raise NotImplementedError in production code
     if (/\braise\s+NotImplementedError\b/.test(line)) {
@@ -313,12 +341,13 @@ function checkPythonPatterns(content, filePath, messages) {
       hasBlocking = true;
     }
 
-    // WARNING: bare except: pass (silent error swallowing)
+    // BLOCKING: bare except: pass (silent error swallowing)
     if (/\bexcept\s*:\s*pass\b/.test(line)) {
       messages.push(
-        `WARNING: except: pass at ${path.basename(filePath)}:${i + 1}. ` +
-          `Handle the error or propagate it. See rules/zero-tolerance.md.`,
+        `BLOCKED: except: pass at ${path.basename(filePath)}:${i + 1}. ` +
+          `Handle the error properly or propagate it. Silent error swallowing is forbidden. See rules/zero-tolerance.md.`,
       );
+      hasBlocking = true;
     }
 
     // WARNING: except Exception: return None (naive fallback)
@@ -327,6 +356,20 @@ function checkPythonPatterns(content, filePath, messages) {
         `REVIEW: except...return None at ${path.basename(filePath)}:${i + 1}. ` +
           `Verify this is not hiding a real error.`,
       );
+    }
+
+    // BLOCKING: hardcoded API key assignment (catches short keys too)
+    if (
+      /(?:api_key|API_KEY|secret|token|password)\s*=\s*["'][^"']{4,}["']/.test(
+        line,
+      ) &&
+      !isComment
+    ) {
+      messages.push(
+        `BLOCKED: Hardcoded credential at ${path.basename(filePath)}:${i + 1}. ` +
+          `ALL secrets must come from environment variables or .env. NEVER hardcode.`,
+      );
+      hasBlocking = true;
     }
   }
 

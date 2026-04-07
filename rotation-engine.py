@@ -482,6 +482,49 @@ def credentials_file_account():
     return _match_token_to_account(data.get("claudeAiOauth", {}).get("accessToken", ""))
 
 
+def live_credentials_account():
+    """Return the account number whose canonical credentials/N.json has the
+    SAME refresh token as this terminal's live .credentials.json, or None.
+
+    This is race-proof ground truth for "which account is this terminal
+    actually running". Refresh tokens are unique per account and persist
+    across access-token rotation, so the match cannot be fooled by CC's
+    internal token refreshes.
+
+    Why this exists alongside csq_account_marker(): the marker files
+    (.csq-account, .current-account) record csq's INTENT. But if CC has
+    cached an older account's refresh token in memory and subsequently
+    writes it back to .credentials.json, the live creds drift away from
+    the marker's intent. Any code that attributes live API-response data
+    (like rate_limits) to the marker-claimed account will then corrupt
+    that account's stats. Those code paths MUST verify with this function.
+    """
+    config_dir = _config_dir()
+    if not config_dir:
+        return None
+    live_creds_file = Path(config_dir) / ".credentials.json"
+    if not live_creds_file.exists():
+        return None
+    try:
+        live_data = json.loads(live_creds_file.read_text())
+    except (OSError, json.JSONDecodeError):
+        return None
+    live_refresh = live_data.get("claudeAiOauth", {}).get("refreshToken", "")
+    if not live_refresh:
+        return None
+    for n in configured_accounts():
+        canonical = CREDS_DIR / f"{n}.json"
+        if not canonical.exists():
+            continue
+        try:
+            canon_data = json.loads(canonical.read_text())
+        except (OSError, json.JSONDecodeError):
+            continue
+        if canon_data.get("claudeAiOauth", {}).get("refreshToken", "") == live_refresh:
+            return n
+    return None
+
+
 def csq_account_marker():
     """Read the .csq-account marker from <CLAUDE_CONFIG_DIR>.
 
@@ -901,10 +944,49 @@ def swap_to(target_account):
             file=sys.stderr,
         )
 
+    # Verify the swap by reading back what we wrote
+    config_dir_p = Path(config_dir)
+    try:
+        readback = json.loads((config_dir_p / ".credentials.json").read_text())
+        rb_rt = readback.get("claudeAiOauth", {}).get("refreshToken", "")[:20]
+        expected_rt = new_creds.get("claudeAiOauth", {}).get("refreshToken", "")[:20]
+        if rb_rt != expected_rt:
+            print(
+                f"  DIAG: .credentials.json readback MISMATCH — "
+                f"expected {expected_rt}… got {rb_rt}…",
+                file=sys.stderr,
+            )
+    except OSError:
+        pass
+
     print(
         f"Swapped to account {target_account} ({email}) — next API call will use new credentials",
         file=sys.stderr,
     )
+
+    # Delayed verification: catch CC overwriting us within 2 seconds.
+    # Runs in background — doesn't block the swap.
+    import threading  # noqa: late import — only used here
+
+    def _delayed_verify():
+        time.sleep(2)
+        try:
+            live = json.loads((config_dir_p / ".credentials.json").read_text())
+            live_rt = live.get("claudeAiOauth", {}).get("refreshToken", "")[:20]
+            expected = new_creds.get("claudeAiOauth", {}).get("refreshToken", "")[:20]
+            if live_rt != expected:
+                live_acct = live_credentials_account()
+                print(
+                    f"  DIAG(+2s): .credentials.json OVERWRITTEN — "
+                    f"now has acct {live_acct} (rt={live_rt}…), "
+                    f"expected acct {target_account} (rt={expected}…). "
+                    f"CC likely refreshed the old account's token.",
+                    file=sys.stderr,
+                )
+        except OSError:
+            pass
+
+    threading.Thread(target=_delayed_verify, daemon=True).start()
     return True
 
 
@@ -993,15 +1075,23 @@ def auto_rotate(force=False):
 def update_quota(json_str):
     """Called from statusline. Saves quota data for the current account.
 
-    IMPORTANT: After `csq swap`, CC's statusline JSON still contains
-    rate_limits from the PREVIOUS account's last API call (CC hasn't made
-    a call on the new account yet). Attributing those to the new account
-    would corrupt the quota and trigger spurious auto-rotation.
+    Two corruption vectors this defends against:
 
-    Defense: csq swap deletes .quota-cursor when it changes accounts.
-    update_quota writes a new cursor (account + payload hash) on each
-    accepted update and refuses updates that match the previous cursor's
-    payload but are now under a different account.
+    1. After `csq swap`, CC's statusline JSON still contains rate_limits
+       from the PREVIOUS account's last API call (CC hasn't made a call
+       on the new account yet). Attributing those to the new account
+       would corrupt the quota. Defense: payload-hash cursor check against
+       the previous accepted update — identical payload under a different
+       account is refused.
+
+    2. CC can hold an old account's refresh token in memory across a
+       swap_to() and overwrite the .credentials.json we just wrote when
+       it next refreshes. The marker files (.csq-account, .current-account)
+       then record csq's swap INTENT while the live credentials still
+       belong to the old account. If we trust the marker, we attribute
+       CC's (old-account) rate_limits to the new account. Defense: verify
+       the marker against the refresh-token content match and attribute
+       rate_limits to the account CC is ACTUALLY running on.
     """
     try:
         data = json.loads(json_str)
@@ -1012,7 +1102,12 @@ def update_quota(json_str):
     if not rate_limits:
         return
 
-    current = which_account()
+    # Ground truth: match the live refresh token against canonical creds.
+    # The refresh token uniquely identifies the account CC is running and
+    # persists across access-token rotation. Fall back to the marker only
+    # when no canonical match is found (fresh login not yet captured).
+    live_acct = live_credentials_account()
+    current = live_acct if live_acct is not None else which_account()
     if not current:
         return
 
@@ -1120,16 +1215,26 @@ def show_status():
 
 
 def statusline_str():
+    # Display the account number the user INTENDED (marker = csq's swap
+    # target). When CC is silently still running on a different account
+    # (the stuck-swap case — see update_quota docstring), append a small
+    # ⚠ warning flag so the user knows their last swap didn't take effect,
+    # without alarming them by flipping the primary label. The quota file
+    # itself is protected from corruption by update_quota's content-match
+    # routing.
     current = which_account()
     if not current:
         return ""
+    live_acct = live_credentials_account()
+    stuck = live_acct is not None and live_acct != current
     state = load_state()
     acct = state.get("accounts", {}).get(current, {})
     email = get_email(current)
     user = email.split("@")[0][:10] if email else ""
     five_pct = acct.get("five_hour", {}).get("used_percentage", 0)
     seven_pct = acct.get("seven_day", {}).get("used_percentage", 0)
-    parts = [f"#{current}:{user}"]
+    label = f"#{current}⚠:{user}" if stuck else f"#{current}:{user}"
+    parts = [label]
     if five_pct > 0 or seven_pct > 0:
         parts.append(f"5h:{five_pct:.0f}%")
         parts.append(f"7d:{seven_pct:.0f}%")

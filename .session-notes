@@ -1,55 +1,52 @@
-## Session Notes [claude-squad] — updated 2026-04-08 (early morning)
+## Session Notes [claude-squad] — updated 2026-04-08 (mid-session, continuing in new session)
 
 ### Read These Files First (in order)
 
-1. `journal/0013-DISCOVERY-windows-ctypes-handle-truncation.md` — the critical CI false-positive bug found in final red team. Win32 HANDLE truncation. Most important institutional knowledge from the cross-platform work.
-2. `journal/0010-DECISION-remove-auto-rotate.md` — why csq is now manual-only. Auto-rotate fired on stale rate_limits and thrashed accounts.
-3. `journal/0011-DISCOVERY-stuck-access-tokens.md` — access tokens can be in a state where `auth.status` passes but `/v1/messages` returns 429 with no headers. Recovery is `csq login N`. Don't tell the user csq login won't help — it does.
-4. `journal/0012-DECISION-no-powershell-port.md` — why we chose Git Bash over PowerShell for Windows. CI proves 19/19 PASS on `windows-latest`. Saved ~400 lines of duplicate code.
-5. `workspaces/cross-platform/02-plans/02-revised-implementation-plan.md` — the implementation plan that was followed. All 32 todos completed and moved to `todos/completed/`.
-6. `rotation-engine.py` lines 86-118 — the centralized Win32 ctypes signatures. NEVER call `ctypes.windll.kernel32` afresh; always use the shared `_kernel32` module reference, otherwise signatures re-default.
-7. `rotation-engine.py` `backsync()` — uses refresh-token CONTENT MATCHING to identify the right canonical credential file. Race-proof.
-8. `rotation-engine.py` `update_quota()` cursor protection — `.quota-cursor` MUST NOT be deleted on swap (tried that, broke things).
+1. `journal/0014-GAP-swap-does-not-force-cc-reload.md` — the unresolved root-cause investigation. `csq swap N` writes everything correctly but CC ignores it mid-session. Strongest hypothesis (unproven): CC caches OAuth creds in memory and only reloads on 401 / natural expiry. **This is the next session's primary work item.**
+2. `journal/0015-DECISION-strip-kailash-co-artifacts.md` — why 17 rule files were deleted from `.claude/rules/` and the hook `user-prompt-rules-reminder.js` was rewritten. User complained about per-turn rule injection bloat from Kailash SDK rules irrelevant to csq.
+3. `rotation-engine.py` — `live_credentials_account()` helper around line 485 (race-proof refresh-token match), `update_quota()` content routing around line 1010, `statusline_str()` Option B quiet UX with `⚠` warning flag around line 1145.
+4. `test-platform.sh` test [14] — regression test for the stuck-swap content-match fix. Sandboxed fake-HOME setup. 20/20 tests pass.
+5. `journal/0011-DISCOVERY-stuck-access-tokens.md` — prior context: `csq login N` is the recovery for stuck tokens.
+6. `journal/0013-DISCOVERY-windows-ctypes-handle-truncation.md` — Windows ctypes signatures (still relevant institutional knowledge from the cross-platform work).
+7. `CLAUDE.md` line 26 — the "in-place rotation works" claim should probably be qualified (see 0014 For Discussion #1).
 
 ### Accomplished
 
-- **Cross-platform support shipped**: macOS, Linux, WSL, Windows (via Git Bash). All 5 milestones complete.
-- **CI matrix** (.github/workflows/test.yml) — `macos × ubuntu × windows × Python 3.11/3.12` = 6 jobs, all green.
-- **C1 fix**: Win32 ctypes handles no longer truncated. Concurrent locking smoke test verifies on every push.
-- **`csq setkey/listkeys/rmkey`** for provider profiles (mm, zai, claude direct API). Interactive hidden-input by default. Preserves existing fields.
-- **Auto-rotate removed entirely** — `swap_to()` doesn't call refresh endpoint, `update_quota()` doesn't trigger swaps, hook is no-op.
-- **OAuth thundering herd fixed** — csq never hammers refresh endpoint; CC handles its own refreshes.
-- **Backsync race fixed** — content match (refresh token), not stale `.csq-account` marker.
-- **README rewritten** for non-technical users — `csq setkey mm` step-by-step, no JSON editing required.
-- **15+ commits pushed** (range `42b2a3f..e65d34f`).
+- **Data integrity bug fixed**: `update_quota()` now routes rate_limits to the refresh-token-content-matched account, preventing the "csq 4 is using csq 5's quota" file corruption. Marker files (`.csq-account`, `.current-account`) become hints; refresh-token content match is ground truth.
+- **Statusline UX (Option B)**: label stays as user's intent (`#4:jack`); a tiny `⚠` flag appears when CC has not adopted the swap. No alarming label flips.
+- **Regression test added**: `test-platform.sh [14]` covers the stuck-swap scenario. 20/20 tests pass.
+- **CO artifact cleanup**: 17 Kailash-specific rule files deleted (3230 lines removed). 3 remaining files rewritten for csq scope (`agents.md`, `security.md`, `zero-tolerance.md`). `user-prompt-rules-reminder.js` slimmed 175 → 87 lines.
+- Engine deployed: `~/.claude/accounts/rotation-engine.py` in sync with repo.
 
 ### Outstanding
 
-- [ ] First statusline render after `csq swap` may show stale quota numbers for one cycle (until CC makes its first API call on the new account). Cosmetic. Worth a one-line fix in `statusline_str()` to suppress display when `.quota-cursor` doesn't match current account.
-- [ ] `auto_rotate()` function (rotation-engine.py:940-987) is dead code — only the CLI subcommand path. Decide: delete or keep as escape hatch.
-- [ ] Red team M-level findings unaddressed: M1 (`cleanup()` globs wrong files), M2 (PID reuse blind spot — could check `ps -o comm=` on cheap path), M3 (`.live-pid` written non-atomically). Low priority.
-- [ ] L7: smoke test doesn't exercise `swap_to()` end-to-end against a fake config dir. CI tests building blocks, not rotation logic. Worth adding.
-- [ ] Old `~/.claude/commands/rotate.md` may exist in some downstream installs. install.sh removes on upgrade only.
+- [ ] **Stuck-swap root cause is NOT solved** — only symptoms mitigated. User wants this resolved properly. See `journal/0014` "Open Questions / Next Experiments".
+- [ ] Pick a path to confirm the cached-token hypothesis: (a) research Anthropic's OAuth `/v1/oauth/revoke` endpoint non-destructively, or (b) controlled test against a live CC instance with a fresh access token. **User decision needed before acting.**
+- [ ] Update `CLAUDE.md:26` "in-place rotation works" claim — only conditionally true.
+- [ ] Add `.coc-sync-ignore` (or equivalent) so the upstream loom/ sync doesn't silently re-add the 17 deleted Kailash rules on next `/sync`.
+- [ ] Optional follow-on cleanup (NOT done this session): `.claude/skills/` (3.6 MB), `.claude/agents/` (348 KB), `.claude/commands/`, `scripts/hooks/validate-workflow.js` (1060 lines, mostly Kailash checks).
+- [ ] Commit the in-progress changes — nothing has been committed yet this session. Files modified: `rotation-engine.py`, `test-platform.sh`, `scripts/hooks/user-prompt-rules-reminder.js`, `.claude/rules/agents.md`, `.claude/rules/security.md`, `.claude/rules/zero-tolerance.md`. Files deleted: 17 in `.claude/rules/`. Files added: `journal/0014-GAP-...md`, `journal/0015-DECISION-...md`.
+- [ ] Pre-existing pyright warnings on `rotation-engine.py:125` and `:140` (`_lock_file`/`_unlock_file` cross-platform redeclaration) — harmless, low priority.
 
 ### Oversight — Verify Before Starting
 
-- [ ] `git log --oneline -3` shows `e65d34f` or later
-- [ ] `bash test-platform.sh` exits 0 with `PASS: 19, FAIL: 0`
-- [ ] `gh run list --workflow=test.yml --limit 1` shows `success`
-- [ ] `cat ~/.claude/settings.json | python3 -c "import json,sys; print(json.load(sys.stdin).get('hooks', {}))"` does NOT contain `auto-rotate-hook`
-- [ ] `ls ~/.claude/accounts/auto-rotate-hook.sh` exists (no-op file — DO NOT delete; old per-config snapshots may still reference it)
-- [ ] `python3 -m py_compile rotation-engine.py` passes
-- [ ] Deployed copies in sync: `diff -q rotation-engine.py ~/.claude/accounts/rotation-engine.py && diff -q csq ~/.local/bin/csq && diff -q statusline-quota.sh ~/.claude/accounts/statusline-quota.sh`
+- [ ] `git status -s` — should show ~24 modified/deleted/new files, NO new commits yet
+- [ ] `bash test-platform.sh` — must show `PASS: 20  FAIL: 0`
+- [ ] `ls .claude/rules/ | wc -l` — should be `13`
+- [ ] `diff -q rotation-engine.py ~/.claude/accounts/rotation-engine.py` — must be in sync
+- [ ] `python3 -m py_compile rotation-engine.py` — must pass
+- [ ] `grep -c "DataFlow\|Nexus\|Kaizen\|kailash" .claude/rules/*.md` — should be near zero (only `cc-artifacts.md` may legitimately reference framework names in examples)
+- [ ] Quick state check: `cat ~/.claude/accounts/config-4/.current-account ~/.claude/accounts/config-5/.current-account` — both should still be `4` (the user's recovered state)
 
 ### Oversight — Verify After Completing
 
-- [ ] `bash test-platform.sh` still 19/19 PASS
+- [ ] `bash test-platform.sh` still 20/20 PASS
+- [ ] `live_credentials_account()` still in `rotation-engine.py` and used by BOTH `update_quota()` and `statusline_str()`
 - [ ] No new direct `os.replace` (use `_atomic_replace` for Windows retry)
 - [ ] No new `os.kill(pid, 0)` (use `_is_pid_alive`)
-- [ ] No new `subprocess.run(["security", ...])` outside `IS_MACOS` guards
-- [ ] No new hardcoded `python3` in shell scripts (use `$PY`)
-- [ ] If touching ctypes: every kernel32 call goes through `_kernel32` with signatures pre-set. Never call `ctypes.windll.kernel32` afresh.
+- [ ] Stuck-swap regression test [14] still expects the quiet UX (`#1` label + `⚠` flag), NOT a `#2⚠1` label flip
+- [ ] Any new `csq swap` behavior is documented in a journal follow-up to 0014, not just code comments
 
 ### Blockers
 
-None. Cross-platform work is shipped and CI-verified. Remaining items are polish.
+- **User decision needed**: Pursue Anthropic OAuth revoke endpoint research first, OR a controlled live-CC test to confirm the cached-token hypothesis. User is running 8 concurrent CC sessions across config-1/2/4/5/7 — disrupting any of them is costly. Recommendation: start with non-destructive endpoint research.

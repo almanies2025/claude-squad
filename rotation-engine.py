@@ -49,23 +49,92 @@ IS_WINDOWS = sys.platform == "win32"
 IS_MACOS = sys.platform == "darwin"
 IS_LINUX = sys.platform.startswith("linux")
 
+# ─── Win32 ctypes signatures ─────────────────────────────
+# CRITICAL: Windows API handles are pointer-sized (64 bits on 64-bit Windows).
+# Without explicit restype/argtypes, ctypes defaults restype to c_int (32 bits)
+# and silently truncates handles. The truncated handle then fails every
+# subsequent kernel call without any error indication. We declare every
+# signature explicitly so handles round-trip correctly.
+
+if IS_WINDOWS:
+    _kernel32 = ctypes.windll.kernel32  # type: ignore[attr-defined]
+
+    # Mutex
+    _kernel32.CreateMutexW.argtypes = [
+        ctypes.c_void_p,
+        ctypes.c_bool,
+        ctypes.c_wchar_p,
+    ]
+    _kernel32.CreateMutexW.restype = ctypes.c_void_p
+    _kernel32.WaitForSingleObject.argtypes = [ctypes.c_void_p, ctypes.c_ulong]
+    _kernel32.WaitForSingleObject.restype = ctypes.c_ulong
+    _kernel32.ReleaseMutex.argtypes = [ctypes.c_void_p]
+    _kernel32.ReleaseMutex.restype = ctypes.c_bool
+    _kernel32.CloseHandle.argtypes = [ctypes.c_void_p]
+    _kernel32.CloseHandle.restype = ctypes.c_bool
+
+    # Process query
+    _kernel32.OpenProcess.argtypes = [ctypes.c_ulong, ctypes.c_bool, ctypes.c_ulong]
+    _kernel32.OpenProcess.restype = ctypes.c_void_p
+    _kernel32.GetExitCodeProcess.argtypes = [
+        ctypes.c_void_p,
+        ctypes.POINTER(ctypes.c_ulong),
+    ]
+    _kernel32.GetExitCodeProcess.restype = ctypes.c_bool
+
+    # Process tree walk
+    class _PROCESSENTRY32W(ctypes.Structure):
+        _fields_ = [
+            ("dwSize", ctypes.c_ulong),
+            ("cntUsage", ctypes.c_ulong),
+            ("th32ProcessID", ctypes.c_ulong),
+            ("th32DefaultHeapID", ctypes.POINTER(ctypes.c_ulong)),
+            ("th32ModuleID", ctypes.c_ulong),
+            ("cntThreads", ctypes.c_ulong),
+            ("th32ParentProcessID", ctypes.c_ulong),
+            ("pcPriClassBase", ctypes.c_long),
+            ("dwFlags", ctypes.c_ulong),
+            ("szExeFile", ctypes.c_wchar * 260),
+        ]
+
+    _kernel32.CreateToolhelp32Snapshot.argtypes = [ctypes.c_ulong, ctypes.c_ulong]
+    _kernel32.CreateToolhelp32Snapshot.restype = ctypes.c_void_p
+    _kernel32.Process32FirstW.argtypes = [
+        ctypes.c_void_p,
+        ctypes.POINTER(_PROCESSENTRY32W),
+    ]
+    _kernel32.Process32FirstW.restype = ctypes.c_bool
+    _kernel32.Process32NextW.argtypes = [
+        ctypes.c_void_p,
+        ctypes.POINTER(_PROCESSENTRY32W),
+    ]
+    _kernel32.Process32NextW.restype = ctypes.c_bool
+
+    _WAIT_OBJECT_0 = 0
+    _STILL_ACTIVE = 259
+    _INVALID_HANDLE_VALUE = ctypes.c_void_p(-1).value
+
+
 # ─── File Locking ────────────────────────────────────────
 # POSIX: fcntl.flock() — advisory, whole-file, blocks indefinitely.
 # Windows: named mutex via kernel32 — cooperative, blocks indefinitely.
 # NOT msvcrt.locking() — wrong semantics (mandatory byte-range, 10s timeout).
 
 if IS_WINDOWS:
-    _kernel32 = ctypes.windll.kernel32
 
     def _lock_file(lock_path):
-        """Acquire a named mutex derived from the lock file path."""
+        """Acquire a named mutex derived from the lock file path.
+        Returns the handle on success, None on failure."""
         name = "csq_" + str(lock_path).replace("\\", "_").replace("/", "_").replace(
             ":", "_"
         )
         handle = _kernel32.CreateMutexW(None, False, name)
         if not handle:
             return None
-        _kernel32.WaitForSingleObject(handle, 0xFFFFFFFF)  # INFINITE
+        wait_result = _kernel32.WaitForSingleObject(handle, 0xFFFFFFFF)  # INFINITE
+        if wait_result != _WAIT_OBJECT_0:
+            _kernel32.CloseHandle(handle)
+            return None
         return handle
 
     def _unlock_file(handle):
@@ -132,7 +201,7 @@ ACCOUNTS_DIR = Path.home() / ".claude" / "accounts"
 CREDS_DIR = ACCOUNTS_DIR / "credentials"
 QUOTA_FILE = ACCOUNTS_DIR / "quota.json"
 PROFILES_FILE = ACCOUNTS_DIR / "profiles.json"
-MAX_ACCOUNTS = 7
+MAX_ACCOUNTS = 999  # README promises "unlimited"; 999 is the practical ceiling
 
 # OAuth constants (from Claude Code source)
 TOKEN_URL = "https://platform.claude.com/v1/oauth/token"
@@ -255,15 +324,15 @@ def _is_pid_alive(pid):
     """Return True if the given PID exists."""
     if IS_WINDOWS:
         PROCESS_QUERY_LIMITED_INFORMATION = 0x1000
-        handle = ctypes.windll.kernel32.OpenProcess(
+        handle = _kernel32.OpenProcess(
             PROCESS_QUERY_LIMITED_INFORMATION, False, int(pid)
         )
-        if handle:
-            exit_code = ctypes.c_ulong()
-            ctypes.windll.kernel32.GetExitCodeProcess(handle, ctypes.byref(exit_code))
-            ctypes.windll.kernel32.CloseHandle(handle)
-            return exit_code.value == 259  # STILL_ACTIVE
-        return False
+        if not handle:
+            return False
+        exit_code = ctypes.c_ulong()
+        ok = _kernel32.GetExitCodeProcess(handle, ctypes.byref(exit_code))
+        _kernel32.CloseHandle(handle)
+        return bool(ok) and exit_code.value == _STILL_ACTIVE
     try:
         os.kill(int(pid), 0)
     except ProcessLookupError:
@@ -341,39 +410,24 @@ def _find_cc_pid_windows():
     upward. Zero startup cost (no PowerShell/wmic subprocess).
     """
     TH32CS_SNAPPROCESS = 0x00000002
-    kernel32 = ctypes.windll.kernel32
 
-    class PROCESSENTRY32W(ctypes.Structure):
-        _fields_ = [
-            ("dwSize", ctypes.c_ulong),
-            ("cntUsage", ctypes.c_ulong),
-            ("th32ProcessID", ctypes.c_ulong),
-            ("th32DefaultHeapID", ctypes.POINTER(ctypes.c_ulong)),
-            ("th32ModuleID", ctypes.c_ulong),
-            ("cntThreads", ctypes.c_ulong),
-            ("th32ParentProcessID", ctypes.c_ulong),
-            ("pcPriClassBase", ctypes.c_long),
-            ("dwFlags", ctypes.c_ulong),
-            ("szExeFile", ctypes.c_wchar * 260),
-        ]
-
-    snapshot = kernel32.CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0)
-    if snapshot == ctypes.c_void_p(-1).value:
+    snapshot = _kernel32.CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0)
+    if not snapshot or snapshot == _INVALID_HANDLE_VALUE:
         return None
 
     # Build PID → (parent_pid, exe_name) map
     procs = {}
-    entry = PROCESSENTRY32W()
-    entry.dwSize = ctypes.sizeof(PROCESSENTRY32W)
-    if kernel32.Process32FirstW(snapshot, ctypes.byref(entry)):
+    entry = _PROCESSENTRY32W()
+    entry.dwSize = ctypes.sizeof(_PROCESSENTRY32W)
+    if _kernel32.Process32FirstW(snapshot, ctypes.byref(entry)):
         while True:
             procs[entry.th32ProcessID] = (
                 entry.th32ParentProcessID,
                 entry.szExeFile,
             )
-            if not kernel32.Process32NextW(snapshot, ctypes.byref(entry)):
+            if not _kernel32.Process32NextW(snapshot, ctypes.byref(entry)):
                 break
-    kernel32.CloseHandle(snapshot)
+    _kernel32.CloseHandle(snapshot)
 
     # Walk parent chain
     pid = os.getppid()
@@ -468,52 +522,11 @@ def write_csq_account_marker(account_num):
     try:
         tmp = marker.with_suffix(".tmp")
         tmp.write_text(str(account_num))
+        _secure_file(tmp)
         _atomic_replace(tmp, marker)
         return True
     except OSError:
         return False
-
-
-def keychain_account():
-    """Read the macOS keychain entry for this config dir and identify which
-    stored credential file holds a matching access token. macOS only —
-    returns None on other platforms. Used as a fallback by snapshot_account()
-    when .credentials.json is missing.
-    """
-    if not IS_MACOS:
-        return None
-    service = _keychain_service()
-    try:
-        r = subprocess.run(
-            ["security", "find-generic-password", "-s", service, "-w"],
-            capture_output=True,
-            text=True,
-            timeout=5,
-        )
-    except (subprocess.TimeoutExpired, OSError):
-        return None
-    if r.returncode != 0:
-        return None
-    raw = r.stdout.strip()
-    if not raw:
-        return None
-
-    # The password is normally stored as a JSON string. swap_to() writes it
-    # via `security add-generic-password -X <hex>`, where -X tells security
-    # to interpret the input as hex and store the decoded bytes — so on read
-    # we get the JSON directly. Defensive fallback: try hex-decoding too.
-    kc_data = None
-    try:
-        kc_data = json.loads(raw)
-    except json.JSONDecodeError:
-        try:
-            kc_data = json.loads(bytes.fromhex(raw).decode("utf-8"))
-        except (ValueError, UnicodeDecodeError, json.JSONDecodeError):
-            return None
-
-    return _match_token_to_account(
-        kc_data.get("claudeAiOauth", {}).get("accessToken", "")
-    )
 
 
 def snapshot_account():
@@ -880,6 +893,7 @@ def swap_to(target_account):
         live_account_file = Path(config_dir) / ".current-account"
         tmp = live_account_file.with_suffix(".tmp")
         tmp.write_text(target_account)
+        _secure_file(tmp)
         _atomic_replace(tmp, live_account_file)
     except OSError as e:
         print(
@@ -941,17 +955,24 @@ def auto_rotate(force=False):
     if force and current:
         # Mark current account as exhausted on disk (locked, load raw)
         lock_path = QUOTA_FILE.with_suffix(".lock")
-        lock_handle = None
-        try:
-            lock_handle = _lock_file(lock_path)
-            raw = _load(QUOTA_FILE, {"accounts": {}})
-            raw.setdefault("accounts", {}).setdefault(current, {})["five_hour"] = {
-                "used_percentage": 100,
-                "resets_at": time.time() + 18000,
-            }
-            _save(QUOTA_FILE, raw)
-        finally:
-            _unlock_file(lock_handle)
+        lock_handle = _lock_file(lock_path)
+        if lock_handle is None:
+            # Lock acquisition failed (e.g., Windows mutex unavailable).
+            # Refuse to write rather than risk a torn quota file.
+            print(
+                "  WARNING: could not acquire quota lock — skipping force-rotate",
+                file=sys.stderr,
+            )
+        else:
+            try:
+                raw = _load(QUOTA_FILE, {"accounts": {}})
+                raw.setdefault("accounts", {}).setdefault(current, {})["five_hour"] = {
+                    "used_percentage": 100,
+                    "resets_at": time.time() + 18000,
+                }
+                _save(QUOTA_FILE, raw)
+            finally:
+                _unlock_file(lock_handle)
 
     state = load_state()
     acct = state.get("accounts", {}).get(current or "", {})
@@ -1022,9 +1043,12 @@ def update_quota(json_str):
 
     # Lock, load, modify, save, unlock — prevents concurrent terminal races
     lock_path = QUOTA_FILE.with_suffix(".lock")
-    lock_handle = None
+    lock_handle = _lock_file(lock_path)
+    if lock_handle is None:
+        # Lock acquisition failed. Skip the update rather than risk a torn
+        # quota file. The next statusline render will retry.
+        return
     try:
-        lock_handle = _lock_file(lock_path)
         state = _load(QUOTA_FILE, {"accounts": {}})
         state.setdefault("accounts", {})[current] = {
             "five_hour": rate_limits.get("five_hour", {}),
@@ -1220,14 +1244,34 @@ def backsync():
     if target_canonical is None or not needs_update:
         return  # no match (probably a fresh login not yet captured) or already in sync
 
-    # Update the canonical file with the rotated tokens
+    # Acquire a per-canonical lock so concurrent backsyncs from multiple
+    # csq terminals (each running a different account) don't race on the
+    # same canonical file. Without this, two terminals refreshing tokens
+    # for the same account could write half-and-half data.
+    lock_path = target_canonical.with_suffix(".lock")
+    lock_handle = _lock_file(lock_path)
+    if lock_handle is None:
+        return  # lock acquisition failed; will retry on next render
     try:
-        tmp = target_canonical.with_suffix(".tmp")
-        tmp.write_text(json.dumps(live_data, indent=2))
-        _secure_file(tmp)
-        _atomic_replace(tmp, target_canonical)
-    except OSError:
-        pass
+        # Re-read canonical inside the lock to avoid clobbering a write
+        # that another process just made
+        try:
+            current = json.loads(target_canonical.read_text())
+            cur_access = current.get("claudeAiOauth", {}).get("accessToken", "")
+            if cur_access == live_access:
+                return  # already in sync (another process beat us to it)
+        except (OSError, json.JSONDecodeError):
+            pass
+
+        try:
+            tmp = target_canonical.with_suffix(".tmp")
+            tmp.write_text(json.dumps(live_data, indent=2))
+            _secure_file(tmp)
+            _atomic_replace(tmp, target_canonical)
+        except OSError:
+            pass
+    finally:
+        _unlock_file(lock_handle)
 
 
 # ─── Main ────────────────────────────────────────────────

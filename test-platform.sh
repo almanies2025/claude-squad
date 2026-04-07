@@ -68,7 +68,7 @@ fi
 
 # ─── Test 4: Bash scripts have valid syntax ──────────
 echo "[4] Bash scripts pass syntax check"
-for f in csq install.sh statusline-quota.sh auto-rotate-hook.sh; do
+for f in csq install.sh statusline-quota.sh; do
     if bash -n "$f" 2>&1; then
         pass "$f syntax OK"
     else
@@ -78,7 +78,7 @@ done
 
 # ─── Test 5: All shell scripts use #!/usr/bin/env bash ─
 echo "[5] All .sh shebangs are #!/usr/bin/env bash"
-for f in csq install.sh statusline-quota.sh auto-rotate-hook.sh test-platform.sh; do
+for f in csq install.sh statusline-quota.sh test-platform.sh; do
     line=$(head -1 "$f")
     if [ "$line" = "#!/usr/bin/env bash" ]; then
         pass "$f"
@@ -90,7 +90,7 @@ done
 # ─── Test 6: No bare 'python3' command in scripts ─────
 echo "[6] No hardcoded 'python3' command in scripts"
 # Allow comments and 'cmd in python3 python py' loops, but not literal command invocation
-bad=$(grep -nE '(^|[^"$_a-zA-Z])python3 ' csq statusline-quota.sh auto-rotate-hook.sh 2>/dev/null \
+bad=$(grep -nE '(^|[^"$_a-zA-Z])python3 ' csq statusline-quota.sh 2>/dev/null \
     | grep -v '#' \
     | grep -v 'cmd in python3' \
     || true)
@@ -226,6 +226,61 @@ with tempfile.TemporaryDirectory() as d:
         pass "lock/unlock round-trip"
     else
         fail "lock failed" "$out"
+    fi
+fi
+
+# ─── Test 13: Concurrent locking serializes (catches C1 ctypes truncation) ─
+echo "[13] Two concurrent _lock_file calls serialize correctly"
+if [ -n "${PY:-}" ]; then
+    out=$("$PY" -c "
+import sys, os, tempfile, threading, time
+sys.path.insert(0, '.')
+import importlib.util
+spec = importlib.util.spec_from_file_location('engine', 'rotation-engine.py')
+m = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(m)
+
+# Test: two threads racing on the same lock should serialize.
+# If the lock is broken (e.g., truncated handle on Windows),
+# both threads will hold the 'lock' simultaneously and the
+# critical_section_count will exceed 1.
+with tempfile.TemporaryDirectory() as d:
+    lock = os.path.join(d, 'test.lock')
+    in_critical = [0]
+    max_observed = [0]
+    errors = []
+
+    def worker():
+        try:
+            for _ in range(20):
+                h = m._lock_file(lock)
+                if h is None:
+                    errors.append('lock returned None')
+                    return
+                in_critical[0] += 1
+                if in_critical[0] > max_observed[0]:
+                    max_observed[0] = in_critical[0]
+                time.sleep(0.001)
+                in_critical[0] -= 1
+                m._unlock_file(h)
+        except Exception as e:
+            errors.append(str(e))
+
+    threads = [threading.Thread(target=worker) for _ in range(4)]
+    for t in threads: t.start()
+    for t in threads: t.join()
+
+    if errors:
+        print(f'FAIL: {errors[0]}')
+    elif max_observed[0] > 1:
+        print(f'FAIL: {max_observed[0]} threads in critical section simultaneously')
+    else:
+        print('OK')
+" 2>&1)
+    if [ "$out" = "OK" ]; then
+        pass "concurrent locking serializes"
+    else
+        fail "concurrent lock broken" "$out"
     fi
 fi
 

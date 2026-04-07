@@ -197,12 +197,11 @@ call. This avoids hammering Anthropic's per-client-id refresh throttle.
 
 ## Files
 
-| File                  | Installed to          | Purpose                                                                         |
-| --------------------- | --------------------- | ------------------------------------------------------------------------------- |
-| `rotation-engine.py`  | `~/.claude/accounts/` | Core engine: quota tracking, in-place swap, credential back-sync                |
-| `csq`                 | `~/.local/bin/`       | CLI: login, run, status, suggest, swap, cleanup, profile overlays               |
-| `statusline-quota.sh` | `~/.claude/accounts/` | Statusline hook: feeds quota to engine, shows account + %                       |
-| `auto-rotate-hook.sh` | `~/.claude/accounts/` | UserPromptSubmit hook (currently disabled — see "Manual swap, not auto-rotate") |
+| File                  | Installed to          | Purpose                                                           |
+| --------------------- | --------------------- | ----------------------------------------------------------------- |
+| `rotation-engine.py`  | `~/.claude/accounts/` | Core engine: quota tracking, in-place swap, credential back-sync  |
+| `csq`                 | `~/.local/bin/`       | CLI: login, run, status, suggest, swap, cleanup, profile overlays |
+| `statusline-quota.sh` | `~/.claude/accounts/` | Statusline hook: feeds quota to engine, shows account + %         |
 
 ### Data files
 

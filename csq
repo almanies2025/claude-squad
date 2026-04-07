@@ -222,7 +222,8 @@ cmd_run() {
   # gets its own snapshot — global default changes don't affect running terminals.
   # Everything else (history, projects/memory, sessions, commands, skills, etc.)
   # is symlinked so csq terminals see the same state as default terminals.
-  local isolated=(".credentials.json" ".current-account" ".csq-account" ".live-pid" ".claude.json" "accounts" "settings.json")
+  local isolated=(".credentials.json" ".current-account" ".csq-account" ".live-pid" ".claude.json" "accounts" "settings.json" ".quota-cursor")
+  shopt -s nullglob
   for item in "$default_dir"/* "$default_dir"/.*; do
     local base
     base="$(basename "$item")"
@@ -265,49 +266,18 @@ cmd_run() {
   done
 
   # --- Account-specific setup (per-config-dir, no global state) ---
-  # Back-sync: if CC refreshed tokens during a previous session, .credentials.json
-  # has newer tokens than credentials/N.json. Copy them back BEFORE we overwrite,
-  # so the canonical file stays current. Without this, csq run overwrites fresh
-  # CC-refreshed tokens with stale ones → 401 on next startup.
-  if [[ -f "$config_dir/.credentials.json" ]]; then
-    CSQ_CANONICAL="$cred_file" CSQ_LIVE="$config_dir/.credentials.json" CSQ_PLATFORM="$PLATFORM" "$PY" -c "
-import json, os, sys
-canonical = os.environ['CSQ_CANONICAL']
-live = os.environ['CSQ_LIVE']
-platform = os.environ['CSQ_PLATFORM']
-try:
-    with open(canonical) as f: c = json.load(f)
-    with open(live) as f: l = json.load(f)
-    c_exp = c.get('claudeAiOauth', {}).get('expiresAt', 0)
-    l_exp = l.get('claudeAiOauth', {}).get('expiresAt', 0)
-    l_rt = l.get('claudeAiOauth', {}).get('refreshToken', '')
-    c_rt = c.get('claudeAiOauth', {}).get('refreshToken', '')
-    # If live has a newer token or different refresh token, back-sync
-    if l_exp > c_exp or (l_rt and l_rt != c_rt):
-        import stat
-        tmp = canonical + '.tmp'
-        with open(tmp, 'w') as f: json.dump(l, f, indent=2)
-        if platform != 'git-bash':
-            os.chmod(tmp, stat.S_IRUSR | stat.S_IWUSR)
-        # Atomic replace with retry for Windows file-in-use
-        import time
-        for attempt in range(5):
-            try:
-                os.replace(tmp, canonical)
-                break
-            except PermissionError:
-                if platform == 'git-bash' and attempt < 4:
-                    time.sleep(0.1)
-                    continue
-                raise
-except Exception:
-    pass  # Non-fatal — proceed with whatever canonical has
-" 2>/dev/null
-  fi
+  # NOTE: We used to back-sync $config_dir/.credentials.json → credentials/N.json
+  # here, but that was unsafe: if a previous `csq swap M` left M's tokens in
+  # this config dir, the back-sync would copy M's tokens into credentials/N.json
+  # (cross-account poisoning). The engine's backsync() runs on every statusline
+  # render and uses refresh-token CONTENT MATCHING to identify the correct slot
+  # — that's race-proof and account-safe. We rely on it instead.
 
   # CC v2.1+ reads .credentials.json at startup. Copy from canonical so
-  # swap_to() changes take effect on restart.
-  cp "$cred_file" "$config_dir/.credentials.json"
+  # swap_to() changes take effect on restart. Atomic write (temp + mv) so
+  # CC never sees a half-written credentials file if csq is killed mid-copy.
+  cp "$cred_file" "$config_dir/.credentials.json.tmp"
+  mv "$config_dir/.credentials.json.tmp" "$config_dir/.credentials.json"
   if [[ "$PLATFORM" != "git-bash" ]]; then
     chmod 600 "$config_dir/.credentials.json"
   fi

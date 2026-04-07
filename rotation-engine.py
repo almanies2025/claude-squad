@@ -1100,6 +1100,55 @@ def cleanup():
     print(f"Removed {removed} stale cache files. {remaining} remaining.")
 
 
+# ─── Back-Sync ──────────────────────────────────────────
+#
+# CC rotates refresh tokens during sessions: old token → new token.
+# The new token lives in config-N/.credentials.json. But credentials/N.json
+# (the canonical store csq swap reads from) still has the old token.
+# If another terminal does `csq swap N`, it writes the revoked token → 401.
+#
+# Fix: on every statusline render, copy the live .credentials.json back to
+# credentials/N.json so the canonical store stays fresh.
+
+
+def backsync():
+    """Copy live credentials from this terminal's config dir back to the
+    canonical credentials/N.json. Called from statusline hook (background)."""
+    config_dir = _config_dir()
+    if not config_dir:
+        return
+
+    # Which account is this terminal running?
+    acct = csq_account_marker() or which_account()
+    if not acct:
+        return
+
+    live_creds = Path(config_dir) / ".credentials.json"
+    if not live_creds.exists():
+        return
+
+    canonical = CREDS_DIR / f"{acct}.json"
+
+    # Only sync if the live file is newer than the canonical one
+    try:
+        live_mtime = live_creds.stat().st_mtime
+        canon_mtime = canonical.stat().st_mtime if canonical.exists() else 0
+        if live_mtime <= canon_mtime:
+            return  # canonical is already up to date
+
+        # Validate the live creds have a refresh token before overwriting
+        live_data = json.loads(live_creds.read_text())
+        if not live_data.get("claudeAiOauth", {}).get("refreshToken"):
+            return  # don't overwrite with garbage
+
+        tmp = canonical.with_suffix(".tmp")
+        tmp.write_text(json.dumps(live_data, indent=2))
+        _secure_file(tmp)
+        os.replace(tmp, canonical)
+    except (OSError, json.JSONDecodeError):
+        pass
+
+
 # ─── Main ────────────────────────────────────────────────
 
 
@@ -1144,6 +1193,8 @@ def main():
             sys.exit(1)
     elif cmd == "snapshot":
         snapshot_account()
+    elif cmd == "backsync":
+        backsync()
     elif cmd == "email":
         if len(sys.argv) >= 3:
             _validate_account(sys.argv[2])

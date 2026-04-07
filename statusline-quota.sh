@@ -23,13 +23,16 @@ ctx_used_pct=$(echo "$input" | jq -r '.context_window.used_percentage // 0')
 # Session cost
 session_cost=$(echo "$input" | jq -r '.cost.total_cost_usd // 0')
 
-# Snapshot the live account from the keychain when CC has just (re)started.
-# Cheap path: one os.kill probe and return. Expensive path runs only on a CC
-# restart, when it walks the parent process tree, reads the keychain, and
-# rewrites .current-account to match what CC actually loaded into memory.
+# Snapshot the live account when CC has just (re)started.
+# Cheap path: one os.kill probe and return.
 # MUST run synchronously and BEFORE `update`, so update_quota() attributes
 # the incoming rate_limits to the correct (live) account.
 python3 "$HOME/.claude/accounts/rotation-engine.py" snapshot 2>/dev/null
+
+# Back-sync: keep credentials/N.json fresh with whatever CC has refreshed.
+# CC rotates refresh tokens during sessions. Without this, credentials/N.json
+# goes stale and `csq swap N` from another terminal writes revoked tokens.
+python3 "$HOME/.claude/accounts/rotation-engine.py" backsync 2>/dev/null &
 
 # Feed quota data to rotation engine.
 echo "$input" | python3 "$HOME/.claude/accounts/rotation-engine.py" update 2>/dev/null &

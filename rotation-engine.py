@@ -842,22 +842,13 @@ def swap_to(target_account):
         )
         return False
 
-    # Delete the quota cursor so update_quota refuses stale rate_limits
-    # from CC's previous account until CC actually makes a call on the new
-    # account. Without this, the next statusline render attributes the old
-    # account's quota to the new one and triggers spurious auto-rotation.
-    try:
-        (Path(config_dir) / ".quota-cursor").unlink(missing_ok=True)
-    except OSError:
-        pass
-
-    # Set a "swap pause" marker — auto-rotate is disabled for the next 60s
-    # so it doesn't second-guess a manual swap before the user sees the result.
-    try:
-        pause = Path(config_dir) / ".swap-pause"
-        pause.write_text(str(int(time.time() + 60)))
-    except OSError:
-        pass
+    # IMPORTANT: do NOT delete the .quota-cursor on swap. Leaving the OLD
+    # cursor in place is exactly what protects against stale-rate-limits
+    # corruption: the next statusline render will see "current account
+    # changed but the rate_limits payload hash is the same as what the
+    # previous account already wrote" and refuse the update. Only an actual
+    # API call on the new account produces a different payload, which
+    # then writes the cursor for the new account.
 
     # Best-effort keychain write. CC primarily reads .credentials.json, but
     # may fall back to the keychain for token refresh. We don't block or fail

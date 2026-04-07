@@ -19,12 +19,17 @@ Pre-existing failures MUST be fixed, not reported. Stubs are BLOCKED. See `rules
 ## Project Structure
 
 ```
-rotation-engine.py       — Core engine: quota tracking, token refresh, keychain write, auto-rotate
-statusline-quota.sh      — Statusline hook: feeds quota to engine, shows account + %
-csq                      — CLI: csq login/run/status/suggest/use
-auto-rotate-hook.sh      — UserPromptSubmit hook: triggers rotation at 100% (requires CLAUDE_CONFIG_DIR)
+rotation-engine.py       — Core engine: quota tracking, OAuth token refresh, in-place swap_to(), auto-rotate
+statusline-quota.sh      — Statusline hook: feeds quota to engine, shows account + %; primary auto-rotate trigger
+csq                      — CLI: login/run/status/suggest/swap/cleanup; `! csq swap N` for in-CC rate-limit recovery
+auto-rotate-hook.sh      — UserPromptSubmit hook: backup auto-rotate trigger (requires CLAUDE_CONFIG_DIR)
 install.sh               — One-time installer
 ```
+
+In-place rotation works because Claude Code picks up updates to `.credentials.json`
+on its next interaction. `swap_to()` updates the file and Claude
+Code picks up the new token — no restart needed. Verified empirically with
+live swap tests.
 
 ## Workspace Commands
 

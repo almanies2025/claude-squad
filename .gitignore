@@ -5,3 +5,10 @@ credentials/
 .account.*
 .DS_Store
 **/.DS_Store
+
+# Local-only research and notes folders
+notes/
+research/
+internal/
+upstream-internals/
+*.research.md

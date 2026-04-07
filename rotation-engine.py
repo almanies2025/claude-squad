@@ -842,6 +842,23 @@ def swap_to(target_account):
         )
         return False
 
+    # Delete the quota cursor so update_quota refuses stale rate_limits
+    # from CC's previous account until CC actually makes a call on the new
+    # account. Without this, the next statusline render attributes the old
+    # account's quota to the new one and triggers spurious auto-rotation.
+    try:
+        (Path(config_dir) / ".quota-cursor").unlink(missing_ok=True)
+    except OSError:
+        pass
+
+    # Set a "swap pause" marker — auto-rotate is disabled for the next 60s
+    # so it doesn't second-guess a manual swap before the user sees the result.
+    try:
+        pause = Path(config_dir) / ".swap-pause"
+        pause.write_text(str(int(time.time() + 60)))
+    except OSError:
+        pass
+
     # Best-effort keychain write. CC primarily reads .credentials.json, but
     # may fall back to the keychain for token refresh. We don't block or fail
     # on keychain errors because:
@@ -963,7 +980,17 @@ def auto_rotate(force=False):
 
 def update_quota(json_str):
     """Called from statusline. Saves quota data for the current account.
-    Uses file locking to prevent concurrent terminals from clobbering each other."""
+
+    IMPORTANT: After `csq swap`, CC's statusline JSON still contains
+    rate_limits from the PREVIOUS account's last API call (CC hasn't made
+    a call on the new account yet). Attributing those to the new account
+    would corrupt the quota and trigger spurious auto-rotation.
+
+    Defense: csq swap deletes .quota-cursor when it changes accounts.
+    update_quota writes a new cursor (account + payload hash) on each
+    accepted update and refuses updates that match the previous cursor's
+    payload but are now under a different account.
+    """
     try:
         data = json.loads(json_str)
     except json.JSONDecodeError:
@@ -976,6 +1003,31 @@ def update_quota(json_str):
     current = which_account()
     if not current:
         return
+
+    config_dir = _config_dir()
+
+    # Build a deterministic fingerprint of this rate_limits payload.
+    # Two payloads are "the same data" iff their fingerprints match.
+    payload_fp = json.dumps(rate_limits, sort_keys=True)
+    payload_hash = hashlib.sha256(payload_fp.encode()).hexdigest()[:12]
+    cursor_value = f"{current}:{payload_hash}"
+
+    cursor_file = None
+    if config_dir:
+        cursor_file = Path(config_dir) / ".quota-cursor"
+        try:
+            if cursor_file.exists():
+                prev = cursor_file.read_text().strip()
+                prev_acct, _, prev_hash = prev.partition(":")
+                if prev_hash == payload_hash and prev_acct != current:
+                    # Same exact payload, different account — this is stale
+                    # data left over from before the swap. Refuse it.
+                    return
+                if prev == cursor_value:
+                    # Already processed this exact (account, payload) — no-op.
+                    return
+        except OSError:
+            pass
 
     # Lock, load, modify, save, unlock — prevents concurrent terminal races
     lock_path = QUOTA_FILE.with_suffix(".lock")
@@ -992,13 +1044,21 @@ def update_quota(json_str):
     finally:
         _unlock_file(lock_handle)
 
-    # Auto-rotate at 100% (only if config dir is set)
-    if _config_dir():
-        five_pct = rate_limits.get("five_hour", {}).get("used_percentage", 0)
-        if five_pct >= 100:
-            target = pick_best(state, exclude=current)
-            if target:
-                swap_to(target)
+    # Record what we just processed
+    if cursor_file is not None:
+        try:
+            tmp = cursor_file.with_suffix(".tmp")
+            tmp.write_text(cursor_value)
+            os.replace(tmp, cursor_file)
+        except OSError:
+            pass
+
+    # NOTE: Auto-rotate from update_quota() is DISABLED.
+    # It caused random account switching when triggered on stale rate_limits
+    # after a manual swap (CC's statusline JSON contains rate_limits from
+    # the PREVIOUS account until the next API call). Users now manually
+    # swap with `! csq swap N` when they hit a rate limit. The user is in
+    # control; csq does not silently change accounts behind their back.
 
 
 # ─── Status ──────────────────────────────────────────────

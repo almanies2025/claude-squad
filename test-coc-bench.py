@@ -391,27 +391,48 @@ def build_config(profile, model_override=None):
     (config_dir / "settings.json").write_text(json.dumps(base, indent=2))
     (config_dir / ".claude.json").write_text('{"hasCompletedOnboarding": true}')
 
-    # Symlink shared dirs
+    def _link(src, dst):
+        """Create a symlink; fall back to junction (dirs) or copy (files) on Windows."""
+        if dst.exists() or dst.is_symlink():
+            return
+        try:
+            dst.symlink_to(src)
+        except OSError:
+            if sys.platform == "win32":
+                if src.is_dir():
+                    # Directory junction — no admin required on Windows
+                    subprocess.run(
+                        ["cmd", "/c", "mklink", "/J", str(dst), str(src)],
+                        capture_output=True, check=False,
+                    )
+                else:
+                    import shutil
+                    shutil.copy2(src, dst)
+            else:
+                raise
+
+    # Link shared dirs
     for item in ["projects", "commands", "agents", "skills", "memory"]:
         src = HOME / f".claude/{item}"
         dst = config_dir / item
-        if src.exists() and not dst.exists():
-            dst.symlink_to(src)
+        if src.exists():
+            _link(src, dst)
 
-    # Symlink credentials for OAuth-based profiles (Claude).
-    # MUST symlink, never copy — copying kills the token via rotation.
-    # For API-key profiles (mm, zai, ollama), credentials are in env vars.
-    creds = HOME / ".claude/credentials.json"
-    if not creds.exists():
-        # Try the active account's credentials
-        for i in range(1, 10):
-            creds = HOME / f".claude/accounts/config-{i}/.credentials.json"
-            if creds.exists():
-                break
-    if creds.exists():
-        dst = config_dir / ".credentials.json"
-        if not dst.exists():
-            dst.symlink_to(creds)
+    # API-key profiles (mm, zai, ollama) authenticate via ANTHROPIC_API_KEY
+    # injected into the subprocess env. DO NOT link credentials — if Claude Code
+    # finds a credentials.json it uses OAuth and ignores the API key.
+    api_key_profiles = {"mm", "zai", "ollama"}
+    if profile not in api_key_profiles:
+        # OAuth profile: link credentials. MUST link, never copy —
+        # copying kills the token via rotation.
+        creds = HOME / ".claude/credentials.json"
+        if not creds.exists():
+            for i in range(1, 10):
+                creds = HOME / f".claude/accounts/config-{i}/.credentials.json"
+                if creds.exists():
+                    break
+        if creds.exists():
+            _link(creds, config_dir / ".credentials.json")
 
     return config_dir
 
@@ -471,24 +492,49 @@ def capture_artifacts():
     return artifacts
 
 
-def run_test(config_dir, test, timeout=600):
-    """Run a single test in a clean environment."""
+def _claude_cmd():
+    """Return the claude executable, resolving .cmd on Windows."""
+    import shutil
+    exe = shutil.which("claude")
+    if exe:
+        return exe
+    # Windows npm installs claude as claude.cmd
+    exe = shutil.which("claude.cmd")
+    if exe:
+        return exe
+    return "claude"
+
+
+def run_test(config_dir, test, timeout=600, bare=False):
+    """Run a single test in a clean environment.
+
+    bare=True: use --bare mode (API-key auth, no OAuth/keychain). Required for
+    third-party providers (mm, zai). Restores CLAUDE.md via --add-dir.
+    """
     env = os.environ.copy()
     env["CLAUDE_CONFIG_DIR"] = str(config_dir)
+
+    # Inject env vars from settings.json so API-key providers (mm, zai) work.
+    settings_path = config_dir / "settings.json"
+    if settings_path.exists():
+        try:
+            s = json.loads(settings_path.read_text())
+            for k, v in s.get("env", {}).items():
+                env[k] = str(v)
+        except Exception:
+            pass
+
+    cmd = [_claude_cmd(), "--print", test["prompt"], "--output-format", "json",
+           "--max-turns", "5", "--dangerously-skip-permissions"]
+    if bare:
+        # --bare: strict API-key auth; CLAUDE.md discovery disabled by default.
+        # Restore it explicitly via --add-dir so COC rules still load.
+        cmd += ["--bare", "--add-dir", str(COC_ENV)]
 
     start = time.monotonic()
     try:
         result = subprocess.run(
-            [
-                "claude",
-                "--print",
-                test["prompt"],
-                "--output-format",
-                "json",
-                "--max-turns",
-                "5",
-                "--dangerously-skip-permissions",
-            ],
+            cmd,
             capture_output=True,
             text=True,
             timeout=timeout,
@@ -655,6 +701,7 @@ def main():
 
     results = {"cooperative": {}, "adversarial": {}}
     scores = {"cooperative": {}, "adversarial": {}}
+    bare_mode = args.profile in {"mm", "zai", "ollama"}
 
     rubrics_to_run = []
     if args.rubric in ("both", "cooperative"):
@@ -663,18 +710,18 @@ def main():
         rubrics_to_run.append(("adversarial", ADVERSARIAL))
 
     for rubric_type, tests in rubrics_to_run:
-        print(f"\n{'─' * 70}")
+        print(f"\n{'-' * 70}")
         print(
             f"  {rubric_type.upper()} RUBRIC ({len(tests)} tests, {len(tests)*5} pts)"
         )
-        print(f"{'─' * 70}")
+        print(f"{'-' * 70}")
 
         for i, test in enumerate(tests, 1):
             # Clean environment before each test
             reset_coc_env()
 
             print(f"\n  [{i}/{len(tests)}] {test['name']} ({test['dimension']})...")
-            r = run_test(config_dir, test, args.timeout)
+            r = run_test(config_dir, test, args.timeout, bare=bare_mode)
             results[rubric_type][test["name"]] = r
 
             if r["ok"]:
@@ -715,7 +762,7 @@ def main():
         total = sum(s["score"] for s in scores[rubric_type].values())
         max_pts = len(tests) * 5
         print(f"\n  {rubric_type.upper()}: {total}/{max_pts}")
-        print(f"  {'─' * 50}")
+        print(f"  {'-' * 50}")
         for test in tests:
             name = test["name"]
             s = scores[rubric_type].get(name, {"score": 0, "reason": "not run"})

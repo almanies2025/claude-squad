@@ -1,0 +1,2149 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>هيئة البيانات والذكاء الاصطناعي — SDAIA</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,::before,::after{margin:0;padding:0;box-sizing:border-box}
+:root{--navy:#0B1E36;--navy-l:#132742;--white:#FFF;--sg:#00958A;--sg-d:#007068;--sg-l:#00BFB5;--gold:#C9A84C;--gold-l:#DCC06A;--bg:#F0F2F5;--bg-w:#FFF;--text:#1A2332;--text2:#4A5568;--text3:#8A96A8;--border:#E2E8F0;--shadow:0 4px 20px rgba(0,0,0,.08);--shadow-lg:0 12px 40px rgba(0,0,0,.12);--r:12px;--r-lg:20px;--t:all .4s cubic-bezier(.25,.46,.45,.94)}
+html{scroll-behavior:smooth}
+body{font-family:"Noto Sans Arabic","Inter",sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;direction:rtl;text-align:right;font-size:15px;line-height:1.6}
+body.en{direction:ltr;text-align:left}
+.container{max-width:1200px;margin:0 auto;padding:0 40px}
+.container-wide{max-width:1340px;margin:0 auto;padding:0 40px}
+.reveal{opacity:0;transform:translateY(50px);transition:opacity .9s ease,transform .9s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.ar-only{display:none!important}
+body.en .ar-only{display:none!important}
+body:not(.en) .en-only{display:none!important}
+body.en .en-only{display:block!important}
+
+/* TOPBAR */
+.topbar{background:var(--navy);height:44px;display:flex;align-items:center;z-index:200;position:relative}
+.topbar-inner{display:flex;align-items:center;justify-content:space-between;width:100%}
+.topbar-links{display:flex;gap:20px}
+.topbar-links a{color:rgba(255,255,255,.55);text-decoration:none;font-size:12px;font-weight:500;transition:color .3s}
+.topbar-links a:hover{color:var(--white)}
+.lang-btn{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:5px 14px;cursor:pointer;font-size:12px;font-weight:700;color:var(--white);font-family:inherit;transition:var(--t)}
+.lang-btn:hover{background:rgba(255,255,255,.14)}
+.lang-btn .dot{width:6px;height:6px;background:var(--sg);border-radius:50%}
+
+/* HEADER */
+.site-header{background:rgba(255,255,255,.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;transition:var(--t)}
+.site-header.scrolled{box-shadow:var(--shadow)}
+.header-inner{display:flex;align-items:center;justify-content:space-between;height:72px}
+.emblem{display:flex;align-items:center;gap:14px;text-decoration:none}
+.emblem img{height:52px;border-radius:6px}
+.emblem-text .org-name{font-size:15px;font-weight:800;color:var(--navy);line-height:1.3}
+.emblem-text .org-sub{font-size:10px;color:var(--text3);font-weight:500}
+.main-nav{display:flex;gap:4px}
+.main-nav a{padding:8px 16px;color:var(--text2);text-decoration:none;font-size:13px;font-weight:600;border-radius:10px;transition:var(--t)}
+.main-nav a:hover{background:var(--bg);color:var(--navy)}
+.main-nav a.active{background:var(--navy);color:var(--white)}
+.btn-hdr{display:flex;align-items:center;gap:8px;background:var(--sg);color:var(--white);border:none;padding:10px 20px;border-radius:var(--r);font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:var(--t);text-decoration:none}
+.btn-hdr:hover{background:var(--sg-d);transform:translateY(-1px)}
+
+/* HERO */
+.hero{position:relative;min-height:600px;background:#060e19;display:flex;align-items:center;overflow:hidden;padding:80px 0}
+#particle-canvas{position:absolute;inset:0;z-index:0}
+.hero-glow,.hero-glow2,.hero-pattern{display:none}
+@keyframes floatA{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-30px) scale(1.05)} }
+@keyframes floatB{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(20px) scale(.97)} }
+.hero-content{position:relative;z-index:2;text-align:center;max-width:800px;margin:0 auto}
+.hero-logo-wrap{display:flex;flex-direction:column;align-items:center;gap:16px;margin-bottom:32px}
+.hero-logo-wrap img{height:90px;border-radius:10px;opacity:.95;box-shadow:0 8px 32px rgba(0,0,0,.3)}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.3);padding:6px 16px;border-radius:50px;font-size:12px;font-weight:700;color:var(--gold-l);margin-bottom:24px}
+.badge-dot{width:8px;height:8px;background:var(--gold);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)} }
+.hero h1{font-size:clamp(32px,5vw,52px);font-weight:900;color:var(--white);line-height:1.2;margin-bottom:20px;letter-spacing:-.02em}
+.hero-desc{font-size:16px;color:rgba(255,255,255,.65);max-width:580px;margin:0 auto 36px;line-height:1.8}
+.hero-actions{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.btn-hp{display:flex;align-items:center;gap:8px;background:var(--sg);color:var(--white);padding:14px 28px;border-radius:var(--r);font-size:14px;font-weight:700;text-decoration:none;transition:var(--t);border:none;cursor:pointer;font-family:inherit}
+.btn-hp:hover{background:var(--sg-d);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,149,138,.4)}
+.btn-hs{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:var(--white);padding:14px 28px;border-radius:var(--r);font-size:14px;font-weight:600;text-decoration:none;transition:var(--t)}
+.btn-hs:hover{background:rgba(255,255,255,.18)}
+
+/* SECTIONS */
+.section{padding:80px 0;background:var(--bg-w)}
+.section.navy-bg{background:var(--navy)}
+.section .container{text-align:center}
+.section-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(0,149,138,.1);color:var(--sg);padding:6px 14px;border-radius:50px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:16px}
+.section-title{font-size:clamp(24px,3.5vw,36px);font-weight:900;color:var(--navy);margin-bottom:14px;line-height:1.2}
+.section-sub{font-size:15px;color:var(--text2);max-width:560px;margin:0 auto 50px;line-height:1.8}
+.section-sub.en{text-align:left}
+
+/* ENTITIES GRID */
+.ents-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;text-align:right}
+.entity-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r-lg);padding:28px 24px;transition:var(--t);cursor:default;text-align:right}
+.entity-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);border-color:var(--sg)}
+.entity-icon{width:52px;height:52px;background:linear-gradient(135deg,var(--sg),var(--sg-d));border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+.entity-icon svg{width:26px;height:26px;color:var(--white)}
+.entity-card h3{font-size:15px;font-weight:800;color:var(--navy);margin-bottom:6px}
+.entity-card p{font-size:12px;color:var(--text2);line-height:1.6}
+
+/* PILLARS GRID */
+.pillars-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;text-align:right}
+.pillar-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:var(--r-lg);padding:28px 22px;text-align:right;transition:var(--t)}
+.pillar-card:hover{background:rgba(255,255,255,.1);transform:translateY(-3px)}
+.pillar-icon{width:52px;height:52px;background:rgba(255,255,255,.08);border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;font-size:24px}
+.pillar-card h3{font-size:14px;font-weight:800;color:var(--white);margin-bottom:6px}
+.pillar-card p{font-size:11px;color:rgba(255,255,255,.5);line-height:1.6}
+
+/* VIDEO */
+.video-section{padding:60px 0}
+.video-wrap{position:relative;border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow-lg);max-width:860px;margin:0 auto;aspect-ratio:16/9;background:var(--navy-l)}
+.video-wrap iframe,.video-wrap img{width:100%;height:100%;object-fit:cover}
+.v-play{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;cursor:pointer;transition:var(--t)}
+.v-play:hover{background:rgba(0,0,0,.2)}
+.v-play-circle{width:72px;height:72px;background:var(--sg);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 12px rgba(0,149,138,.25);transition:var(--t)}
+.v-play:hover .v-play-circle{transform:scale(1.08);box-shadow:0 0 0 16px rgba(0,149,138,.2)}
+.v-play-circle svg{width:28px;height:28px;color:var(--white);margin-left:-3px}
+.v-play span{color:var(--white);font-size:14px;font-weight:700;text-shadow:0 2px 8px rgba(0,0,0,.5)}
+
+/* COUNTERS */
+.counters-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:32px;text-align:center}
+.counter-item{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:var(--r-lg);padding:36px 20px}
+.counter-num{font-size:clamp(32px,4vw,48px);font-weight:900;color:var(--gold);margin-bottom:6px}
+.counter-label{font-size:13px;color:rgba(255,255,255,.55);font-weight:500}
+
+/* EVALUATOR CTA */
+.eval-cta{padding:80px 0;background:var(--bg-w)}
+.eval-cta-inner{max-width:720px;margin:0 auto;text-align:center}
+.eval-cta h2{font-size:clamp(22px,3vw,32px);font-weight:900;color:var(--navy);margin-bottom:14px}
+.eval-cta p{font-size:15px;color:var(--text2);margin-bottom:32px;line-height:1.8}
+.btn-e{display:inline-flex;align-items:center;gap:10px;background:var(--sg);color:var(--white);padding:16px 36px;border-radius:var(--r);font-size:15px;font-weight:800;border:none;cursor:pointer;font-family:inherit;text-decoration:none;transition:var(--t)}
+.btn-e:hover{background:var(--sg-d);transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,149,138,.35)}
+
+/* PAGES */
+.page-section{display:none}
+.page-section.active{display:block}
+
+/* EVALUATOR PAGE */
+.eval-page{padding:60px 0}
+.eval-grid{display:grid;grid-template-columns:1fr 380px;gap:32px;align-items:start}
+.eval-form-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r-lg);padding:32px;box-shadow:var(--shadow)}
+.form-section{margin-bottom:28px;padding-bottom:24px;border-bottom:1px solid var(--border)}
+.form-section:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.form-section h3{font-size:13px;font-weight:800;color:var(--sg);margin-bottom:16px;text-transform:uppercase;letter-spacing:1px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.form-row.full{grid-template-columns:1fr}
+.form-group{text-align:right}
+.form-group.en{text-align:left}
+.form-group label{display:block;font-size:12px;font-weight:700;color:var(--text2);margin-bottom:6px}
+.form-group.en label{text-align:left}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;color:var(--text);background:var(--bg);transition:var(--t);outline:none}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--sg);background:var(--white);box-shadow:0 0 0 3px rgba(0,149,138,.1)}
+.form-group textarea{resize:vertical;min-height:80px}
+.form-group select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%234A5568' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:left 12px center;padding-left:36px}
+.check-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.check-item{display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;cursor:pointer;transition:var(--t);font-size:13px;color:var(--text);user-select:none}
+.check-item:hover{border-color:var(--sg)}
+.check-item.checked{background:rgba(0,149,138,.08);border-color:var(--sg);color:var(--sg-d)}
+.check-item input[type="checkbox"]{display:none}
+.check-item svg{width:16px;height:16px;color:var(--sg);flex-shrink:0}
+.btn-submit{width:100%;padding:16px;background:var(--sg);color:var(--white);border:none;border-radius:var(--r);font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;transition:var(--t);margin-top:8px;display:flex;align-items:center;justify-content:center;gap:10px}
+.btn-submit:hover{background:var(--sg-d);transform:translateY(-1px)}
+.btn-submit:disabled{opacity:.6;cursor:not-allowed;transform:none}
+
+/* EVALUATOR SIDEBAR */
+.eval-sidebar{position:sticky;top:90px}
+.sidebar-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r-lg);padding:28px;margin-bottom:20px;box-shadow:var(--shadow)}
+.sidebar-card h4{font-size:14px;font-weight:800;color:var(--navy);margin-bottom:16px}
+.sidebar-card ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+.sidebar-card ul li{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--text2);line-height:1.5}
+.sidebar-card ul li .sc{width:6px;height:6px;background:var(--sg);border-radius:50%;flex-shrink:0;margin-top:6px}
+.tier-list{display:flex;flex-direction:column;gap:8px}
+.tier-item{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg);border-radius:8px;font-size:12px;font-weight:600}
+.tier-item .tn{font-weight:800;color:var(--navy);min-width:40px}
+.tier-badge{font-size:11px;padding:3px 8px;border-radius:4px;font-weight:700}
+.badge-1{background:rgba(201,168,76,.15);color:#8B6914}
+.badge-2{background:rgba(0,149,138,.1);color:#006B62}
+.badge-3{background:rgba(234,179,8,.12);color:#92690A}
+.badge-4{background:rgba(239,68,68,.1);color:#B91C1C}
+
+/* RESULT PAGE */
+.result-page{display:none;padding:40px 0}
+.result-page.active{display:block}
+.res-hero{text-align:center;padding:40px 20px;background:var(--navy);border-radius:var(--r-lg);margin-bottom:32px;position:relative;overflow:hidden}
+.res-hero::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 30% 50%,rgba(0,149,138,.2) 0%,transparent 60%)}
+.res-id{font-size:11px;font-weight:700;color:rgba(255,255,255,.4);margin-bottom:8px;letter-spacing:2px}
+.res-title{font-size:22px;font-weight:800;color:var(--white);margin-bottom:4px}
+.res-m{font-size:13px;color:rgba(255,255,255,.5);margin-bottom:24px}
+.res-ring{width:130px;height:130px;border-radius:50%;background:conic-gradient(var(--sg) var(--score-deg,0deg),rgba(255,255,255,.08) 0deg);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;position:relative}
+.res-ring::before{content:"";position:absolute;inset:10px;background:var(--navy);border-radius:50%}
+.res-ring .n{position:relative;z-index:1;font-size:36px;font-weight:900;color:var(--gold)}
+.res-ring .t{position:absolute;bottom:-28px;left:50%;transform:translateX(-50%);font-size:10px;color:rgba(255,255,255,.4);white-space:nowrap}
+.res-tier{font-size:14px;font-weight:700;color:var(--white);margin-bottom:6px}
+.res-dec{font-size:12px;color:rgba(255,255,255,.5);max-width:400px;margin:0 auto}
+.res-body{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.res-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r-lg);padding:24px}
+.res-ct{font-size:13px;font-weight:800;color:var(--navy);margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.score-bars{display:flex;flex-direction:column;gap:12px}
+.score-bar-row{display:flex;align-items:center;gap:10px;font-size:12px}
+.score-bar-row .lbl{flex:1;font-weight:600;color:var(--text2);text-align:right}
+.score-bar-row.en .lbl{text-align:left}
+.score-bar{flex:2;height:8px;background:var(--bg);border-radius:4px;overflow:hidden}
+.score-bar-fill{height:100%;border-radius:4px;background:var(--sg);transition:width 1s ease}
+.score-bar-row .val{font-weight:800;color:var(--navy);min-width:36px;text-align:right}
+.score-bar-row.en .val{text-align:left}
+.strengths-list,.gaps-list,.recs-list{list-style:none;display:flex;flex-direction:column;gap:8px}
+.strengths-list li,.gaps-list li,.recs-list li{font-size:13px;color:var(--text2);padding:8px 12px;border-radius:6px;line-height:1.5;display:flex;align-items:flex-start;gap:8px}
+.strengths-list li{background:rgba(0,149,138,.07);color:#006B62}
+.gaps-list li{background:rgba(239,68,68,.07);color:#B91C1C}
+.recs-list li{background:rgba(201,168,76,.1);color:#7A5C0E}
+.strengths-list li::before{content:"✓";font-weight:900;flex-shrink:0}
+.gaps-list li::before{content:"✗";font-weight:900;flex-shrink:0}
+.recs-list li::before{content:"→";font-weight:900;flex-shrink:0}
+.res-risk{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.risk-factor{font-size:12px;color:var(--text2);padding:6px 10px;background:var(--bg);border-radius:6px}
+.risk-badge{font-size:11px;font-weight:800;padding:4px 10px;border-radius:4px}
+.risk-l{background:rgba(34,197,94,.1);color:#15803D}
+.risk-m{background:rgba(234,179,8,.12);color:#92690A}
+.risk-h{background:rgba(239,68,68,.1);color:#B91C1C}
+.nsdai-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r-lg);padding:24px;text-align:right}
+.nsdai-pl{font-size:18px;font-weight:800;color:var(--navy);margin-bottom:12px}
+.nsdai-tl{list-style:none;display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.nsdai-tl li{font-size:12px;color:var(--text2);padding:4px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px}
+.nsdai-tl li::before{content:"→";color:var(--sg);font-weight:900}
+.btn-rp{display:inline-flex;align-items:center;gap:8px;background:var(--navy);color:var(--white);padding:12px 24px;border-radius:var(--r);font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:inherit;text-decoration:none;transition:var(--t);margin-top:16px}
+.btn-rp:hover{background:var(--navy-l)}
+
+/* ABOUT PAGE */
+.about-page{padding:60px 0}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;margin-top:40px}
+.about-img{background:linear-gradient(135deg,var(--navy),var(--navy-l));border-radius:var(--r-lg);padding:40px;display:flex;align-items:center;justify-content:center;min-height:300px}
+.about-img svg{width:180px;height:180px;opacity:.8}
+.about-text h2{font-size:clamp(22px,3vw,30px);font-weight:900;color:var(--navy);margin-bottom:16px}
+.about-text p{font-size:14px;color:var(--text2);line-height:1.9;margin-bottom:20px}
+.stats-row{display:flex;gap:24px;flex-wrap:wrap}
+.stat-box{background:var(--bg);border-radius:10px;padding:16px 20px;text-align:center;min-width:100px}
+.stat-box .n{font-size:24px;font-weight:900;color:var(--sg)}
+.stat-box .l{font-size:11px;color:var(--text2);font-weight:600}
+
+/* NEWS PAGE */
+.news-page{padding:60px 0}
+.news-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;margin-top:40px}
+.news-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;transition:var(--t)}
+.news-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+.news-img{height:160px;background:linear-gradient(135deg,var(--navy),var(--sg-d));display:flex;align-items:center;justify-content:center}
+.news-img svg{width:60px;height:60px;color:var(--white);opacity:.5}
+.news-body{padding:20px}
+.news-tag{font-size:10px;font-weight:800;color:var(--sg);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.news-card h3{font-size:15px;font-weight:800;color:var(--navy);margin-bottom:8px;line-height:1.4}
+.news-card p{font-size:13px;color:var(--text2);line-height:1.7}
+
+/* CONTACT PAGE */
+.contact-page{padding:60px 0}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:40px}
+.contact-info{display:flex;flex-direction:column;gap:20px}
+.contact-item{display:flex;align-items:flex-start;gap:14px;padding:20px;background:var(--white);border:1px solid var(--border);border-radius:var(--r);transition:var(--t)}
+.contact-item:hover{box-shadow:var(--shadow);border-color:var(--sg)}
+.contact-item .ci-icon{width:44px;height:44px;background:rgba(0,149,138,.1);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.contact-item .ci-icon svg{width:20px;height:20px;color:var(--sg)}
+.contact-item h4{font-size:14px;font-weight:800;color:var(--navy);margin-bottom:4px}
+.contact-item p{font-size:13px;color:var(--text2)}
+.contact-form{background:var(--white);border:1px solid var(--border);border-radius:var(--r-lg);padding:32px}
+.contact-form h3{font-size:18px;font-weight:800;color:var(--navy);margin-bottom:20px}
+.cform-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.contact-form .form-group{margin-bottom:14px}
+
+/* FOOTER */
+.footer{background:var(--navy);padding:60px 0 30px;color:var(--white)}
+.footer-main{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px}
+.f-brand img{height:48px;border-radius:6px;margin-bottom:14px}
+.f-brand h4{font-size:15px;font-weight:800;margin-bottom:8px}
+.f-brand p{font-size:12px;color:rgba(255,255,255,.45);line-height:1.7}
+.f-col h5{font-size:11px;font-weight:800;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:14px}
+.f-col ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.f-col ul li a{font-size:13px;color:rgba(255,255,255,.55);text-decoration:none;transition:color .3s}
+.f-col ul li a:hover{color:var(--white)}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.1);padding-top:24px;display:flex;align-items:center;justify-content:space-between;font-size:12px;color:rgba(255,255,255,.3)}
+
+/* SPINNER */
+#spinner{display:none;position:fixed;top:0;left:0;inset:0;z-index:9999;background:rgba(11,30,54,.6);backdrop-filter:blur(4px);align-items:center;justify-content:center}
+#spinner .sp{width:48px;height:48px;border:4px solid rgba(0,149,138,.2);border-top-color:var(--sg);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* SCROLL REVEAL */
+.reveal{opacity:0;transform:translateY(40px);transition:opacity .9s ease,transform .9s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+/* DASHBOARD */
+.dash-page{background:var(--navy);min-height:100vh;padding:40px 0 60px}
+
+/* GAP ALERT BANNER */
+.gap-alert-banner{background:linear-gradient(135deg,rgba(231,76,60,.18),rgba(231,76,60,.08));border:1px solid rgba(231,76,60,.35);border-radius:16px;margin-bottom:24px;overflow:hidden;animation:gapPulse 3s ease-in-out infinite}
+@keyframes gapPulse{0%,100%{box-shadow:0 0 0 0 rgba(231,76,60,0);border-color:rgba(231,76,60,.35)}50%{box-shadow:0 0 20px rgba(231,76,60,.15);border-color:rgba(231,76,60,.6)} }
+.gap-alert-inner{display:flex;align-items:center;gap:16px;padding:20px 24px;flex-wrap:wrap}
+.gap-alert-icon{flex-shrink:0;width:40px;height:40px;background:rgba(231,76,60,.2);border-radius:10px;display:flex;align-items:center;justify-content:center;animation:iconPulse 2s ease-in-out infinite}
+@keyframes iconPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)} }
+.gap-alert-content{flex:1;min-width:200px}
+.gap-alert-content strong{display:block;font-size:14px;font-weight:800;color:#fff;margin-bottom:4px}
+.gap-alert-content span{display:block;font-size:12px;color:rgba(255,255,255,.55);line-height:1.5}
+.gap-pillar-badges{display:flex;gap:8px;flex-wrap:wrap}
+.gap-pill{font-size:11px;font-weight:700;padding:5px 12px;border-radius:8px;background:rgba(231,76,60,.2);border:1px solid rgba(231,76,60,.3);color:#fff;white-space:nowrap}
+.dash-header{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:24px 28px;margin-bottom:28px}
+.dash-title-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.dash-title{display:flex;align-items:center;gap:14px}
+.dash-title h1{font-size:20px;font-weight:900;color:var(--white);margin:0}
+.dash-meta{display:flex;align-items:center;gap:12px}
+.dash-updated{font-size:12px;color:rgba(255,255,255,.35)}
+.dash-refresh-btn{display:flex;align-items:center;gap:6px;background:rgba(0,149,138,.2);border:1px solid rgba(0,149,138,.3);color:var(--sg);padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:var(--t)}
+.dash-refresh-btn:hover{background:rgba(0,149,138,.3)}
+.dash-kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.dash-kpi{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:22px 20px;text-align:center;transition:var(--t)}
+.dash-kpi:hover{border-color:rgba(0,149,138,.4);transform:translateY(-2px)}
+.kpi-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+.kpi-value{font-size:36px;font-weight:900;color:var(--white);margin-bottom:4px;line-height:1}
+.kpi-label{font-size:13px;font-weight:700;color:rgba(255,255,255,.6);margin-bottom:2px}
+.kpi-sub{font-size:11px;color:rgba(255,255,255,.3)}
+.dash-row-2{display:grid;grid-template-columns:3fr 2fr;gap:20px;margin-bottom:20px}
+.dash-row-3{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px}
+.dash-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:14px;overflow:hidden}
+.dash-card-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.06)}
+.dash-card-title{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:800;color:rgba(255,255,255,.7)}
+.dash-view-all{font-size:12px;color:var(--sg);text-decoration:none;font-weight:600}
+.dash-view-all:hover{color:var(--sg-l)}
+.dash-card-badge{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:#E74C3C}
+.badge-dot-red{width:8px;height:8px;background:#E74C3C;border-radius:50%;animation:pulse 2s infinite}
+.pillar-chart{padding:16px 20px;display:flex;flex-direction:column;gap:12px}
+.pillar-row{display:flex;align-items:center;gap:12px}
+.pillar-row .plabel{flex:0 0 100px;font-size:12px;font-weight:600;color:rgba(255,255,255,.5);text-align:left}
+.pillar-bar-bg{flex:1;height:22px;background:rgba(255,255,255,.06);border-radius:6px;overflow:hidden;position:relative}
+.pillar-bar-fill{height:100%;border-radius:6px;transition:width 1.2s cubic-bezier(.25,.46,.45,.94)}
+.pillar-bar-fill.gap{background:#E74C3C}
+.pillar-bar-fill.mid{background:#C9A84C}
+.pillar-bar-fill.strong{background:#00958A}
+.pillar-row .pcount{flex:0 0 36px;font-size:13px;font-weight:800;color:var(--white);text-align:right}
+.tier-chart{padding:16px 20px;display:flex;flex-direction:column;gap:14px}
+.tier-bar-row{display:flex;align-items:center;gap:10px}
+.tier-bar-row .tlabel{flex:0 0 80px;font-size:11px;font-weight:700;color:rgba(255,255,255,.5);text-align:left}
+.tier-bar-bg{flex:1;height:18px;background:rgba(255,255,255,.06);border-radius:5px;overflow:hidden}
+.tier-bar-fill{height:100%;border-radius:5px;transition:width 1s ease}
+.tbar1{background:#C9A84C}.tbar2{background:#00958A}.tbar3{background:#E67E22}.tbar4{background:#E74C3C}
+.tier-bar-row .tcount{flex:0 0 32px;font-size:12px;font-weight:800;color:var(--white);text-align:right}
+.heatmap-grid{padding:16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+.heatmap-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:12px 14px;transition:var(--t)}
+.heatmap-card:hover{border-color:rgba(0,149,138,.4);transform:translateY(-1px)}
+.heatmap-card .hm-name{font-size:12px;font-weight:700;color:var(--white);margin-bottom:6px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.heatmap-card .hm-stats{display:flex;justify-content:space-between;align-items:center}
+.hm-count{font-size:10px;color:rgba(255,255,255,.4);background:rgba(255,255,255,.07);padding:2px 7px;border-radius:4px;font-weight:600}
+.hm-score{font-size:13px;font-weight:900}
+.hm-score.high{color:#00958A}.hm-score.mid{color:#C9A84C}.hm-score.low{color:#E74C3C}
+.hm-budget{font-size:10px;color:rgba(255,255,255,.3);margin-top:4px}
+.recent-table{padding:8px 0;max-height:320px;overflow-y:auto}
+.recent-row{display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.04);transition:var(--t)}
+.recent-row:hover{background:rgba(255,255,255,.04)}
+.recent-row:last-child{border-bottom:none}
+.recent-rank{flex:0 0 24px;width:24px;height:24px;background:rgba(255,255,255,.07);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:rgba(255,255,255,.4)}
+.recent-info{flex:1;min-width:0}
+.recent-name{font-size:12px;font-weight:700;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.recent-ministry{font-size:10px;color:rgba(255,255,255,.4);margin-top:2px}
+.recent-score{flex:0 0 48px;text-align:center}
+.recent-score-val{font-size:16px;font-weight:900}
+.recent-score-val.high{color:#00958A}.recent-score-val.mid{color:#C9A84C}.recent-score-val.low{color:#E74C3C}
+.tier-pill{flex:0 0 auto;font-size:9px;font-weight:800;padding:3px 8px;border-radius:4px}
+.tpill1{background:rgba(201,168,76,.2);color:#C9A84C}.tpill2{background:rgba(0,149,138,.2);color:#00958A}.tpill3{background:rgba(230,126,34,.2);color:#E67E22}.tpill4{background:rgba(231,76,60,.2);color:#E74C3C}
+.trends-chart{padding:16px 20px;position:relative}
+.trends-svg{width:100%;height:160px}
+.dash-row-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:0}
+.dash-kpi-sm{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:16px 18px;text-align:center}
+.kpi-sm-value{font-size:26px;font-weight:900;color:var(--white);margin-bottom:3px}
+.kpi-sm-label{font-size:12px;font-weight:700;color:rgba(255,255,255,.55);margin-bottom:2px}
+.kpi-sm-sub{font-size:10px;color:rgba(255,255,255,.25)}
+
+@media(max-width:768px){
+.eval-grid,.about-grid,.contact-grid,.res-body{grid-template-columns:1fr!important}
+.footer-main{grid-template-columns:1fr 1fr}
+.counters-grid{grid-template-columns:1fr 1fr}
+.form-row{grid-template-columns:1fr}
+.check-grid{grid-template-columns:1fr}
+.cform-row{grid-template-columns:1fr}
+.dash-kpi-grid{grid-template-columns:1fr 1fr}
+.dash-row-2,.dash-row-3{grid-template-columns:1fr!important}
+.gap-alert-inner{flex-direction:column;align-items:flex-start;gap:12px}
+.gap-pillar-badges{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+<div class="container-wide topbar-inner">
+<div class="topbar-links">
+<a href="#">البيانات الوطنية</a>
+<a href="#">الذكاء الاصطناعي</a>
+<a href="#">الرؤية 2030</a>
+</div>
+<button class="lang-btn" onclick="toggleLang()">
+<span class="dot"></span>
+<span id="langLabel">EN</span>
+</button>
+</div>
+</div>
+
+<!-- HEADER -->
+<header class="site-header" id="siteHeader">
+<div class="container-wide header-inner">
+<a href="#" class="emblem" onclick="showPage('home')">
+<svg width="44" height="44" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0">
+<rect width="120" height="120" rx="20" fill="#0B1E36"/>
+<path d="M60 20L90 40V80L60 100L30 80V40L60 20Z" fill="none" stroke="#00958A" stroke-width="4"/>
+<path d="M60 20V100M30 40L90 80M90 40L30 80" stroke="#00958A" stroke-width="2" opacity=".5"/>
+<circle cx="60" cy="60" r="12" fill="#C9A84C"/>
+<circle cx="60" cy="60" r="5" fill="#0B1E36"/>
+<path d="M36 40L30 34L36 28" stroke="#C9A84C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+<div class="emblem-text">
+<div class="org-name" id="orgName">هيئة البيانات والذكاء الاصطناعي</div>
+<div class="org-sub" id="orgSub">Saudi Data & AI Authority</div>
+</div>
+</a>
+<nav class="main-nav">
+<a href="#" onclick="showPage('dashboard')" class="active" id="nav-dashboard">الرئيسية</a>
+<a href="#" onclick="showPage('evaluator')" id="nav-evaluator">تقييم المقترحات</a>
+<a href="#" onclick="showPage('about')" id="nav-about">عن الهيئة</a>
+<a href="#" onclick="showPage('news')" id="nav-news">الأخبار</a>
+<a href="#" onclick="showPage('contact')" id="nav-contact">التواصل</a>
+</nav>
+<a href="#" onclick="showPage('evaluator')" class="btn-hdr">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+ابدأ الآن
+</a>
+</div>
+</header>
+
+<!-- DASHBOARD PAGE -->
+<div class="page-section" id="page-dashboard">
+<section class="dash-page">
+<div class="container-wide">
+
+<!-- GAP ALERT BANNER -->
+<div class="gap-alert-banner" id="gapAlertBanner" style="display:none">
+<div class="container-wide">
+<div class="gap-alert-inner">
+<div class="gap-alert-icon">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E74C3C" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+</div>
+<div class="gap-alert-content">
+<strong id="gapAlertTitle">⚠️ فجوات استراتيجية — محاور بدون مقترحات</strong>
+<span id="gapAlertDesc">Security and Society pillars have fewer than 3 active proposals. These Vision 2030 priorities are unprotected.</span>
+</div>
+<div class="gap-pillar-badges" id="gapPillarBadges">
+<span class="gap-pill">🛡️ الأمن — 1 proposal</span>
+<span class="gap-pill">🌍 المجتمع — 2 proposals</span>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Header -->
+<div class="dash-header">
+<div class="dash-title-row">
+<div class="dash-title">
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--sg)" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+<div>
+<h1 id="dashTitle">لوحة تحليلات الذكاء الاصطناعي</h1>
+<p id="dashSub" style="font-size:13px;color:var(--text3);margin-top:2px">National AI Portfolio — رؤية 2030</p>
+</div>
+</div>
+<div class="dash-meta">
+<div class="dash-updated" id="dashUpdated">آخر تحديث: --:--</div>
+<button class="dash-refresh-btn" onclick="dashboardRefresh()">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+<span>تحديث</span>
+</button>
+</div>
+</div>
+</div>
+
+<!-- KPI Cards -->
+<div class="dash-kpi-grid">
+<div class="dash-kpi">
+<div class="kpi-icon" style="background:rgba(0,149,138,.15)">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--sg)" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+</div>
+<div class="kpi-value" id="kpiTotalVal" data-target="0">—</div>
+<div class="kpi-label">إجمالي المقترحات</div>
+<div class="kpi-sub">Ministry submissions</div>
+</div>
+<div class="dash-kpi">
+<div class="kpi-icon" style="background:rgba(201,168,76,.15)">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+</div>
+<div class="kpi-value" id="kpiAvgVal">—</div>
+<div class="kpi-label">متوسط الدرجة</div>
+<div class="kpi-sub">out of 100</div>
+</div>
+<div class="dash-kpi">
+<div class="kpi-icon" style="background:rgba(201,168,76,.15)">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+</div>
+<div class="kpi-value" id="kpiTier1Val">—</div>
+<div class="kpi-label">موافق فوراً</div>
+<div class="kpi-sub">Tier 1 — 80+</div>
+</div>
+<div class="dash-kpi" id="kpiGapCard">
+<div class="kpi-icon" style="background:rgba(239,68,68,.15)">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E74C3C" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+</div>
+<div class="kpi-value" id="kpiGapVal" style="color:#E74C3C">—</div>
+<div class="kpi-label">محاور فارغة</div>
+<div class="kpi-sub">&lt; 3 proposals</div>
+</div>
+</div>
+
+<!-- Row 2: Pillar Gap + Tier Distribution -->
+<div class="dash-row-2">
+<div class="dash-card">
+<div class="dash-card-header">
+<div class="dash-card-title">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--sg)" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
+<span>تغطية المحاور الاستراتيجية</span>
+</div>
+<div class="dash-card-badge" id="gapBadge" style="display:none">
+<span class="badge-dot-red"></span>
+<span id="gapBadgeText">هناك فجوات</span>
+</div>
+</div>
+<div id="pillarGapChart" class="pillar-chart"></div>
+</div>
+<div class="dash-card">
+<div class="dash-card-header">
+<div class="dash-card-title">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--sg)" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+<span>توزيع المستويات</span>
+</div>
+</div>
+<div id="tierDistChart" class="tier-chart"></div>
+</div>
+</div>
+
+<!-- Row 3: Ministry Heatmap + Recent Proposals -->
+<div class="dash-row-3">
+<div class="dash-card">
+<div class="dash-card-header">
+<div class="dash-card-title">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--sg)" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+<span>توزيع الجهات الحكومية</span>
+</div>
+</div>
+<div id="ministryHeatmap" class="heatmap-grid"></div>
+</div>
+<div class="dash-card">
+<div class="dash-card-header">
+<div class="dash-card-title">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--sg)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+<span>أحدث المقترحات</span>
+</div>
+<a href="#" class="dash-view-all" onclick="showPage('evaluator')">تقديم مقترح جديد ←</a>
+</div>
+<div id="recentProposals" class="recent-table"></div>
+</div>
+</div>
+
+<!-- Row 4: Monthly Trends -->
+<div class="dash-card">
+<div class="dash-card-header">
+<div class="dash-card-title">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--sg)" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+<span>الاتجاه الشهري للمقترحات</span>
+</div>
+</div>
+<div id="monthlyTrendsChart" class="trends-chart"></div>
+</div>
+
+<!-- Extra Stats Row -->
+<div class="dash-row-4">
+<div class="dash-kpi-sm">
+<div class="kpi-sm-value" id="highRiskVal">—</div>
+<div class="kpi-sm-label">مشاريع عالية المخاطر</div>
+<div class="kpi-sm-sub">ethical risk &gt; 50</div>
+</div>
+<div class="dash-kpi-sm">
+<div class="kpi-sm-value" id="pdplFlagVal">—</div>
+<div class="kpi-sm-label">مشاريع تستلزم PDPL</div>
+<div class="kpi-sm-sub">بيانات شخصية</div>
+</div>
+<div class="dash-kpi-sm">
+<div class="kpi-sm-value" id="crossMinistryVal">—</div>
+<div class="kpi-sm-label">مشاريع مشتركة</div>
+<div class="kpi-sm-sub">بين جهات متعددة</div>
+</div>
+<div class="dash-kpi-sm">
+<div class="kpi-sm-value" id="totalBudgetVal">—</div>
+<div class="kpi-sm-label">إجمالي الميزانية</div>
+<div class="kpi-sm-sub">ريال سعودي</div>
+</div>
+</div>
+
+</div>
+</section>
+</div>
+
+<!-- HOME PAGE -->
+<div class="page-section" id="page-home">
+
+<!-- HERO -->
+<section class="hero">
+<canvas id="particle-canvas"></canvas>
+<div class="hero-glow"></div>
+<div class="hero-glow2"></div>
+<div class="hero-pattern"></div>
+<div class="container hero-content">
+<div class="hero-logo-wrap">
+<img src="/static/sdaia-main-logo.webp" alt="SDAIA Year of AI 2026">
+<div class="hero-badge">
+<span class="badge-dot"></span>
+<span id="heroBadge">عام الذكاء الاصطناعي 2026 — الصفحة الوطنية للبيانات والذكاء الاصطناعي</span>
+</div>
+</div>
+<h1 id="heroTitle">البيانات والذكاء الاصطناعي<br>في خدمة الإنسان</h1>
+<p class="hero-desc" id="heroDesc">تُعد هيئة البيانات والذكاء الاصطناعي المرجع الوطني للبيانات والذكاء الاصطناعي في المملكة العربية السعودية، وتعمل على تحقيق أهداف الرؤية الوطنية 2030.</p>
+<div class="hero-actions">
+<a href="#" class="btn-hp" onclick="showPage('evaluator')">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+<span id="heroBtn1">قدم مقترحك الآن</span>
+</a>
+<a href="#" class="btn-hs" onclick="showPage('about')">
+<span id="heroBtn2">تعرف على الهيئة</span>
+</a>
+</div>
+</div>
+</section>
+
+<!-- ENTITIES -->
+<section class="section">
+<div class="container">
+<div class="section-tag">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M9 8h1M9 12h1M9 16h1M14 8h1M14 12h1M14 16h1M5 21V5a2 2 0 012-2h10a2 2 0 012 2v16"/></svg>
+<span id="entTag">الكيانات الحكومية</span>
+</div>
+<h2 class="section-title" id="entTitle">شركاؤنا في التحول الرقمي</h2>
+<p class="section-sub" id="entSub">نعمل مع أكثر من 40 جهة حكومية لتطبيق مشاريع الذكاء الاصطناعي التي تخدم citizens and residents across the Kingdom.</p>
+<div class="ents-grid">
+<div class="entity-card reveal">
+<div class="entity-icon">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 21h18M9 8h1M9 12h1M9 16h1M14 8h1M14 12h1M14 16h1M5 21V5a2 2 0 012-2h10a2 2 0 012 2v16"/></svg>
+</div>
+<h3 id="ec1T">وزارات المملكة</h3>
+<p id="ec1D">23 وزارة تعمل على مشاريع البيانات والذكاء الاصطناعي الاستراتيجية.</p>
+</div>
+<div class="entity-card reveal">
+<div class="entity-icon">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+</div>
+<h3 id="ec2T">الهيئات الوطنية</h3>
+<p id="ec2D">17 هيئة وطنية تستفيد من البنية التحتية للبيانات الوطنية.</p>
+</div>
+<div class="entity-card reveal">
+<div class="entity-icon">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+</div>
+<h3 id="ec3T">المجالس والمؤسسات</h3>
+<p id="ec3D">مؤسسات عامة ومجالس استشارية تشارك في وضع معايير الذكاء الاصطناعي.</p>
+</div>
+<div class="entity-card reveal">
+<div class="entity-icon">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+</div>
+<h3 id="ec4T">القطاع الخاص</h3>
+<p id="ec4D">شراكات استراتيجية مع شركات تقنية رائدة لتنفيذ المشاريع.</p>
+</div>
+</div>
+</div>
+</section>
+
+<!-- PILLARS -->
+<section class="section navy-bg">
+<div class="container">
+<div class="section-tag" style="background:rgba(255,255,255,.1);color:var(--gold-l)">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+المحاور الاستراتيجية
+</div>
+<h2 class="section-title" style="color:var(--white)" id="pilTitle">محاور الاستراتيجية الوطنية للبيانات والذكاء الاصطناعي</h2>
+<p class="section-sub" style="color:rgba(255,255,255,.55)" id="pilSub">خمسة محاور استراتيجية تُوجّه جميع مشاريع الذكاء الاصطناعي في المملكة لتحقيق رؤية 2030</p>
+<div class="pillars-grid">
+<div class="pillar-card reveal">
+<div class="pillar-icon">🏥</div>
+<h3 id="pl1T">الصحة والتحياة</h3>
+<p id="pl1D">رفع جودة الخدمات الصحية باستخدام الذكاء الاصطناعي التطبيقي.</p>
+</div>
+<div class="pillar-card reveal">
+<div class="pillar-icon">🏛️</div>
+<h3 id="pl2T">الحوكمة والخدمات</h3>
+<p id="pl2D">تحويل الخدمات الحكومية رقمياً وتحسين تجربة المستفيد.</p>
+</div>
+<div class="pillar-card reveal">
+<div class="pillar-icon">💰</div>
+<h3 id="pl3T">الاقتصاد والتناعة</h3>
+<p id="pl3D">تنويع الاقتصاد وريادة التقنيات المتقدمة لدعم الناتج المحلي.</p>
+</div>
+<div class="pillar-card reveal">
+<div class="pillar-icon">🛡️</div>
+<h3 id="pl4T">الأمن والدفاع</h3>
+<p id="pl4D">تعزيز الأمن الوطني والدفاع السيبراني بالتقنيات الذكية.</p>
+</div>
+<div class="pillar-card reveal">
+<div class="pillar-icon">🌍</div>
+<h3 id="pl5T">المجتمع وجودة الحياة</h3>
+<p id="pl5D">رفع جودة الحياة في المدن والمجتمعات المستدامة.</p>
+</div>
+</div>
+</div>
+</section>
+
+<!-- VIDEO -->
+<section class="section video-section">
+<div class="container">
+<div class="section-tag">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+<span id="vidTag">عن الهيئة</span>
+</div>
+<h2 class="section-title" id="vidTitle">رؤية الهيئة في تعزيز الذكاء الاصطناعي</h2>
+<p class="section-sub" id="vidSub">تعرف على دور الهيئة في بناء اقتصاد البيانات والذكاء الاصطناعي في المملكة العربية السعودية</p>
+<div class="video-wrap" id="videoWrap">
+<div class="v-play" onclick="playVideo()">
+<div class="v-play-circle">
+<svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+</div>
+<span>شاهد الفيديو</span>
+</div>
+</div>
+</div>
+</section>
+
+<!-- COUNTERS -->
+<section class="section navy-bg">
+<div class="container">
+<div class="counters-grid">
+<div class="counter-item reveal">
+<div class="counter-num" data-target="42">0</div>
+<div class="counter-label" id="ct1">جهة حكومية متصلة</div>
+</div>
+<div class="counter-item reveal">
+<div class="counter-num" data-target="156">0</div>
+<div class="counter-label" id="ct2">مشروع ذكاء اصطناعي</div>
+</div>
+<div class="counter-item reveal">
+<div class="counter-num" data-target="8">0</div>
+<div class="counter-label" id="ct3">مسرعات تقنية</div>
+</div>
+<div class="counter-item reveal">
+<div class="counter-num" data-target="2030">0</div>
+<div class="counter-label" id="ct4">رؤية 2030</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- EVALUATOR CTA -->
+<section class="eval-cta">
+<div class="eval-cta-inner">
+<div class="section-tag">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+نظام التقييم
+</div>
+<h2 id="evTitle">ظام تقييم مقترحات الذكاء الاصطناعي</h2>
+<p id="evDesc">منصة موحدة لتمكين الجهات الحكومية من تقديم مقترحات مشاريع الذكاء الاصطناعي وتقييمها فورياًagainst NSDAI strategic pillars, technical feasibility, ethical safeguards, and national impact standards.</p>
+<a href="#" class="btn-e" onclick="showPage('evaluator')">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+<span id="evBtn">قدّم مقترحك الآن</span>
+</a>
+</div>
+</section>
+
+</div><!-- end page-home -->
+
+<!-- ABOUT PAGE -->
+<div class="page-section" id="page-about">
+<section class="about-page">
+<div class="container">
+<div class="section-tag">عن الهيئة</div>
+<h2 class="section-title" id="aboutTitle">الهيئة الوطنية للبيانات والذكاء الاصطناعي</h2>
+<p class="section-sub" id="aboutSub">أُنشئت في أغسطس 2019 بمرسوم ملكي لتقود التحول الرقمي وتحقق أهداف الرؤية 2030 في مجال البيانات والذكاء الاصطناعي.</p>
+<div class="about-grid">
+<div class="about-text">
+<h2 id="ab1T">مهمتنا</h2>
+<p id="ab1D">أن نكون المرجع الوطني للبيانات والذكاء الاصطناعي، وبناء منظومة متكاملة تدعم الابتكار الحكومي وتحمی citizens و المقيمين في المملكة.</p>
+<h2 style="margin-top:20px" id="ab2T">ركائزنا</h2>
+<p id="ab2D">الشفافية، الكفاءة، الابتكار، والتعاون الوطني. نعمل وفق أعلى المعايير الأخلاقية الدولية في تطوير واستخدام الذكاء الاصطناعي.</p>
+<div class="stats-row">
+<div class="stat-box"><div class="n" id="abSt1">2019</div><div class="l">سنة التأسيس</div></div>
+<div class="stat-box"><div class="n" id="abSt2">40+</div><div class="l">جهة حكومية</div></div>
+<div class="stat-box"><div class="n" id="abSt3">150+</div><div class="l">مشروع منجز</div></div>
+</div>
+</div>
+<div class="about-img">
+<svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="100" cy="100" r="80" stroke="#00958A" stroke-width="3" opacity=".4"/>
+<circle cx="100" cy="100" r="55" stroke="#00958A" stroke-width="2" opacity=".3"/>
+<circle cx="100" cy="100" r="30" fill="#00958A" opacity=".5"/>
+<path d="M100 20L100 180M20 100L180 100" stroke="#00958A" stroke-width="1" opacity=".2"/>
+<path d="M100 10L110 35H90L100 10Z" fill="#C9A84C"/>
+<path d="M100 190L90 165H110L100 190Z" fill="#C9A84C"/>
+<path d="M10 100L35 90V110L10 100Z" fill="#C9A84C"/>
+<path d="M190 100L165 110V90L190 100Z" fill="#C9A84C"/>
+<circle cx="100" cy="100" r="8" fill="#C9A84C"/>
+<text x="100" y="105" text-anchor="middle" fill="white" font-size="10" font-weight="bold">SDAIA</text>
+</svg>
+</div>
+</div>
+</div>
+</section>
+</div>
+
+<!-- EVALUATOR PAGE -->
+<div class="page-section" id="page-evaluator">
+<section class="eval-page">
+<div class="container">
+<div class="section-tag">نظام التقييم</div>
+<h2 class="section-title" id="evPageTitle">نموذج تقديم مقترحات الذكاء الاصطناعي</h2>
+<p class="section-sub" id="evPageSub">املأ النموذج أدناه للحصول على تقييم فوري لمقترحك according to NSDAI strategic criteria.</p>
+<div class="eval-grid">
+<form class="eval-form-card" id="evalForm" onsubmit="return false">
+<div class="form-section">
+<h3>معلومات المشروع</h3>
+<div class="form-row">
+<div class="form-group">
+<label id="lblMinistry">الجهة الحكومية</label>
+<select id="fMinistry" onchange="tc(this)">
+<option value="">— اختر الجهة —</option>
+<option>وزارة الصحة</option>
+<option>وزارة الداخلية</option>
+<option>وزارة التعليم</option>
+<option>وزارة التجارة</option>
+<option>هيئة الزكاة والضريبة والجمارك</option>
+<option>الهيئة العامة للزواج</option>
+<option>وزارة الطاقة</option>
+<option>وزارة النقل</option>
+<option>هيئة الحكومة الرقمية</option>
+<option>الهيئة السعودية للبيانات والذكاء الاصطناعي</option>
+<option>جهة أخرى</option>
+</select>
+</div>
+<div class="form-group">
+<label id="lblProject">اسم المشروع</label>
+<input type="text" id="fProject" placeholder="مثال: نظام الإنذار المبكر للأوبئة">
+</div>
+</div>
+<div class="form-row">
+<div class="form-group">
+<label id="lblPillar">المحور الاستراتيجي</label>
+<select id="fPillar">
+<option value="">— اختر المحور —</option>
+<option value="health">🏥 الصحة والتحياة</option>
+<option value="governance">🏛️ الحوكمة والخدمات</option>
+<option value="economy">💰 الاقتصاد والتناعة</option>
+<option value="security">🛡️ الأمن والدفاع</option>
+<option value="society">🌍 المجتمع وجودة الحياة</option>
+</select>
+</div>
+<div class="form-group">
+<label id="lblBudget">الميزانية (ريال سعودي)</label>
+<input type="number" id="fBudget" placeholder="10000000">
+</div>
+</div>
+<div class="form-row full">
+<div class="form-group">
+<label id="lblDesc">وصف المشروع</label>
+<textarea id="fDesc" placeholder="اشرح المشروع بالتفصيل — الأهداف، المنهجية، والنتائج المتوقعة..."></textarea>
+</div>
+</div>
+<div class="form-row">
+<div class="form-group">
+<label id="lblTimeline">مدة التنفيذ (أشهر)</label>
+<input type="number" id="fTimeline" placeholder="12">
+</div>
+<div class="form-group">
+<label id="lblBeneficiaries">عدد المستفيدين</label>
+<input type="number" id="fBeneficiaries" placeholder="100000">
+</div>
+</div>
+</div>
+
+<div class="form-section">
+<h3>الخصائص التقنية</h3>
+<div class="form-row full">
+<div class="form-group">
+<label id="lblAIChar">خصائص نظام الذكاء الاصطناعي</label>
+<div class="check-grid">
+<div class="check-item" onclick="tc(this)"><input type="checkbox" id="fAi" value="ai_expertise"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 100 20 10 10 0 000-20z"/><path d="M12 8v4M12 16h.01"/></svg>فريق متخصص بالذكاء الاصطناعي</div>
+<div class="check-item" onclick="tc(this)"><input type="checkbox" id="fPred" value="predictive"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>ذكاء اصطناعي تنبؤي</div>
+<div class="check-item" onclick="tc(this)"><input type="checkbox" id="fCross" value="cross_ministry"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>شراكة بين جهات</div>
+<div class="check-item" onclick="tc(this)"><input type="checkbox" id="fBiometric" value="biometric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M15 8h.01M17 8h.01"/></svg>تقنيات حيوية</div>
+</div>
+</div>
+</div>
+<div class="form-row">
+<div class="form-group">
+<label id="lblDataTypes">أنواع البيانات المستخدمة</label>
+<select id="fDataTypes" onchange="tc(this)">
+<option value="">— اختر النوع —</option>
+<option value="government_ops">بيانات عمليات حكومية</option>
+<option value="citizen_data">بيانات مواطنين ومقيمين</option>
+<option value="health_records">سجلات صحية</option>
+<option value="financial_data">بيانات مالية</option>
+<option value="surveillance">بيانات مراقبة</option>
+<option value="public_safety">أمن عام</option>
+</select>
+</div>
+<div class="form-group">
+<label id="lblOutcome">نطاق النتائج المتوقعة</label>
+<select id="fOutcome">
+<option value="single_entity">جهة واحدة</option>
+<option value="regional">إقليمي</option>
+<option value="national_scale">على مستوى المملكة</option>
+<option value="vision_2030_priority">أولوية رؤية 2030</option>
+</select>
+</div>
+</div>
+</div>
+
+<div class="form-section">
+<h3>الضمانات الأخلاقية والحوكمة</h3>
+<div class="check-grid">
+<div class="check-item" onclick="tc(this)"><input type="checkbox" id="fTr" value="transparency"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>خطة شفافية معلنة</div>
+<div class="check-item" onclick="tc(this)"><input type="checkbox" id="fBias" value="bias_mitigation"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>إجراءات حماية من التحيز</div>
+</div>
+</div>
+
+<div class="form-section">
+<h3>معلومات التواصل</h3>
+<div class="form-row">
+<div class="form-group">
+<label id="lblContact">اسم التواصل</label>
+<input type="text" id="fContact" placeholder="عبدالله المحمد">
+</div>
+<div class="form-group">
+<label id="lblEmail">البريد الإلكتروني</label>
+<input type="email" id="fEmail" placeholder="a.almed@gov.sa">
+</div>
+</div>
+</div>
+
+<button type="button" class="btn-submit" onclick="submitEval()">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+<span id="lblSubmit">قدم الطلب واحصل على التقييم الفوري</span>
+</button>
+</form>
+
+<div class="eval-sidebar">
+<div class="sidebar-card">
+<h4 id="sbTitle">أبعاد التقييم</h4>
+<ul>
+<li><span class="sc"></span><span id="sb1">المواءمة مع NSDAI — 25%</span></li>
+<li><span class="sc"></span><span id="sb2">الجدارة التقنية — 20%</span></li>
+<li><span class="sc"></span><span id="sb3">المخاطر الأخلاقية — 15%</span></li>
+<li><span class="sc"></span><span id="sb4">جاهزية البيانات — 15%</span></li>
+<li><span class="sc"></span><span id="sb5">الكفاءة في الموارد — 10%</span></li>
+<li><span class="sc"></span><span id="sb6">التأثير والانScale — 15%</span></li>
+</ul>
+</div>
+<div class="sidebar-card">
+<h4 id="tierTitle">مستويات التوصية</h4>
+<div class="tier-list">
+<div class="tier-item"><span class="tier-badge badge-1">80+</span><span id="tier1">موافق — أولوية استراتيجية</span></div>
+<div class="tier-item"><span class="tier-badge badge-2">68-79</span><span id="tier2">موافق مع شروط</span></div>
+<div class="tier-item"><span class="tier-badge badge-3">52-67</span><span id="tier3">مراجعة وإعادة تقديم</span></div>
+<div class="tier-item"><span class="tier-badge badge-4">&lt;52</span><span id="tier4">غير موصى به</span></div>
+</div>
+</div>
+<div class="sidebar-card">
+<h4 id="pgTitle">ضمانات SDAIA</h4>
+<p style="font-size:12px;color:var(--text2);line-height:1.7" id="pgText">جميع المقترحات تخضع لمعايير PDPL للبيانات الشخصية، وSDAIA Biometric AI Ethics Guidelines، ومتطلبات الشفافية الحكومية.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+
+<!-- NEWS PAGE -->
+<div class="page-section" id="page-news">
+<section class="news-page">
+<div class="container">
+<div class="section-tag">الأخبار</div>
+<h2 class="section-title" id="newsTitle">آخر المبادرات والبرامج</h2>
+<p class="section-sub" id="newsSub">نشاطات ومبادرات الهيئة في مجال البيانات والذكاء الاصطناعي</p>
+<div class="news-grid">
+<div class="news-card reveal">
+<div class="news-img">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M14.5 10c-.83 0-1.5-.67-1.5-1.5v-5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5z"/><path d="M20.5 10H19V8.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/><path d="M9.5 14c.83 0 1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5S8 21.33 8 20.5v-5c0-.83.67-1.5 1.5-1.5z"/><path d="M3.5 14H5v1.5c0 .83-.67 1.5-1.5 1.5S2 16.33 2 15.5 2.67 14 3.5 14z"/><path d="M14 14.5c0-.83.67-1.5 1.5-1.5h5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-5c-.83 0-1.5-.67-1.5-1.5z"/><path d="M15.5 19H14v1.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5z"/><path d="M10 9.5C10 8.67 9.33 8 8.5 8h-5C2.67 8 2 8.67 2 9.5S2.67 11 3.5 11h5c.83 0 1.5-.67 1.5-1.5z"/><path d="M8.5 5H10V3.5C10 2.67 9.33 2 8.5 2S7 2.67 7 3.5 7.67 5 8.5 5z"/></svg>
+</div>
+<div class="news-body">
+<div class="news-tag">مبادرة جديدة</div>
+<h3 id="nw1T">إطلاق برنامج الشراكات الوطنية للذكاء الاصطناعي في الصحة</h3>
+<p id="nw1D">وقعت الهيئة مذكرات تفاهم مع ثلاث شركات تقنية كبرى لدعم مبادرات الذكاء الاصطناعي في المستشفيات الحكومية.</p>
+</div>
+</div>
+<div class="news-card reveal">
+<div class="news-img">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+</div>
+<div class="news-body">
+<div class="news-tag">حدث دولي</div>
+<h3 id="nw2T">المملكة تستضيف القمة العالمية للذكاء الاصطناعي</h3>
+<p id="nw2D">تستضيف المملكة القمة العالمية للذكاء الاصطناعي في نوفمبر، بمشاركة أكثر من 150 دولة ومنظمة دولية.</p>
+</div>
+</div>
+<div class="news-card reveal">
+<div class="news-img">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+</div>
+<div class="news-body">
+<div class="news-tag">منصة بيانات</div>
+<h3 id="nw3T">إطلاق المرحلة الأولى من منصة إدارة البيانات الوطنية</h3>
+<p id="nw3D">تطلق الهيئة المرحلة الأولى من المنصة الوطنية للبيانات،ربط 38 جهة حكومية ببيئة بيانات موحدة وآمنة.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+
+<!-- CONTACT PAGE -->
+<div class="page-section" id="page-contact">
+<section class="contact-page">
+<div class="container">
+<div class="section-tag">التواصل</div>
+<h2 class="section-title">تواصل معنا</h2>
+<p class="section-sub">نسعد بتواصلكم مع الهيئة لأي استفسار أو اقتراح</p>
+<div class="contact-grid">
+<div class="contact-info">
+<div class="contact-item">
+<div class="ci-icon">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+</div>
+<div>
+<h4>العنوان</h4>
+<p>الرياض، المملكة العربية السعودية</p>
+</div>
+</div>
+<div class="contact-item">
+<div class="ci-icon">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+</div>
+<div>
+<h4>البريد الإلكتروني</h4>
+<p>info@sdaia.gov.sa</p>
+</div>
+</div>
+<div class="contact-item">
+<div class="ci-icon">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+</div>
+<div>
+<h4>الهاتف</h4>
+<p dir="ltr">+966 11 400 0000</p>
+</div>
+</div>
+</div>
+<form class="contact-form" onsubmit="return false">
+<h3>أرسل رسالتك</h3>
+<div class="cform-row">
+<div class="form-group">
+<label>الاسم</label>
+<input type="text" placeholder="اسمك الكامل">
+</div>
+<div class="form-group">
+<label>البريد الإلكتروني</label>
+<input type="email" placeholder="example@gov.sa">
+</div>
+</div>
+<div class="form-group">
+<label>الموضوع</label>
+<input type="text" placeholder="موضوع الرسالة">
+</div>
+<div class="form-group">
+<label>الرسالة</label>
+<textarea rows="4" placeholder="اكتب رسالتك هنا..."></textarea>
+</div>
+<button type="button" class="btn-submit" onclick="alert('شكراً لتواصلكم! سنت الرد عليك قريباً.')">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+إرسال الرسالة
+</button>
+</form>
+</div>
+</div>
+</section>
+</div>
+
+<!-- RESULT PAGE -->
+<div class="result-page" id="resultPage">
+<div class="container" style="padding-top:40px;padding-bottom:60px;">
+<div class="res-hero">
+<div class="res-id" id="resId">SDAIA-XXXXXXXX</div>
+<div class="res-title" id="resTitle">—</div>
+<div class="res-m" id="resM">—</div>
+<div class="res-ring"><div class="n" id="resScore">--</div><div class="t" id="resLbl">درجة التقييم</div></div>
+<div class="res-tier" id="resTier">—</div>
+<div class="res-dec" id="resDec">—</div>
+</div>
+<div class="res-body">
+<div>
+<div class="res-card" style="margin-bottom:20px;">
+<div class="res-ct">📊 تفاصيل التقييم</div>
+<div class="score-bars" id="resBars"></div>
+</div>
+<div class="res-card" style="margin-bottom:20px;">
+<div class="res-ct">✅ نقاط القوة</div>
+<ul class="strengths-list" id="resStrengths"></ul>
+</div>
+<div class="res-card">
+<div class="res-ct">⚠️ الفجوات</div>
+<ul class="gaps-list" id="resGaps"></ul>
+</div>
+</div>
+<div>
+<div class="nsdai-card" style="margin-bottom:20px;">
+<div class="res-ct">🎯 المواءمة مع NSDAI</div>
+<div class="nsdai-pl" id="resPillarL">—</div>
+<ul class="nsdai-tl" id="resNsdaiT"></ul>
+<div style="margin-top:10px;font-size:12px;color:var(--text2);">درجة المواءمة: <strong id="resAlign" style="color:var(--sg)">—</strong>/100</div>
+</div>
+<div class="res-card" style="margin-bottom:20px;">
+<div class="res-ct">⚖️ التوصيات</div>
+<ul class="recs-list" id="resRecs"></ul>
+</div>
+<div class="res-card">
+<div class="res-ct">🔒 الملف الأخلاقي</div>
+<div id="resRiskBadge" style="margin-bottom:12px"></div>
+<div id="resRiskFactors"></div>
+</div>
+<div style="text-align:center">
+<button class="btn-rp" onclick="showPage('evaluator')">← <span id="resBack">تقديم مقترح آخر</span></button>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+<div class="container">
+<div class="footer-main">
+<div class="f-brand">
+<img src="/static/sdaia-main-logo.webp" alt="SDAIA">
+<h4>هيئة البيانات والذكاء الاصطناعي</h4>
+<p>الهيئة الوطنية للبيانات والذكاء الاصطناعي — مرجع المملكة العربية السعودية في البيانات والذكاء الاصطناعي لتحقيق أهداف الرؤية الوطنية 2030.</p>
+</div>
+<div class="f-col">
+<h5>روابط سريعة</h5>
+<ul>
+<li><a href="#" onclick="showPage('home')">الرئيسية</a></li>
+<li><a href="#" onclick="showPage('about')">عن الهيئة</a></li>
+<li><a href="#" onclick="showPage('evaluator')">تقييم المقترحات</a></li>
+<li><a href="#" onclick="showPage('news')">الأخبار</a></li>
+<li><a href="#" onclick="showPage('contact')">التواصل</a></li>
+</ul>
+</div>
+<div class="f-col">
+<h5>الخدمات</h5>
+<ul>
+<li><a href="#">تقييم المقترحات</a></li>
+<li><a href="#">إدارة البيانات الوطنية</a></li>
+<li><a href="#">الذكاء الاصطناعي الحكومي</a></li>
+<li><a href="#">الأطر التنظيمية</a></li>
+</ul>
+</div>
+<div class="f-col">
+<h5>تواصل معنا</h5>
+<ul>
+<li><a href="#">info@sdaia.gov.sa</a></li>
+<li><a href="#">+966 11 400 0000</a></li>
+<li><a href="#">الرياض، السعودية</a></li>
+</ul>
+</div>
+</div>
+<div class="footer-bottom">
+<span>© 2026 هيئة البيانات والذكاء الاصطناعي — جميع الحقوق محفوظة</span>
+<span>الصفحة الوطنية للبيانات والذكاء الاصطناعي</span>
+</div>
+</div>
+</footer>
+
+<!-- SPINNER -->
+<div id="spinner"><div class="sp"></div></div>
+
+<!-- JAVASCRIPT -->
+<script>
+var lang = "ar";
+
+var T = {
+  ar: {
+    orgName:"هيئة البيانات والذكاء الاصطناعي",
+    orgSub:"Saudi Data & AI Authority",
+    heroBadge:"عام الذكاء الاصطناعي 2026 — الصفحة الوطنية للبيانات والذكاء الاصطناعي",
+    heroTitle:"البيانات والذكاء الاصطناعي<br>في خدمة الإنسان",
+    heroDesc:"تُعد هيئة البيانات والذكاء الاصطناعي المرجع الوطني للبيانات والذكاء الاصطناعي في المملكة العربية السعودية، وتعمل على تحقيق أهداف الرؤية الوطنية 2030.",
+    heroBtn1:"قدم مقترحك الآن",
+    heroBtn2:"تعرف على الهيئة",
+    entTag:"الكيانات الحكومية",
+    entTitle:"شركاؤنا في التحول الرقمي",
+    entSub:"نعمل مع أكثر من 40 جهة حكومية لتطبيق مشاريع الذكاء الاصطناعي.",
+    ec1T:"وزارات المملكة", ec1D:"23 وزارة تعمل على مشاريع البيانات والذكاء الاصطناعي الاستراتيجية.",
+    ec2T:"الهيئات الوطنية", ec2D:"17 هيئة وطنية تستفيد من البنية التحتية للبيانات الوطنية.",
+    ec3T:"المجالس والمؤسسات", ec3D:"مؤسسات عامة ومجالس استشارية تشارك في وضع معايير الذكاء الاصطناعي.",
+    ec4T:"القطاع الخاص", ec4D:"شراكات استراتيجية مع شركات تقنية رائدة لتنفيذ المشاريع.",
+    pl1T:"الصحة والتحياة", pl1D:"رفع جودة الخدمات الصحية باستخدام الذكاء الاصطناعي التطبيقي.",
+    pl2T:"الحوكمة والخدمات", pl2D:"تحويل الخدمات الحكومية رقمياً وتحسين تجربة المستفيد.",
+    pl3T:"الاقتصاد والتعاية", pl3D:"تنويع الاقتصاد وريادة التقنيات المتقدمة لدعم الناتج المحلي.",
+    pl4T:"الأمن والدفاع", pl4D:"تعزيز الأمن الوطني والدفاع السيبراني بالتقنيات الذكية.",
+    pl5T:"المجتمع وجودة الحياة", pl5D:"رفع جودة الحياة في المدن والمجتمعات المستدامة.",
+    pilTitle:"محاور الاستراتيجية الوطنية للبيانات والذكاء الاصطناعي",
+    pilSub:"خمسة محاور استراتيجية تُوجّه جميع مشاريع الذكاء الاصطناعي في المملكة لتحقيق رؤية 2030",
+    vidTag:"عن الهيئة",
+    vidTitle:"رؤية الهيئة في تعزيز الذكاء الاصطناعي",
+    vidSub:"تعرف على دور الهيئة في بناء اقتصاد البيانات والذكاء الاصطناعي في المملكة",
+    ct1:"جهة حكومية متصلة", ct2:"مشروع ذكاء اصطناعي", ct3:"مسرعات تقنية", ct4:"رؤية 2030",
+    evTitle:"نظام تقييم مقترحات الذكاء الاصطناعي",
+    evDesc:"منصة موحدة لتمكين الجهات الحكومية من تقديم مقترحات مشاريع الذكاء الاصطناعي وتقييمها فورياً according to NSDAI criteria.",
+    evBtn:"قدّم مقترحك الآن",
+    evPageTitle:"نموذج تقديم مقترحات الذكاء الاصطناعي",
+    evPageSub:"املأ النموذج أدناه للحصول على تقييم فوري لمقترحك according to NSDAI strategic criteria.",
+    lblMinistry:"الجهة الحكومية", lblProject:"اسم المشروع", lblPillar:"المحور الاستراتيجي",
+    lblBudget:"الميزانية (ريال سعودي)", lblDesc:"وصف المشروع", lblTimeline:"مدة التنفيذ (أشهر)",
+    lblBeneficiaries:"عدد المستفيدين", lblAIChar:"خصائص نظام الذكاء الاصطناعي",
+    lblDataTypes:"أنواع البيانات", lblOutcome:"نطاق النتائج المتوقعة",
+    lblContact:"اسم التواصل", lblEmail:"البريد الإلكتروني",
+    lblSubmit:"قدم الطلب واحصل على التقييم الفوري",
+    sbTitle:"أبعاد التقييم",
+    sb1:"المواءمة مع NSDAI — 25%", sb2:"الجدارة التقنية — 20%", sb3:"المخاطر الأخلاقية — 15%",
+    sb4:"جاهزية البيانات — 15%", sb5:"الكفاءة في الموارد — 10%", sb6:"التأثير والانScale — 15%",
+    tierTitle:"مستويات التوصية",
+    tier1:"موافق — أولوية استراتيجية", tier2:"موافق مع شروط", tier3:"مراجعة وإعادة تقديم", tier4:"غير موصى به",
+    pgTitle:"ضمانات SDAIA",
+    pgText:"جميع المقترحات تخضع لمعايير PDPL للبيانات الشخصية، وSDAIA Biometric AI Ethics Guidelines.",
+    aboutTitle:"الهيئة الوطنية للبيانات والذكاء الاصطناعي",
+    aboutSub:"أُنشئت في أغسطس 2019 بمرسوم ملكي لتقود التحول الرقمي وتحقق أهداف الرؤية 2030.",
+    ab1T:"مهمتنا", ab1D:"أن نكون المرجع الوطني للبيانات والذكاء الاصطناعي، وبناء منظومة متكاملة تدعم الابتكار الحكومي.",
+    ab2T:"ركائزنا", ab2D:"الشفافية، الكفاءة، الابتكار، والتعاون الوطني. نعمل وفق أعلى المعايير الأخلاقية الدولية.",
+    abSt1:"2019", abSt2:"40+", abSt3:"150+",
+    newsTitle:"آخر المبادرات والبرامج", newsSub:"نشاطات ومبادرات الهيئة في مجال البيانات والذكاء الاصطناعي",
+    nw1T:"إطلاق برنامج الشراكات الوطنية للذكاء الاصطناعي في الصحة",
+    nw1D:"وقعت الهيئة مذكرات تفاهم مع ثلاث شركات تقنية كبرى لدعم مبادرات الذكاء الاصطناعي.",
+    nw2T:"المملكة تستضيف القمة العالمية للذكاء الاصطناعي",
+    nw2D:"تستضيف المملكة القمة العالمية للذكاء الاصطناعي في نوفمبر، بمشاركة أكثر من 150 دولة.",
+    nw3T:"إطلاق المرحلة الأولى من منصة إدارة البيانات الوطنية",
+    nw3D:"تطلق الهيئة المرحلة الأولى من المنصة الوطنية للبيانات،ربط 38 جهة حكومية.",
+    resBack:"تقديم مقترح آخر",
+    navDashboard:"الرئيسية"
+  },
+  en: {
+    orgName:"Saudi Data & AI Authority",
+    orgSub:"SDAIA — National Data & AI Authority",
+    heroBadge:"Year of AI 2026 — Saudi Arabia's National AI Portal",
+    heroTitle:"Data & AI in<br>Service of the Nation",
+    heroDesc:"The Saudi Data & AI Authority is the national reference for data and artificial intelligence in Saudi Arabia, working to achieve Vision 2030 goals.",
+    heroBtn1:"Submit Your Proposal",
+    heroBtn2:"Learn About SDAIA",
+    entTag:"Government Entities",
+    entTitle:"Our Partners in Digital Transformation",
+    entSub:"We collaborate with 40+ government entities on AI projects serving citizens and residents.",
+    ec1T:"Saudi Ministries", ec1D:"23 ministries working on strategic data and AI projects.",
+    ec2T:"National Authorities", ec2D:"17 national authorities leveraging the national data infrastructure.",
+    ec3T:"Councils & Institutions", ec3D:"Public institutions and advisory councils setting AI standards.",
+    ec4T:"Private Sector", ec4D:"Strategic partnerships with leading tech firms to execute projects.",
+    pl1T:"Health & Life Sciences", pl1D:"Improving healthcare quality through applied AI.",
+    pl2T:"Governance & Public Services", pl2D:"Digitizing government services and improving citizen experience.",
+    pl3T:"Economy & Digital Transformation", pl3D:"Diversifying the economy and leading advanced technologies.",
+    pl4T:"Security & Defense", pl4D:"Strengthening national security and cyber defense with smart technologies.",
+    pl5T:"Society & Quality of Life", pl5D:"Improving quality of life in sustainable cities and communities.",
+    pilTitle:"NSDAI Strategic Pillars",
+    pilSub:"Five strategic pillars guiding all AI projects in the Kingdom toward Vision 2030",
+    vidTag:"About SDAIA",
+    vidTitle:"SDAIA's Vision for AI Excellence",
+    vidSub:"Learn about the Authority's role in building Saudi Arabia's data and AI economy",
+    ct1:"Govt Entities Connected", ct2:"AI Projects", ct3:"Tech Accelerators", ct4:"Vision 2030",
+    evTitle:"AI Proposal Evaluation System",
+    evDesc:"A unified platform enabling government entities to submit and instantly evaluate AI project proposals against NSDAI strategic criteria.",
+    evBtn:"Submit Your Proposal",
+    evPageTitle:"AI Project Proposal Submission Form",
+    evPageSub:"Complete the form below to receive an instant evaluation of your proposal.",
+    lblMinistry:"Government Entity", lblProject:"Project Name", lblPillar:"Strategic Pillar",
+    lblBudget:"Budget (SAR)", lblDesc:"Project Description", lblTimeline:"Timeline (months)",
+    lblBeneficiaries:"Target Beneficiaries", lblAIChar:"AI System Characteristics",
+    lblDataTypes:"Data Types", lblOutcome:"Expected Outcome Scope",
+    lblContact:"Contact Name", lblEmail:"Email Address",
+    lblSubmit:"Submit & Get Instant Evaluation",
+    sbTitle:"Evaluation Dimensions",
+    sb1:"NSDAI Alignment — 25%", sb2:"Technical Feasibility — 20%", sb3:"Ethical Risk — 15%",
+    sb4:"Data Readiness — 15%", sb5:"Resource Adequacy — 10%", sb6:"Impact & Scale — 15%",
+    tierTitle:"Recommendation Tiers",
+    tier1:"Approve — Strategic Priority", tier2:"Approve with Conditions", tier3:"Revise and Resubmit", tier4:"Not Recommended",
+    pgTitle:"SDAIA Safeguards",
+    pgText:"All proposals are subject to PDPL personal data standards, SDAIA Biometric AI Ethics Guidelines, and government transparency requirements.",
+    aboutTitle:"National Data & AI Authority",
+    aboutSub:"Established in August 2019 by Royal Decree to drive digital transformation and achieve Vision 2030.",
+    ab1T:"Our Mission", ab1D:"To be the national reference for data and AI, building an integrated ecosystem that supports government innovation.",
+    ab2T:"Our Pillars", ab2D:"Transparency, efficiency, innovation, and national collaboration. Operating at the highest international ethical standards.",
+    abSt1:"2019", abSt2:"40+", abSt3:"150+",
+    newsTitle:"Latest Initiatives",
+    newsSub:"SDAIA's activities and initiatives in data and artificial intelligence",
+    nw1T:"Launch of National AI Partnerships Program in Healthcare",
+    nw1D:"SDAIA signed MOUs with three major tech firms to support AI initiatives in government hospitals.",
+    nw2T:"Saudi Arabia Hosts Global AI Summit",
+    nw2D:"The Kingdom hosts the Global AI Summit in November, with over 150 countries participating.",
+    nw3T:"Launch of Phase 1 of the National Data Management Platform",
+    nw3D:"SDAIA launches the National Data Platform, connecting 38 government entities.",
+    resBack:"Submit Another Proposal",
+    navDashboard:"Dashboard"
+  }
+};
+
+function $(id){return document.getElementById(id)}
+
+function toggleLang(){
+  lang = lang === "ar" ? "en" : "ar";
+  switchLang(lang);
+}
+
+function switchLang(l){
+  lang = l;
+  var t = T[l];
+  var en = l === "en";
+  document.body.classList.toggle("en", en);
+  document.documentElement.lang = l;
+  document.documentElement.dir = en ? "ltr" : "rtl";
+  var s = function(id, val){ var e = $(id); if(e) e.textContent = val; };
+  var sh = function(id, val){ var e = $(id); if(e) e.innerHTML = val; };
+  s("orgName", t.orgName); s("orgSub", t.orgSub);
+  s("heroBadge", t.heroBadge); sh("heroTitle", t.heroTitle);
+  s("heroDesc", t.heroDesc); s("heroBtn1", t.heroBtn1); s("heroBtn2", t.heroBtn2);
+  s("entTag", t.entTag); s("entTitle", t.entTitle); s("entSub", t.entSub);
+  s("ec1T", t.ec1T); s("ec1D", t.ec1D); s("ec2T", t.ec2T); s("ec2D", t.ec2D);
+  s("ec3T", t.ec3T); s("ec3D", t.ec3D); s("ec4T", t.ec4T); s("ec4D", t.ec4D);
+  s("pl1T", t.pl1T); s("pl1D", t.pl1D); s("pl2T", t.pl2T); s("pl2D", t.pl2D);
+  s("pl3T", t.pl3T); s("pl3D", t.pl3D); s("pl4T", t.pl4T); s("pl4D", t.pl4D);
+  s("pl5T", t.pl5T); s("pl5D", t.pl5D);
+  s("pilTitle", t.pilTitle); s("pilSub", t.pilSub);
+  s("vidTag", t.vidTag); s("vidTitle", t.vidTitle); s("vidSub", t.vidSub);
+  s("ct1", t.ct1); s("ct2", t.ct2); s("ct3", t.ct3); s("ct4", t.ct4);
+  s("evTitle", t.evTitle); s("evDesc", t.evDesc); s("evBtn", t.evBtn);
+  s("evPageTitle", t.evPageTitle); s("evPageSub", t.evPageSub);
+  s("lblMinistry", t.lblMinistry); s("lblProject", t.lblProject);
+  s("lblPillar", t.lblPillar); s("lblBudget", t.lblBudget);
+  s("lblDesc", t.lblDesc); s("lblTimeline", t.lblTimeline);
+  s("lblBeneficiaries", t.lblBeneficiaries); s("lblAIChar", t.lblAIChar);
+  s("lblDataTypes", t.lblDataTypes); s("lblOutcome", t.lblOutcome);
+  s("lblContact", t.lblContact); s("lblEmail", t.lblEmail);
+  s("lblSubmit", t.lblSubmit);
+  s("sbTitle", t.sbTitle); s("sb1", t.sb1); s("sb2", t.sb2); s("sb3", t.sb3);
+  s("sb4", t.sb4); s("sb5", t.sb5); s("sb6", t.sb6);
+  s("tierTitle", t.tierTitle); s("tier1", t.tier1); s("tier2", t.tier2);
+  s("tier3", t.tier3); s("tier4", t.tier4);
+  s("pgTitle", t.pgTitle); s("pgText", t.pgText);
+  s("aboutTitle", t.aboutTitle); s("aboutSub", t.aboutSub);
+  s("ab1T", t.ab1T); s("ab1D", t.ab1D); s("ab2T", t.ab2T); s("ab2D", t.ab2D);
+  s("nw1T", t.nw1T); s("nw1D", t.nw1D); s("nw2T", t.nw2T); s("nw2D", t.nw2D);
+  s("nw3T", t.nw3T); s("nw3D", t.nw3D);
+  s("resBack", t.resBack);
+  $("langLabel").textContent = l === "ar" ? "EN" : "AR";
+  document.querySelectorAll(".main-nav a").forEach(function(a){
+    var pg = a.id.replace("nav-","");
+    if($("page-"+pg)) a.textContent = t["nav"+pg.charAt(0).toUpperCase()+pg.slice(1)] || a.textContent;
+  });
+}
+
+function showPage(p){
+  document.querySelectorAll(".page-section").forEach(function(x){x.classList.remove("active")});
+  document.querySelectorAll(".result-page").forEach(function(x){x.classList.remove("active")});
+  document.querySelectorAll(".main-nav a").forEach(function(a){a.classList.remove("active")});
+  var e = $("page-"+p); if(e) e.classList.add("active");
+  var n = $("nav-"+p); if(n) n.classList.add("active");
+  window.scrollTo({top:0, behavior:"smooth"});
+  setTimeout(reveal, 100);
+  if(p === "dashboard") dashboardInit();
+}
+
+function tc(el){
+  var cb = el.querySelector("input[type=checkbox]");
+  if(cb){ cb.checked = !cb.checked; el.classList.toggle("checked", cb.checked); }
+}
+
+function playVideo(){
+  var wrap = $("videoWrap");
+  wrap.innerHTML = '<iframe src="https://www.youtube.com/embed/lbbMR51w8_4?autoplay=1&rel=0&modestbranding=1" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope" allowfullscreen style="width:100%;height:100%;border:none;"></iframe>';
+}
+
+function submitEval(){
+  var ministry = $("fMinistry") ? $("fMinistry").value : "";
+  var project = $("fProject") ? $("fProject").value : "";
+  var pillar = $("fPillar") ? $("fPillar").value : "";
+  var budget = parseFloat(($("fBudget") ? $("fBudget").value : "0")) || 0;
+  var timeline = parseInt(($("fTimeline") ? $("fTimeline").value : "0")) || 0;
+  var beneficiaries = parseInt(($("fBeneficiaries") ? $("fBeneficiaries").value : "0")) || 0;
+  var desc = $("fDesc") ? $("fDesc").value : "";
+  var dataType = $("fDataTypes") ? $("fDataTypes").value : "government_ops";
+  var outcome = $("fOutcome") ? $("fOutcome").value : "single_entity";
+  var contact = $("fContact") ? $("fContact").value : "";
+  var email = $("fEmail") ? $("fEmail").value : "";
+
+  if(!ministry || !project || !pillar){
+    alert(lang === "ar" ? "يرجى تعبئة جميع الحقول المطلوبة" : "Please fill in all required fields");
+    return;
+  }
+
+  var fd = new FormData();
+  fd.append("ministry", ministry);
+  fd.append("project_name", project);
+  fd.append("project_type", "government_ai");
+  fd.append("description", desc || project);
+  fd.append("nsaid_pillar", pillar);
+  fd.append("budget", budget);
+  fd.append("timeline_months", timeline);
+  fd.append("data_types", dataType);
+  fd.append("target_beneficiaries", beneficiaries);
+  fd.append("has_ai_expertise", $("fAi") && $("fAi").checked ? "true" : "false");
+  fd.append("uses_personal_data", (dataType === "citizen_data" || dataType === "health_records") ? "true" : "false");
+  fd.append("uses_biometric", $("fBiometric") && $("fBiometric").checked ? "true" : "false");
+  fd.append("uses_predictive_ai", $("fPred") && $("fPred").checked ? "true" : "false");
+  fd.append("has_transparency_plan", $("fTr") && $("fTr").checked ? "true" : "false");
+  fd.append("has_bias_mitigation", $("fBias") && $("fBias").checked ? "true" : "false");
+  fd.append("cross_ministry", $("fCross") && $("fCross").checked ? "true" : "false");
+  fd.append("expected_outcome", outcome);
+  fd.append("contact_name", contact);
+  fd.append("contact_email", email);
+
+  $("spinner").style.display = "flex";
+
+  fetch("/api/submit", {method:"POST", body:fd})
+    .then(function(r){ return r.json(); })
+    .then(function(data){ renderResult(data); })
+    .catch(function(e){ alert("Error: " + e.message); })
+    .finally(function(){ $("spinner").style.display = "none"; });
+}
+
+function renderResult(r){
+  document.querySelectorAll(".page-section").forEach(function(x){x.classList.remove("active")});
+  document.querySelectorAll(".result-page").forEach(function(x){x.classList.remove("active")});
+  $("resultPage").classList.add("active");
+
+  var s = function(id, val){ var e = $(id); if(e) e.textContent = val; };
+  s("resId", r.proposal_id);
+  s("resTitle", r.nsaid_alignment ? r.nsaid_alignment.pillar_label : "—");
+  s("resM", r.nsaid_alignment ? (r.nsaid_alignment.pillar_icon + " " + r.nsaid_alignment.primary_pillar) : "—");
+  s("resScore", r.overall_score);
+  s("resTier", r.tier);
+  s("resDec", r.recommendation);
+  var scoreRing = $("resScore").closest(".res-ring");
+  if(scoreRing) scoreRing.style.setProperty("--score-deg", (r.overall_score * 3.6) + "deg");
+
+  var d = r.evaluation_details;
+  var ls = lang === "ar";
+  var bars = [
+    {l: ls ? "المواءمة مع الاستراتيجية" : "NSDAI Alignment", v: d.strategic_alignment, w: "25%"},
+    {l: ls ? "الجدارة التقنية" : "Technical Feasibility", v: d.technical_feasibility, w: "20%"},
+    {l: ls ? "المخاطر الأخلاقية" : "Ethical Risk", v: 100 - d.ethical_risk, w: "15%"},
+    {l: ls ? "جاهزية البيانات" : "Data Readiness", v: d.data_readiness, w: "15%"},
+    {l: ls ? "الكفاءة في الموارد" : "Resource Adequacy", v: d.resource_adequacy, w: "10%"},
+    {l: ls ? "التأثير والانScale" : "Impact & Scale", v: d.impact_outcome, w: "15%"}
+  ];
+
+  var barsHtml = bars.map(function(b){
+    return "<div class='score-bar-row"+(ls?"":" en")+"'><span class='lbl'>"+b.l+"</span><div class='score-bar'><div class='score-bar-fill' style='width:"+b.v+"%'></div></div><span class='val'>"+b.v+"</span></div>";
+  }).join("");
+  $("resBars").innerHTML = barsHtml;
+
+  $("resStrengths").innerHTML = (r.strengths||[]).map(function(x){ return "<li>"+x+"</li>"; }).join("") || "<li>"+(ls?"لا توجد نقاط قوة محددة":"No specific strengths identified")+"</li>";
+  $("resGaps").innerHTML = (r.gaps||[]).map(function(x){ return "<li>"+x+"</li>"; }).join("") || "<li>"+(ls?"لا توجد فجوات محددة":"No specific gaps identified")+"</li>";
+  $("resRecs").innerHTML = (r.recommendations||[]).map(function(x){ return "<li>"+x+"</li>"; }).join("") || "<li>"+(ls?"لا توجد توصيات":"No recommendations")+"</li>";
+
+  var rp = r.ethical_risk_profile;
+  var rk = rp.risk_rating === "LOW" ? "risk-l" : rp.risk_rating === "MEDIUM" ? "risk-m" : "risk-h";
+  $("resRiskBadge").innerHTML = "<span class='risk-badge "+rk+"'>"+rp.risk_rating+" RISK — "+rp.overall_risk_score+"/100</span>";
+  $("resRiskFactors").innerHTML = (rp.factors_identified||[]).map(function(f){ return "<div class='risk-factor'>"+f+"</div>"; }).join("") || "<div style='font-size:12px;color:var(--text3)'>"+(ls?"لا توجد مخاطر محددة":"No risk factors identified")+"</div>";
+
+  var ns = r.nsaid_alignment;
+  if(ns){
+    $("resPillarL").innerHTML = (ns.pillar_icon||"") + " " + (ns.pillar_label||"—");
+    $("resNsdaiT").innerHTML = (ns.nsdai_targets||[]).map(function(t){ return "<li>"+t+"</li>"; }).join("");
+    s("resAlign", ns.alignment_score);
+  }
+
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+/* Scroll reveal */
+function reveal(){
+  document.querySelectorAll(".reveal").forEach(function(el){
+    var top = el.getBoundingClientRect().top;
+    if(top < window.innerHeight - 60) el.classList.add("visible");
+  });
+}
+
+/* Counter animation */
+function animateCounters(){
+  document.querySelectorAll(".counter-num").forEach(function(el){
+    var target = parseInt(el.getAttribute("data-target"));
+    if(!target) return;
+    var duration = 2000;
+    var start = performance.now();
+    function update(now){
+      var elapsed = now - start;
+      var progress = Math.min(elapsed/duration, 1);
+      var eased = 1 - Math.pow(1-progress, 3);
+      el.textContent = Math.round(eased * target).toLocaleString();
+      if(progress < 1) requestAnimationFrame(update);
+    }
+    requestAnimationFrame(update);
+  });
+}
+
+/* ═══════════════════════════════════════════════
+   HERO CANVAS — Neural Network + Data Stream
+   ═══════════════════════════════════════════════ */
+(function(){
+  var canvas = $("particle-canvas");
+  if(!canvas) return;
+  var ctx = canvas.getContext("2d");
+  var w, h, t = 0;
+  var nodes = [], streams = [], pulses = [], gridDots = [];
+
+  var TEAL = {r:0,g:149,b:138};
+  var GOLD = {r:201,g:168,b:76};
+  var NAVY = {r:11,b:30};
+
+  function resize(){
+    w = canvas.width = canvas.offsetWidth;
+    h = canvas.height = canvas.offsetHeight;
+  }
+  resize();
+  window.addEventListener("resize", resize);
+
+  /* Background grid dots */
+  for(var i=0; i<80; i++){
+    gridDots.push({
+      x: Math.random()*w, y: Math.random()*h,
+      r: Math.random()*1.5+0.3,
+      alpha: Math.random()*0.15+0.03,
+      speed: Math.random()*0.08+0.02
+    });
+  }
+
+  /* Neural nodes — distributed in clusters */
+  var cx = w/2, cy = h/2;
+  var clusters = [
+    {x: cx, y: cy, count: 14, radius: Math.min(w,h)*0.15},
+    {x: cx-w*0.3, y: cy-h*0.25, count: 8, radius: Math.min(w,h)*0.10},
+    {x: cx+w*0.32, y: cy+h*0.2, count: 8, radius: Math.min(w,h)*0.10},
+    {x: cx-w*0.15, y: cy+h*0.35, count: 6, radius: Math.min(w,h)*0.08},
+    {x: cx+w*0.2, y: cy-h*0.32, count: 6, radius: Math.min(w,h)*0.08}
+  ];
+  clusters.forEach(function(cl){
+    for(var i=0; i<cl.count; i++){
+      var ang = Math.random()*Math.PI*2;
+      var dist = Math.random()*cl.radius;
+      nodes.push({
+        x: cl.x + Math.cos(ang)*dist,
+        y: cl.y + Math.sin(ang)*dist,
+        baseX: cl.x + Math.cos(ang)*dist,
+        baseY: cl.y + Math.sin(ang)*dist,
+        r: Math.random()*3+1.5,
+        vx: 0, vy: 0,
+        alpha: Math.random()*0.6+0.2,
+        phase: Math.random()*Math.PI*2,
+        speed: Math.random()*0.5+0.2,
+        color: Math.random()<0.3 ? "gold" : "teal",
+        connections: []
+      });
+    }
+  });
+
+  /* Build node connections (neural graph) */
+  for(var i=0; i<nodes.length; i++){
+    for(var j=i+1; j<nodes.length; j++){
+      var dx = nodes[i].x-nodes[j].x, dy = nodes[i].y-nodes[j].y;
+      var dist = Math.sqrt(dx*dx+dy*dy);
+      if(dist < Math.min(w,h)*0.22){
+        nodes[i].connections.push(j);
+        nodes[j].connections.push(i);
+      }
+    }
+  }
+
+  /* Data streams — particles that travel along paths */
+  function spawnStream(){
+    var fromNode = nodes[Math.floor(Math.random()*nodes.length)];
+    var toNode = nodes[Math.floor(Math.random()*nodes.length)];
+    if(fromNode===toNode) return;
+    streams.push({
+      fromX: fromNode.x, fromY: fromNode.y,
+      toX: toNode.x, toY: toNode.y,
+      progress: 0,
+      speed: Math.random()*0.012+0.006,
+      alpha: Math.random()*0.7+0.3,
+      color: Math.random()<0.25 ? "gold" : "teal",
+      width: Math.random()*2+1
+    });
+  }
+  /* Seed streams */
+  for(var i=0; i<12; i++){ spawnStream(); }
+
+  /* Traveling pulses along connection lines */
+  function spawnPulse(){
+    var ni = Math.floor(Math.random()*nodes.length);
+    var conns = nodes[ni].connections;
+    if(!conns.length) return;
+    var nj = conns[Math.floor(Math.random()*conns.length)];
+    var n1 = nodes[ni], n2 = nodes[nj];
+    pulses.push({
+      n1idx: ni, n2idx: nj,
+      progress: 0,
+      speed: Math.random()*0.025+0.015,
+      alpha: Math.random()*0.6+0.4,
+      color: Math.random()<0.2 ? "gold" : "teal",
+      r: Math.random()*2.5+1.5
+    });
+  }
+  for(var i=0; i<8; i++){ spawnPulse(); }
+
+  /* Mouse influence */
+  var mx=w/2, my=h/2;
+  document.addEventListener("mousemove", function(e){
+    var rect = canvas.getBoundingClientRect();
+    mx = e.clientX - rect.left;
+    my = e.clientY - rect.top;
+  });
+
+  function lerp(a,b,t){ return a+(b-a)*t; }
+  function rgb(c){ return c.r+","+c.g+","+c.b; }
+
+  function draw(){
+    t += 0.004;
+    ctx.clearRect(0, 0, w, h);
+
+    /* Layer 1 — Deep space gradient base */
+    var bgGrad = ctx.createRadialGradient(w/2, h/2, 0, w/2, h/2, Math.max(w,h)*0.7);
+    bgGrad.addColorStop(0, "rgba(14,30,50,1)");
+    bgGrad.addColorStop(0.5, "rgba(11,22,38,1)");
+    bgGrad.addColorStop(1, "rgba(6,14,25,1)");
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, w, h);
+
+    /* Layer 2 — Ambient teal glow (center) */
+    var glow1 = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.min(w,h)*0.45);
+    glow1.addColorStop(0, "rgba(0,149,138,0.07)");
+    glow1.addColorStop(1, "transparent");
+    ctx.fillStyle = glow1;
+    ctx.fillRect(0, 0, w, h);
+
+    /* Layer 3 — Ambient gold glow (off-center) */
+    var glow2 = ctx.createRadialGradient(cx+w*0.3, cy-h*0.2, 0, cx+w*0.3, cy-h*0.2, Math.min(w,h)*0.3);
+    glow2.addColorStop(0, "rgba(201,168,76,0.05)");
+    glow2.addColorStop(1, "transparent");
+    ctx.fillStyle = glow2;
+    ctx.fillRect(0, 0, w, h);
+
+    /* Layer 4 — Animated grid dots */
+    gridDots.forEach(function(d){
+      d.y += d.speed;
+      if(d.y > h) { d.y = 0; d.x = Math.random()*w; }
+      var a = d.alpha * (0.6 + 0.4*Math.sin(t*2 + d.x*0.01));
+      ctx.beginPath();
+      ctx.arc(d.x, d.y, d.r, 0, Math.PI*2);
+      ctx.fillStyle = "rgba(0,149,138,"+a+")";
+      ctx.fill();
+    });
+
+    /* Layer 5 — Node connections (neural links) */
+    for(var i=0; i<nodes.length; i++){
+      var n1 = nodes[i];
+      n1.connections.forEach(function(j){
+        if(j > i) return; /* draw once */
+        var n2 = nodes[j];
+        var dx = n2.x - n1.x, dy = n2.y - n1.y;
+        var dist = Math.sqrt(dx*dx + dy*dy);
+        var baseAlpha = 0.06 * (1 - dist/(Math.min(w,h)*0.22));
+        var pulse = 0.03 * Math.sin(t*3 + n1.phase + j*0.5);
+        var c = n1.color === "gold" ? GOLD : TEAL;
+        ctx.beginPath();
+        ctx.moveTo(n1.x, n1.y);
+        ctx.lineTo(n2.x, n2.y);
+        ctx.strokeStyle = "rgba("+rgb(c)+","+(baseAlpha+pulse)+")";
+        ctx.lineWidth = 0.8;
+        ctx.stroke();
+      });
+    }
+
+    /* Layer 6 — Nodes */
+    for(var i=0; i<nodes.length; i++){
+      var n = nodes[i];
+      /* Gentle floating motion */
+      n.x = n.baseX + Math.sin(t*n.speed + n.phase)*8;
+      n.y = n.baseY + Math.cos(t*n.speed*0.7 + n.phase)*6;
+      /* Mouse push */
+      var mdx = n.x - mx, mdy = n.y - my;
+      var mdist = Math.sqrt(mdx*mdx + mdy*mdy);
+      if(mdist < 150 && mdist > 0){
+        n.x += mdx * 0.015;
+        n.y += mdy * 0.015;
+        n.baseX += mdx * 0.008;
+        n.baseY += mdy * 0.008;
+      }
+      /* Glow halo */
+      var c = n.color === "gold" ? GOLD : TEAL;
+      var glowR = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r*5);
+      glowR.addColorStop(0, "rgba("+rgb(c)+",0.18)");
+      glowR.addColorStop(1, "transparent");
+      ctx.fillStyle = glowR;
+      ctx.fillRect(n.x-n.r*6, n.y-n.r*6, n.r*12, n.r*12);
+      /* Core dot */
+      var pulseR = n.r + 0.5*Math.sin(t*4+n.phase);
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, pulseR, 0, Math.PI*2);
+      ctx.fillStyle = "rgba("+rgb(c)+","+n.alpha+")";
+      ctx.fill();
+      /* Bright center */
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, pulseR*0.5, 0, Math.PI*2);
+      ctx.fillStyle = "rgba(255,255,255,"+(n.alpha*0.4)+")";
+      ctx.fill();
+    }
+
+    /* Layer 7 — Traveling pulses along neural links */
+    for(var i=pulses.length-1; i>=0; i--){
+      var p = pulses[i];
+      p.progress += p.speed;
+      if(p.progress >= 1){
+        /* respawn */
+        var ni = Math.floor(Math.random()*nodes.length);
+        var conns = nodes[ni].connections;
+        if(!conns.length){ pulses.splice(i,1); continue; }
+        var nj = conns[Math.floor(Math.random()*conns.length)];
+        p.n1idx = ni; p.n2idx = nj;
+        p.progress = 0;
+        p.speed = Math.random()*0.025+0.015;
+        p.color = Math.random()<0.2 ? "gold" : "teal";
+      }
+      var n1 = nodes[p.n1idx], n2 = nodes[p.n2idx];
+      var px = lerp(n1.x, n2.x, p.progress);
+      var py = lerp(n1.y, n2.y, p.progress);
+      var c = p.color === "gold" ? GOLD : TEAL;
+      /* trail behind pulse */
+      var trailLen = 0.15;
+      var tx = lerp(n1.x, n2.x, Math.max(0, p.progress-trailLen));
+      var ty = lerp(n1.y, n2.y, Math.max(0, p.progress-trailLen));
+      var grad = ctx.createLinearGradient(tx, ty, px, py);
+      grad.addColorStop(0, "rgba("+rgb(c)+",0)");
+      grad.addColorStop(1, "rgba("+rgb(c)+","+p.alpha+")");
+      ctx.beginPath();
+      ctx.moveTo(tx, ty);
+      ctx.lineTo(px, py);
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = p.r;
+      ctx.lineCap = "round";
+      ctx.stroke();
+      /* pulse head glow */
+      var pg = ctx.createRadialGradient(px, py, 0, px, py, p.r*4);
+      pg.addColorStop(0, "rgba("+rgb(c)+","+p.alpha*0.5+")");
+      pg.addColorStop(1, "transparent");
+      ctx.fillStyle = pg;
+      ctx.fillRect(px-p.r*5, py-p.r*5, p.r*10, p.r*10);
+    }
+
+    /* Layer 8 — Data streams (particles flowing between nodes) */
+    for(var i=streams.length-1; i>=0; i--){
+      var s = streams[i];
+      s.progress += s.speed;
+      if(s.progress >= 1.3){ streams.splice(i,1); spawnStream(); continue; }
+      var c = s.color === "gold" ? GOLD : TEAL;
+      /* draw full path faintly */
+      ctx.beginPath();
+      ctx.moveTo(s.fromX, s.fromY);
+      ctx.lineTo(s.toX, s.toY);
+      ctx.strokeStyle = "rgba("+rgb(c)+",0.04)";
+      ctx.lineWidth = 0.5;
+      ctx.stroke();
+      /* particle head */
+      var tp = Math.min(s.progress, 1);
+      var px = lerp(s.fromX, s.toX, tp);
+      var py = lerp(s.fromY, s.toY, tp);
+      /* trail */
+      var tp2 = Math.max(0, tp - 0.12);
+      var tx = lerp(s.fromX, s.toX, tp2);
+      var ty = lerp(s.fromY, s.toY, tp2);
+      var sg = ctx.createLinearGradient(tx, ty, px, py);
+      sg.addColorStop(0, "rgba("+rgb(c)+",0)");
+      sg.addColorStop(1, "rgba("+rgb(c)+","+s.alpha+")");
+      ctx.beginPath();
+      ctx.moveTo(tx, ty);
+      ctx.lineTo(px, py);
+      ctx.strokeStyle = sg;
+      ctx.lineWidth = s.width;
+      ctx.lineCap = "round";
+      ctx.stroke();
+      /* glow around head */
+      var hg = ctx.createRadialGradient(px, py, 0, px, py, 8);
+      hg.addColorStop(0, "rgba("+rgb(c)+","+s.alpha*0.6+")");
+      hg.addColorStop(1, "transparent");
+      ctx.fillStyle = hg;
+      ctx.fillRect(px-10, py-10, 20, 20);
+    }
+
+    /* Layer 9 — Hexagonal geometric overlay (subtle) */
+    ctx.save();
+    ctx.globalAlpha = 0.025;
+    ctx.strokeStyle = "#00958A";
+    ctx.lineWidth = 0.5;
+    var hexSize = 40;
+    var hexY = ((t*20)%(hexSize*1.732));
+    for(var row=-1; row<h/(hexSize*1.732)+2; row++){
+      for(var col=-1; col<w/hexSize+2; col++){
+        var hx = col*hexSize*1.5;
+        var hy = row*hexSize*1.732 + hexY;
+        drawHex(hx, hy, hexSize*0.5);
+      }
+    }
+    ctx.restore();
+
+    requestAnimationFrame(draw);
+  }
+
+  function drawHex(cx, cy, r){
+    ctx.beginPath();
+    for(var i=0;i<6;i++){
+      var ang = Math.PI/3*i - Math.PI/6;
+      var hx = cx + r*Math.cos(ang), hy = cy + r*Math.sin(ang);
+      if(i===0) ctx.moveTo(hx,hy); else ctx.lineTo(hx,hy);
+    }
+    ctx.closePath();
+    ctx.stroke();
+  }
+
+  draw();
+})();
+
+/* Header scroll */
+window.addEventListener("scroll", function(){
+  var hdr = $("siteHeader");
+  if(window.scrollY > 10) hdr.classList.add("scrolled");
+  else hdr.classList.remove("scrolled");
+  reveal();
+});
+
+/* Init */
+switchLang("ar");
+setTimeout(function(){
+  reveal();
+  animateCounters();
+}, 200);
+
+window.addEventListener("load", function(){
+  setTimeout(reveal, 100);
+  setTimeout(animateCounters, 300);
+  if($("page-dashboard").classList.contains("active")) dashboardInit();
+});
+
+/* ── DASHBOARD ── */
+var dashboardData = null;
+
+function dashboardRefresh(){
+  dashboardInit();
+}
+
+function dashboardInit(){
+  var now = new Date();
+  var timeStr = now.toLocaleTimeString("ar-SA", {hour:"2-digit", minute:"2-digit"});
+  var e = $("dashUpdated");
+  if(e) e.textContent = "آخر تحديث: " + timeStr;
+
+  fetch("/api/dashboard")
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      dashboardData = data;
+      renderDashboardKPIs(data);
+      renderPillarGapChart(data.pillar_coverage, data.gap_pillars);
+      renderTierDistribution(data.tier_breakdown, data.total_proposals);
+      renderMinistryHeatmap(data.ministry_summary);
+      renderExtraStats(data);
+      fetchRecentProposals();
+      fetchMonthlyTrends();
+    })
+    .catch(function(e){ console.error("Dashboard error:", e); });
+}
+
+function fetchRecentProposals(){
+  fetch("/api/dashboard/recent")
+    .then(function(r){ return r.json(); })
+    .then(function(proposals){ renderRecentProposals(proposals); });
+}
+
+function fetchMonthlyTrends(){
+  fetch("/api/dashboard")
+    .then(function(r){ return r.json(); })
+    .then(function(data){ renderMonthlyTrendsChart(data.monthly_submissions); });
+}
+
+function renderDashboardKPIs(d){
+  var total = d.total_proposals || 0;
+  var avg = d.avg_score || 0;
+  var tier1 = d.tier_breakdown ? d.tier_breakdown.tier1 : 0;
+  var tier1Rate = total > 0 ? Math.round(tier1/total*100) : 0;
+  var gaps = d.gap_pillars ? d.gap_pillars.length : 0;
+
+  animateNum($("kpiTotalVal"), total);
+  animateNum($("kpiAvgVal"), avg, 1);
+  animateNum($("kpiTier1Val"), tier1);
+  animateNum($("kpiGapVal"), gaps);
+
+  // Color avg score
+  var avgEl = $("kpiAvgVal");
+  if(avgEl){
+    if(avg >= 75) avgEl.style.color = "#00958A";
+    else if(avg >= 60) avgEl.style.color = "#C9A84C";
+    else avgEl.style.color = "#E74C3C";
+  }
+
+  // Gap badge
+  var gapBadge = $("gapBadge");
+  if(gapBadge){
+    gapBadge.style.display = gaps > 0 ? "flex" : "none";
+  }
+
+  // Update gap alert banner with real pillar data
+  var gapBanner = $("gapAlertBanner");
+  var gapPillarBadges = $("gapPillarBadges");
+  if(gapBanner && d.gap_pillars && d.pillar_coverage){
+    if(gaps > 0){
+      gapBanner.style.display = "block";
+      var badgeHtml = "";
+      d.gap_pillars.forEach(function(p){
+        var count = d.pillar_coverage[p] ? d.pillar_coverage[p].count : 0;
+        var icon = PILLAR_ICONS[p] || "";
+        badgeHtml += "<span class='gap-pill'>" + icon + " " + (PILLAR_LABELS[p]||p) + " — " + count + " proposal" + (count !== 1 ? "s" : "") + "</span>";
+      });
+      if(gapPillarBadges) gapPillarBadges.innerHTML = badgeHtml;
+    } else {
+      gapBanner.style.display = "none";
+    }
+  }
+
+  // Also hide gap alert if no proposals yet
+  if(gapBanner && total === 0){
+    gapBanner.style.display = "none";
+  }
+}
+
+function animateNum(el, target, decimals){
+  if(!el) return;
+  var duration = 1500;
+  var start = performance.now();
+  var from = 0;
+  function update(now){
+    var elapsed = now - start;
+    var progress = Math.min(elapsed/duration, 1);
+    var eased = 1 - Math.pow(1-progress, 3);
+    var val = from + (target - from) * eased;
+    el.textContent = decimals ? val.toFixed(decimals) : Math.round(val);
+    if(progress < 1) requestAnimationFrame(update);
+    else el.textContent = decimals ? target.toFixed(decimals) : target;
+  }
+  requestAnimationFrame(update);
+}
+
+var PILLAR_LABELS = {
+  health:"الصحة", governance:"الحوكمة", economy:"الاقتصاد",
+  security:"الأمن", society:"المجتمع"
+};
+
+function renderPillarGapChart(pillarData, gapPillars){
+  var container = $("pillarGapChart");
+  if(!container) return;
+  var html = "";
+  var pillars = ["health","governance","economy","security","society"];
+  var maxCount = Math.max.apply(null, pillars.map(function(p){ return pillarData[p] ? pillarData[p].count : 0; }), 1);
+  pillars.forEach(function(p){
+    var count = pillarData[p] ? pillarData[p].count : 0;
+    var pct = count > 0 ? (count / maxCount * 100) : 0;
+    var colorClass = count === 0 ? "gap" : count < 3 ? "mid" : "strong";
+    html += "<div class='pillar-row'>"
+      + "<span class='plabel'>" + (PILLAR_LABELS[p] || p) + "</span>"
+      + "<div class='pillar-bar-bg'>"
+        + "<div class='pillar-bar-fill " + colorClass + "' style='width:" + pct + "%'></div>"
+      + "</div>"
+      + "<span class='pcount'>" + count + "</span></div>";
+  });
+  container.innerHTML = html;
+}
+
+function renderTierDistribution(tierBreakdown, total){
+  var container = $("tierDistChart");
+  if(!container) return;
+  var tiers = [
+    {k:"tier1", label:"Tier 1 (80+)", cls:"tbar1"},
+    {k:"tier2", label:"Tier 2 (68-79)", cls:"tbar2"},
+    {k:"tier3", label:"Tier 3 (52-67)", cls:"tbar3"},
+    {k:"tier4", label:"Tier 4 (&lt;52)", cls:"tbar4"}
+  ];
+  var html = "";
+  tiers.forEach(function(t){
+    var count = tierBreakdown ? (tierBreakdown[t.k] || 0) : 0;
+    var pct = total > 0 ? (count / total * 100) : 0;
+    html += "<div class='tier-bar-row'>"
+      + "<span class='tlabel'>" + t.label + "</span>"
+      + "<div class='tier-bar-bg'>"
+        + "<div class='tier-bar-fill " + t.cls + "' style='width:" + pct + "%'></div>"
+      + "</div>"
+      + "<span class='tcount'>" + count + "</span></div>";
+  });
+  container.innerHTML = html;
+}
+
+function renderMinistryHeatmap(ministrySummary){
+  var container = $("ministryHeatmap");
+  if(!container) return;
+  if(!ministrySummary || ministrySummary.length === 0){
+    container.innerHTML = "<div style='padding:20px;color:rgba(255,255,255,.3);font-size:13px'>لا توجد بيانات بعد</div>";
+    return;
+  }
+  var sorted = ministrySummary.slice(0, 12);
+  var html = "";
+  sorted.forEach(function(m){
+    var score = m.avg_score || 0;
+    var scoreClass = score >= 75 ? "high" : score >= 60 ? "mid" : "low";
+    var budgetStr = m.total_budget >= 1000000 ? (m.total_budget/1000000).toFixed(1) + "M" : (m.total_budget/1000).toFixed(0) + "K";
+    html += "<div class='heatmap-card'>"
+      + "<div class='hm-name' title='" + m.ministry + "'>" + m.ministry + "</div>"
+      + "<div class='hm-stats'>"
+        + "<span class='hm-count'>" + m.count + " project" + (m.count > 1 ? "s" : "") + "</span>"
+        + "<span class='hm-score " + scoreClass + "'>" + score.toFixed(0) + "</span>"
+      + "</div>"
+      + "<div class='hm-budget'>SAR " + budgetStr + "</div>"
+    + "</div>";
+  });
+  container.innerHTML = html;
+}
+
+function renderRecentProposals(proposals){
+  var container = $("recentProposals");
+  if(!container) return;
+  if(!proposals || proposals.length === 0){
+    container.innerHTML = "<div style='padding:20px;color:rgba(255,255,255,.3);font-size:13px'>لا توجد مقترحات بعد</div>";
+    return;
+  }
+  var html = "";
+  proposals.forEach(function(p, i){
+    var score = p.overall_score || 0;
+    var scoreClass = score >= 75 ? "high" : score >= 60 ? "mid" : "low";
+    var tierClass = score >= 80 ? "tpill1" : score >= 68 ? "tpill2" : score >= 52 ? "tpill3" : "tpill4";
+    var tierLabel = score >= 80 ? "Tier 1" : score >= 68 ? "Tier 2" : score >= 52 ? "Tier 3" : "Tier 4";
+    var pillarIcon = PILLAR_ICONS[p.pillar] || "";
+    html += "<div class='recent-row'>"
+      + "<div class='recent-rank'>" + (i+1) + "</div>"
+      + "<div class='recent-info'>"
+        + "<div class='recent-name' title='" + p.project_name + "'>" + p.project_name + "</div>"
+        + "<div class='recent-ministry'>" + pillarIcon + " " + p.ministry + "</div>"
+      + "</div>"
+      + "<div class='recent-score'>"
+        + "<div class='recent-score-val " + scoreClass + "'>" + score.toFixed(0) + "</div>"
+      + "</div>"
+      + "<span class='tier-pill " + tierClass + "'>" + tierLabel + "</span>"
+    + "</div>";
+  });
+  container.innerHTML = html;
+}
+
+var PILLAR_ICONS = {
+  health:"🏥", governance:"🏛️", economy:"💰", security:"🛡️", society:"🌍"
+};
+
+function renderMonthlyTrendsChart(monthlyData){
+  var container = $("monthlyTrendsChart");
+  if(!container) return;
+  if(!monthlyData || monthlyData.length === 0){
+    container.innerHTML = "<div style='padding:20px;color:rgba(255,255,255,.3);font-size:13px'>لا توجد بيانات اتجاهية بعد</div>";
+    return;
+  }
+
+  var AR_MONTHS = ["يناير","فبراير","مارس","أبريل","ماي","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+  var EN_MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+  var months = monthlyData.map(function(d){ return d.month; });
+  var counts = monthlyData.map(function(d){ return d.count; });
+  var maxCount = Math.max.apply(null, counts, 1);
+
+  var W = 800, H = 160, PAD = {top:10,right:20,bottom:30,left:35};
+  var chartW = W - PAD.left - PAD.right;
+  var chartH = H - PAD.top - PAD.bottom;
+
+  var xStep = counts.length > 1 ? chartW / (counts.length - 1) : chartW / 2;
+  var points = counts.map(function(c, i){
+    var x = PAD.left + i * xStep;
+    var y = PAD.top + chartH - (c / maxCount * chartH);
+    return {x:x, y:y, c:c};
+  });
+
+  var polyline = points.map(function(p){ return p.x+","+p.y; }).join(" ");
+  var areaPath = "M" + PAD.left + "," + (PAD.top+chartH)
+    + (points.map(function(p){ return " L"+p.x+","+p.y; }).join(""))
+    + " L" + points[points.length-1].x + "," + (PAD.top+chartH) + " Z";
+
+  // Grid lines
+  var gridLines = [];
+  for(var g = 0; g <= 4; g++){
+    var y = PAD.top + (g/4) * chartH;
+    var val = Math.round(maxCount - (g/4) * maxCount);
+    gridLines.push("<line x1='"+PAD.left+"' y1='"+y+"' x2='"+(W-PAD.right)+"' y2='"+y+"' stroke='rgba(255,255,255,0.04)' stroke-width='1'/>");
+    gridLines.push("<text x='"+(PAD.left-4)+"' y='"+(y+4)+"' text-anchor='end' font-size='9' fill='rgba(255,255,255,0.25)'>"+val+"</text>");
+  }
+
+  // X axis labels
+  var xLabels = points.map(function(p, i){
+    var date = new Date(months[i] + "-01");
+    var monthName = lang === "ar" ? AR_MONTHS[date.getMonth()] : EN_MONTHS[date.getMonth()];
+    return "<text x='"+p.x+"' y='"+(H-8)+"' text-anchor='middle' font-size='9' fill='rgba(255,255,255,0.3)'>"+monthName+"</text>";
+  }).join("");
+
+  // Dots
+  var dots = points.map(function(p){
+    return "<circle cx='"+p.x+"' cy='"+p.y+"' r='4' fill='#00958A' opacity='0.9'/>"
+      + "<title>" + months[points.indexOf(p)] + ": " + p.c + " proposals</title>";
+  }).join("");
+
+  var svg = "<svg class='trends-svg' viewBox='0 0 "+W+" "+H+"' preserveAspectRatio='xMidYMid meet'>"
+    + gridLines.join("")
+    + "<defs><linearGradient id='trendGrad' x1='0' y1='0' x2='0' y2='1'>"
+    + "<stop offset='0%' stop-color='rgba(0,149,138,0.25)'/>"
+    + "<stop offset='100%' stop-color='rgba(0,149,138,0)'/></linearGradient></defs>"
+    + "<path d='"+areaPath+"' fill='url(#trendGrad)'/>"
+    + "<polyline points='"+polyline+"' fill='none' stroke='#00958A' stroke-width='2.5' stroke-linejoin='round'/>"
+    + dots
+    + xLabels
+    + "</svg>";
+
+  container.innerHTML = svg;
+}
+
+function renderExtraStats(d){
+  var proposals = dashboardData || d;
+  // Count cross ministry from recent
+  fetch("/api/dashboard/recent")
+    .then(function(r){ return r.json(); })
+    .then(function(recent){
+      var crossCount = 0;
+      // We don't have cross_ministry in recent API, use main dashboard
+      if(dashboardData && dashboardData.pillar_coverage){
+        // Estimate from total
+      }
+      animateNum($("highRiskVal"), d.high_risk_count || 0);
+      animateNum($("pdplFlagVal"), d.pdpl_flags || 0);
+      animateNum($("crossMinistryVal"), 0);
+      var totalBudget = 0;
+      if(d.ministry_summary){
+        d.ministry_summary.forEach(function(m){ totalBudget += m.total_budget || 0; });
+      }
+      var budgetEl = $("totalBudgetVal");
+      if(budgetEl){
+        if(totalBudget >= 1000000000) budgetEl.textContent = (totalBudget/1000000000).toFixed(1) + "B";
+        else if(totalBudget >= 1000000) budgetEl.textContent = (totalBudget/1000000).toFixed(0) + "M";
+        else budgetEl.textContent = (totalBudget/1000).toFixed(0) + "K";
+      }
+    });
+}
+</script>
+</body>
+</html>

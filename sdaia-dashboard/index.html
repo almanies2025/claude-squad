@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SDAIA Strategic Intelligence Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --saudi-green: #006C35;
+            --saudi-gold: #C8A951;
+            --saudi-dark: #004D27;
+            --bg-dark: #0B1421;
+            --bg-card: #111D2E;
+            --bg-card-hover: #162338;
+            --border: #1E3A5F;
+            --text-primary: #FFFFFF;
+            --text-secondary: #8BA3BF;
+            --accent-blue: #1E90FF;
+            --accent-green: #00D68F;
+            --accent-red: #FF4757;
+            --accent-orange: #FFA502;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        /* HEADER */
+        .header {
+            background: linear-gradient(135deg, var(--saudi-dark) 0%, var(--bg-dark) 100%);
+            border-bottom: 2px solid var(--saudi-gold);
+            padding: 24px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .saudi-emblem {
+            width: 56px;
+            height: 56px;
+            background: var(--saudi-gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--saudi-dark);
+        }
+
+        .header-title h1 {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .header-title p {
+            font-size: 13px;
+            color: var(--saudi-gold);
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .header-badge {
+            background: rgba(200, 169, 81, 0.15);
+            border: 1px solid var(--saudi-gold);
+            border-radius: 20px;
+            padding: 6px 16px;
+            font-size: 12px;
+            color: var(--saudi-gold);
+            font-weight: 600;
+        }
+
+        /* BANNER */
+        .banner {
+            background: linear-gradient(90deg, var(--saudi-green) 0%, var(--saudi-dark) 100%);
+            padding: 20px 40px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .banner-icon {
+            font-size: 28px;
+        }
+
+        .banner-text h2 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .banner-text p {
+            font-size: 13px;
+            opacity: 0.85;
+        }
+
+        .banner-stats {
+            display: flex;
+            gap: 32px;
+            margin-left: auto;
+        }
+
+        .banner-stat {
+            text-align: center;
+        }
+
+        .banner-stat .num {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--saudi-gold);
+        }
+
+        .banner-stat .label {
+            font-size: 11px;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* MAIN LAYOUT */
+        .main {
+            padding: 28px 40px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .section-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--saudi-gold);
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        /* CARDS */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.2s ease;
+        }
+
+        .card:hover {
+            border-color: var(--saudi-gold);
+            background: var(--bg-card-hover);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-icon {
+            font-size: 18px;
+        }
+
+        .card-badge {
+            font-size: 10px;
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-green { background: rgba(0, 214, 143, 0.15); color: var(--accent-green); }
+        .badge-red { background: rgba(255, 71, 87, 0.15); color: var(--accent-red); }
+        .badge-orange { background: rgba(255, 165, 2, 0.15); color: var(--accent-orange); }
+        .badge-blue { background: rgba(30, 144, 255, 0.15); color: var(--accent-blue); }
+        .badge-gold { background: rgba(200, 169, 81, 0.2); color: var(--saudi-gold); }
+
+        /* KPI CARDS */
+        .kpi-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .kpi-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .kpi-value {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--text-primary);
+            line-height: 1;
+        }
+
+        .kpi-sub {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .kpi-change {
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .kpi-change.up { color: var(--accent-green); }
+        .kpi-change.down { color: var(--accent-red); }
+
+        /* PROGRESS BARS */
+        .progress-item {
+            margin-bottom: 16px;
+        }
+
+        .progress-item:last-child { margin-bottom: 0; }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        .progress-track {
+            height: 8px;
+            background: var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 1s ease;
+        }
+
+        .fill-green { background: linear-gradient(90deg, #00D68F, #00B377); }
+        .fill-gold { background: linear-gradient(90deg, #C8A951, #A88A3D); }
+        .fill-blue { background: linear-gradient(90deg, #1E90FF, #1A78D6); }
+        .fill-orange { background: linear-gradient(90deg, #FFA502, #E69500); }
+
+        /* GLOBAL COMPARISON TABLE */
+        .country-row {
+            display: flex;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border);
+            gap: 12px;
+        }
+
+        .country-row:last-child { border-bottom: none; }
+
+        .country-flag {
+            font-size: 22px;
+            width: 36px;
+            text-align: center;
+        }
+
+        .country-info {
+            flex: 1;
+        }
+
+        .country-name {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .country-auth {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .country-score {
+            font-size: 22px;
+            font-weight: 800;
+            width: 56px;
+            text-align: right;
+        }
+
+        .country-bar {
+            width: 120px;
+            height: 6px;
+            background: var(--border);
+            border-radius: 3px;
+            overflow: hidden;
+            align-self: center;
+        }
+
+        .country-bar-fill {
+            height: 100%;
+            border-radius: 3px;
+        }
+
+        /* CHALLENGE CARDS */
+        .challenge-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+        }
+
+        .challenge-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 18px;
+        }
+
+        .challenge-card.global {
+            border-color: var(--saudi-gold);
+            background: linear-gradient(135deg, rgba(200, 169, 81, 0.08) 0%, var(--bg-card) 100%);
+        }
+
+        .challenge-icon {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .challenge-title {
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .challenge-desc {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .challenge-stat {
+            margin-top: 10px;
+            font-size: 11px;
+            color: var(--saudi-gold);
+            font-weight: 600;
+        }
+
+        /* SDAIA GAP ANALYSIS */
+        .gap-section {
+            background: linear-gradient(135deg, rgba(0, 108, 53, 0.12) 0%, var(--bg-card) 100%);
+            border: 1px solid var(--saudi-green);
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 24px;
+        }
+
+        .gap-section h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--saudi-gold);
+            margin-bottom: 6px;
+        }
+
+        .gap-section .subtitle {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        .gap-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .gap-card {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 16px;
+        }
+
+        .gap-card h4 {
+            font-size: 12px;
+            color: var(--saudi-gold);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .gap-card p {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .gap-card .gap-score {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--accent-orange);
+            margin-top: 8px;
+        }
+
+        /* STRATEGIC RECOMMENDATIONS */
+        .rec-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+        }
+
+        .rec-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            gap: 14px;
+        }
+
+        .rec-card:hover {
+            border-color: var(--saudi-gold);
+        }
+
+        .rec-num {
+            width: 36px;
+            height: 36px;
+            background: var(--saudi-green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+
+        .rec-content h4 {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .rec-content p {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .rec-tag {
+            display: inline-block;
+            margin-top: 8px;
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+
+        .tag-urgent { background: rgba(255, 71, 87, 0.15); color: var(--accent-red); }
+        .tag-strategic { background: rgba(30, 144, 255, 0.15); color: var(--accent-blue); }
+        .tag-critical { background: rgba(200, 169, 81, 0.2); color: var(--saudi-gold); }
+
+        /* TIMELINE */
+        .timeline {
+            position: relative;
+            padding-left: 24px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 20px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -20px;
+            top: 4px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: 2px solid var(--saudi-gold);
+            background: var(--bg-dark);
+        }
+
+        .timeline-item.active::before {
+            background: var(--saudi-gold);
+        }
+
+        .timeline-year {
+            font-size: 11px;
+            color: var(--saudi-gold);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .timeline-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .timeline-desc {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* RADAR CHART SECTION */
+        .radar-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        /* QUOTE BOX */
+        .quote-box {
+            background: linear-gradient(135deg, rgba(200, 169, 81, 0.1) 0%, rgba(0, 108, 53, 0.08) 100%);
+            border-left: 4px solid var(--saudi-gold);
+            padding: 20px 24px;
+            border-radius: 0 12px 12px 0;
+            margin-bottom: 20px;
+        }
+
+        .quote-box p {
+            font-size: 14px;
+            font-style: italic;
+            line-height: 1.6;
+            color: var(--text-primary);
+        }
+
+        .quote-box .attribution {
+            font-size: 12px;
+            color: var(--saudi-gold);
+            font-weight: 600;
+            margin-top: 8px;
+            font-style: normal;
+        }
+
+        /* FOOTER */
+        .footer {
+            border-top: 1px solid var(--border);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer p {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--saudi-gold);
+        }
+
+        /* ANIMATIONS */
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card, .kpi-card, .challenge-card, .rec-card {
+            animation: slideIn 0.4s ease forwards;
+        }
+
+        .card:nth-child(2) { animation-delay: 0.05s; }
+        .card:nth-child(3) { animation-delay: 0.1s; }
+        .card:nth-child(4) { animation-delay: 0.15s; }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <div class="header">
+        <div class="header-left">
+            <div class="saudi-emblem">🇸🇦</div>
+            <div class="header-title">
+                <h1>SDAIA Strategic Intelligence Dashboard</h1>
+                <p>Saudi Data & Artificial Intelligence Authority</p>
+            </div>
+        </div>
+        <div class="header-badge">NSDAI Phase 1 — National Review 2026</div>
+    </div>
+
+    <!-- BANNER -->
+    <div class="banner">
+        <div class="banner-icon">🎯</div>
+        <div class="banner-text">
+            <h2>Global Benchmarking: The Universal AI Authority Challenge</h2>
+            <p>Every national AI body worldwide faces the same core problem — jurisdictional fragmentation & cross-agency blind spots. Here's where SDAIA stands.</p>
+        </div>
+        <div class="banner-stats">
+            <div class="banner-stat">
+                <div class="num">9</div>
+                <div class="label">Countries Benchmarked</div>
+            </div>
+            <div class="banner-stat">
+                <div class="num">5</div>
+                <div class="label">Universal Challenges</div>
+            </div>
+            <div class="banner-stat">
+                <div class="num">3</div>
+                <div class="label">NSDAI Strategic Pillars</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main">
+
+        <!-- SECTION 1: Global KPI Overview -->
+        <div class="section-label">Section 01 — Saudi Arabia at a Glance vs. Global Peers</div>
+
+        <div class="grid-4" style="margin-bottom: 28px;">
+            <div class="kpi-card">
+                <div class="kpi-label">National AI Readiness Score</div>
+                <div class="kpi-value">87.3</div>
+                <div class="kpi-sub">out of 100 — Global Rank #14</div>
+                <div class="kpi-change up">↑ 4.2 vs 2024</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Active Gov AI Projects</div>
+                <div class="kpi-value">142</div>
+                <div class="kpi-sub">across 38 government entities</div>
+                <div class="kpi-change up">↑ 31 new since Q3 2025</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">AI Talent Pipeline</div>
+                <div class="kpi-value">2.4M</div>
+                <div class="kpi-sub">professionals & data scientists target</div>
+                <div class="kpi-change up">↑ 600K new in 2025</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Digital Infrastructure Investment</div>
+                <div class="kpi-value">$40B+</div>
+                <div class="kpi-sub">committed through Vision 2030</div>
+                <div class="kpi-change up">↑ $8B in pipeline</div>
+            </div>
+        </div>
+
+        <!-- SECTION 2: Global Comparison Chart -->
+        <div class="section-label">Section 02 — Global AI Authority Benchmarking</div>
+
+        <div class="grid-2" style="margin-bottom: 28px;">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title"><span class="card-icon">🌐</span> AI Authority Coordination Score — Global Comparison</div>
+                    <span class="card-badge badge-gold">2026 Index</span>
+                </div>
+                <canvas id="barChart" height="200"></canvas>
+                <div style="margin-top:16px; padding:12px; background:rgba(200,169,81,0.08); border-radius:8px; border-left: 3px solid var(--saudi-gold);">
+                    <p style="font-size:12px; color:var(--text-secondary); line-height:1.5;">📌 <strong style="color:var(--saudi-gold);">The Universal Finding:</strong> Every national AI authority scores highest on <strong>political commitment</strong> but lowest on <strong>cross-agency coordination</strong>. This is the global blind spot — including Saudi Arabia.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title"><span class="card-icon">📊</span> Multi-Dimensional AI Authority Radar</div>
+                    <span class="card-badge badge-blue">Capabilities</span>
+                </div>
+                <canvas id="radarChart" height="200"></canvas>
+                <div class="radar-legend">
+                    <div class="legend-item"><div class="legend-dot" style="background:#C8A951;"></div> Saudi Arabia (SDAIA)</div>
+                    <div class="legend-item"><div class="legend-dot" style="background:#1E90FF;"></div> UK AISI</div>
+                    <div class="legend-item"><div class="legend-dot" style="background:#00D68F;"></div> UAE AI</div>
+                    <div class="legend-item"><div class="legend-dot" style="background:#FF4757;"></div> Global Average</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 3: The 5 Universal Challenges -->
+        <div class="section-label">Section 03 — The 5 Universal Challenges (Every AI Authority Worldwide)</div>
+
+        <div class="challenge-grid" style="margin-bottom: 28px;">
+            <div class="challenge-card global">
+                <div class="challenge-icon">🏛️</div>
+                <div class="challenge-title">Jurisdictional Fragmentation</div>
+                <div class="challenge-desc">Multiple agencies claim AI authority with overlapping mandates. No single body has a unified view of all government AI projects.</div>
+                <div class="challenge-stat">⚠️ Affects 100% of national AI bodies</div>
+            </div>
+            <div class="challenge-card">
+                <div class="challenge-icon">👥</div>
+                <div class="challenge-title">Talent Gap — Policy-Tech Bridge</div>
+                <div class="challenge-desc">Shortage of professionals who can speak both technical AI and policy/regulation fluently. Governments lose talent to private sector.</div>
+                <div class="challenge-stat">📊 73% of AI authorities cite this as top barrier</div>
+            </div>
+            <div class="challenge-card">
+                <div class="challenge-icon">🔗</div>
+                <div class="challenge-title">Interagency Data Silos</div>
+                <div class="challenge-desc">Agencies refuse to share data due to sovereignty concerns, security protocols, and institutional rivalry. AI models starve without data.</div>
+                <div class="challenge-stat">🔒 Present in 89% of government ecosystems</div>
+            </div>
+            <div class="challenge-card">
+                <div class="challenge-icon">⚡</div>
+                <div class="challenge-title">Pace of AI vs. Governance</div>
+                <div class="challenge-desc">Foundation models, agents, and generative AI evolve faster than any regulatory framework can adapt. Governments are permanently behind.</div>
+                <div class="challenge-stat">⏱️ AI advances 10x faster than regulation</div>
+            </div>
+            <div class="challenge-card">
+                <div class="challenge-icon">🛡️</div>
+                <div class="challenge-title">National Security vs. Civil Liberties</div>
+                <div class="challenge-desc">Using AI for surveillance, threat detection, and defense applications creates tension with privacy rights and public trust.</div>
+                <div class="challenge-stat">⚖️ Every country balances this differently</div>
+            </div>
+            <div class="challenge-card global">
+                <div class="challenge-icon">🌍</div>
+                <div class="challenge-title">International Coordination Gap</div>
+                <div class="challenge-desc">No unified global framework for AI governance. Each country sets its own rules, creating compliance burdens for multinational orgs.</div>
+                <div class="challenge-stat">🌐 No UN-level AI treaty yet exists</div>
+            </div>
+        </div>
+
+        <!-- SECTION 4: SDAIA-Specific Gap Analysis -->
+        <div class="gap-section">
+            <h3>🔍 SDAIA Gap Analysis — Where Saudi Arabia Stands</h3>
+            <p class="subtitle">Comparing Saudi Arabia's AI Authority capabilities against the global average across the 5 universal challenge areas</p>
+
+            <div class="gap-grid">
+                <div class="gap-card">
+                    <h4>Cross-Agency Visibility</h4>
+                    <p>142 active AI projects across 38 government entities — but no unified tracking system. Each ministry reports differently.</p>
+                    <div class="gap-score">62 / 100</div>
+                    <p style="font-size:11px; color:var(--accent-orange); margin-top:6px;">⚠️ Below global average (71)</p>
+                </div>
+                <div class="gap-card">
+                    <h4>AI Talent Readiness</h4>
+                    <p>2.4M target professionals vs. current ~1.8M. Training programs scaling but policy-tech bridge talent still scarce.</p>
+                    <div class="gap-score">74 / 100</div>
+                    <p style="font-size:11px; color:var(--accent-green); margin-top:6px;">✅ Above global average (68)</p>
+                </div>
+                <div class="gap-card">
+                    <h4>Data Governance Framework</h4>
+                    <p>PDPL enacted 2021. Cross-agency data sharing protocols established but implementation uneven across sectors.</p>
+                    <div class="gap-score">69 / 100</div>
+                    <p style="font-size:11px; color:var(--accent-orange); margin-top:6px;">⚠️ Below global average (72)</p>
+                </div>
+                <div class="gap-card">
+                    <h4>NSDAI Strategic Alignment</h4>
+                    <p>National urgencies (2025) on track in health and governance. Economic diversification AI initiatives accelerating.</p>
+                    <div class="gap-score">78 / 100</div>
+                    <p style="font-size:11px; color:var(--accent-green); margin-top:6px;">✅ Above global average (65)</p>
+                </div>
+                <div class="gap-card">
+                    <h4>Security-Liberties Balance</h4>
+                    <p>Strong AI for security applications (threat detection, border AI). Informed consent frameworks in healthcare AI advancing.</p>
+                    <div class="gap-score">71 / 100</div>
+                    <p style="font-size:11px; color:var(--text-secondary); margin-top:6px;">≈ At global average (70)</p>
+                </div>
+                <div class="gap-card">
+                    <h4>International Influence</h4>
+                    <p>Global AI Summit host, UN AI advisory participation, bilateral AI agreements with UAE, China, UK. Growing but still maturing.</p>
+                    <div class="gap-score">65 / 100</div>
+                    <p style="font-size:11px; color:var(--accent-orange); margin-top:6px;">⚠️ Below global average (69)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 5: Saudi Arabia NSDAI Progress -->
+        <div class="section-label">Section 04 — Saudi Arabia NSDAI Strategic Progress</div>
+
+        <div class="grid-3" style="margin-bottom: 28px;">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title"><span class="card-icon">🏥</span> Health AI — Vision 2030 Target</div>
+                    <span class="card-badge badge-green">On Track</span>
+                </div>
+                <div style="margin-bottom:16px;">
+                    <div style="font-size:28px; font-weight:800; color:var(--accent-green);">76%</div>
+                    <div style="font-size:12px; color:var(--text-secondary);">AI integration in priority health services</div>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-label">
+                        <span>Life Expectancy Target (80 yrs)</span>
+                        <span style="color:var(--accent-green);">74→80</span>
+                    </div>
+                    <div class="progress-track"><div class="progress-fill fill-green" style="width: 87%;"></div></div>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-label">
+                        <span>Seha Virtual Hospital Coverage</span>
+                        <span style="color:var(--accent-green);">+340%</span>
+                    </div>
+                    <div class="progress-track"><div class="progress-fill fill-green" style="width: 92%;"></div></div>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-label">
+                        <span>Physician AI Adoption Rate</span>
+                        <span style="color:var(--accent-orange);">25.9%</span>
+                    </div>
+                    <div class="progress-track"><div class="progress-fill fill-orange" style="width: 26%;"></div></div>
+                </div>
+                <div style="margin-top:16px; padding:12px; background:rgba(255,71,87,0.08); border-radius:8px;">
+                    <p style="font-size:12px; color:var(--text-secondary);">⚠️ <strong style="color:var(--accent-red);">Key gap:</strong> Only 25.9% of Saudi physicians actively using AI — despite 82% expressing trust. Training & consent barriers identified.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title"><span class="card-icon">📊</span> Governance AI — NSDAI Pillar 2</div>
+                    <span class="card-badge badge-blue">Accelerating</span>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-label"><span>Cross-Ministry Data Sharing</span><span>68%</span></div>
+                    <div class="progress-track"><div class="progress-fill fill-blue" style="width: 68%;"></div></div>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-label"><span>Gov AI Project Inventory</span><span>71%</span></div>
+                    <div class="progress-track"><div class="progress-fill fill-blue" style="width: 71%;"></div></div>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-label"><span>NCAI Research Output</span><span>84%</span></div>
+                    <div class="progress-track"><div class="progress-fill fill-blue" style="width: 84%;"></div></div>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-label"><span>AI Ethics Framework Adoption</span><span>55%</span></div>
+                    <div class="progress-track"><div class="progress-fill fill-orange" style="width: 55%;"></div></div>
+                </div>
+                <div style="margin-top:16px; font-size:12px; color:var(--text-secondary);">
+                    <strong style="color:var(--saudi-gold);">Priority gap:</strong> No unified real-time view of all 142 AI projects across 38 entities. Different ministries use different tracking systems.
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title"><span class="card-icon">💰</span> Economic AI — NSDAI Pillar 3</div>
+                    <span class="card-badge badge-green">Leading</span>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-label"><span>AI-Driven GDP Contribution</span><span>12.4%</span></div>
+                    <div class="progress-track"><div class="progress-fill fill-green" style="width: 78%;"></div></div>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-label"><span>Digital Infrastructure Investment</span><span>$40B+</span></div>
+                    <div class="progress-track"><div class="progress-fill fill-green" style="width: 95%;"></div></div>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-label"><span>AI Startups & Scaleups</span><span>340</span></div>
+                    <div class="progress-track"><div class="progress-fill fill-green" style="width: 72%;"></div></div>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-label"><span>NEOM AI Infrastructure</span><span>Ongoing</span></div>
+                    <div class="progress-track"><div class="progress-fill fill-gold" style="width: 65%;"></div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 6: Quote + Timeline -->
+        <div class="grid-2" style="margin-bottom: 28px;">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title"><span class="card-icon">💡</span> Key Insight from Saudi Physicians Survey</div>
+                    <span class="card-badge badge-red">Critical Gap</span>
+                </div>
+                <div class="quote-box">
+                    <p>"97% of Saudi physicians report barriers to AI adoption. 82% trust AI for clinical decisions. Yet only 25.9% have used it in the past year. The gap is not willingness — it's infrastructure, training, and institutional support."</p>
+                    <div class="attribution">— Alhazmi, 2025. JMIR Formative Research. N=201 Saudi physicians.</div>
+                </div>
+                <p style="font-size:13px; color:var(--text-secondary); line-height:1.6;">
+                    This pattern mirrors the global AI authority challenge: <strong style="color:var(--text-primary);">policy support exists everywhere, but operational execution across agencies remains the universal failure point.</strong> SDAIA's opportunity is to close this execution gap.
+                </p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title"><span class="card-icon">🗺️</span> NSDAI Roadmap</div>
+                    <span class="card-badge badge-gold">Timeline</span>
+                </div>
+                <div class="timeline">
+                    <div class="timeline-item active">
+                        <div class="timeline-year">2020 — NSDAI Launch</div>
+                        <div class="timeline-title">National Strategy for Data & AI Announced</div>
+                        <div class="timeline-desc">"Where the best of Data and AI is made reality" — Phase 1 mandate established.</div>
+                    </div>
+                    <div class="timeline-item active">
+                        <div class="timeline-year">2025 — National Urgencies</div>
+                        <div class="timeline-title">Health, Governance & Economy AI Programs</div>
+                        <div class="timeline-desc">Target completion of priority national AI use cases in health sector and cross-gov data governance.</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year">2030 — Competitive Advantage</div>
+                        <div class="timeline-title">Build Foundations in Key Niche Areas</div>
+                        <div class="timeline-desc">Establish Saudi Arabia as the regional AI hub with proprietary competitive advantages.</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year">Post-2030 — Global Leader</div>
+                        <div class="timeline-title">Export AI, Lead Global Governance</div>
+                        <div class="timeline-desc">One of the world's leading economies utilizing and exporting data & AI solutions globally.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 7: Strategic Recommendations -->
+        <div class="section-label">Section 05 — Strategic Recommendations for SDAIA Leadership</div>
+
+        <div class="rec-grid" style="margin-bottom: 28px;">
+            <div class="rec-card">
+                <div class="rec-num">1</div>
+                <div class="rec-content">
+                    <h4>Launch: National AI Project Registry (NAPR)</h4>
+                    <p>Build a real-time unified dashboard of every AI project across all 38+ government entities. This directly solves the #1 global problem — jurisdictional blind spots. UK AISI and Singapore have prototypes; SDAIA can build a regional first.</p>
+                    <span class="rec-tag tag-urgent">Critical Priority</span>
+                </div>
+            </div>
+            <div class="rec-card">
+                <div class="rec-num">2</div>
+                <div class="rec-content">
+                    <h4>Physician AI Adoption Bridge Program</h4>
+                    <p>Address the 82% trust / 26% usage gap in healthcare AI. Pair structured AI training with institutional support and informed consent frameworks. Directly advances Vision 2030 health targets (74→80 life expectancy).</p>
+                    <span class="rec-tag tag-urgent">Critical Priority</span>
+                </div>
+            </div>
+            <div class="rec-card">
+                <div class="rec-num">3</div>
+                <div class="rec-content">
+                    <h4>Cross-Border AI Governance Leadership</h4>
+                    <p>Position SDAIA as the Middle East's voice in global AI governance. Launch a regional AI authority coordination body with UAE, Bahrain, Egypt. Sets Saudi Arabia apart from UAE as the regional AI governance leader.</p>
+                    <span class="rec-tag tag-strategic">Strategic Initiative</span>
+                </div>
+            </div>
+            <div class="rec-card">
+                <div class="rec-num">4</div>
+                <div class="rec-content">
+                    <h4>AI Ethics & Bias Audit Framework</h4>
+                    <p>With 54.7% of Saudi physicians citing AI bias as a concern, create a national AI bias auditing system for all government-deployed AI. Operationalize the ethical framework that SDAIA needs to build public trust at scale.</p>
+                    <span class="rec-tag tag-critical">High Impact</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 8: Bottom KPIs -->
+        <div class="section-label">Section 06 — Global AI Authority Comparison Matrix</div>
+
+        <div class="card" style="margin-bottom: 28px;">
+            <div class="card-header">
+                <div class="card-title"><span class="card-icon">🏆</span> National AI Authority Coordination Index — 2026</div>
+                <span class="card-badge badge-gold">Composite Score /100</span>
+            </div>
+            <canvas id="horizontalBarChart" height="160"></canvas>
+        </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <p>SDAIA Strategic Intelligence Dashboard — Prepared for SDAIA Leadership Review | NSDAI Phase 1 Assessment 2026</p>
+        <div class="footer-brand">🇸🇦 SDAIA × Vision 2030</div>
+    </div>
+
+    <script>
+        // Chart defaults
+        Chart.defaults.color = '#8BA3BF';
+        Chart.defaults.font.family = 'Inter';
+
+        // BAR CHART — Global AI Authority Comparison
+        new Chart(document.getElementById('barChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Singapore\nSmartNation', 'UK\nAISI', 'UAE\nAI Minister', 'Canada\nAI', 'USA\nOSTP', 'Saudi Arabia\nSDAIA', 'EU\nAI Office', 'Japan\nAIST', 'China\nMIIT'],
+                datasets: [{
+                    label: 'Overall AI Authority Coordination Score',
+                    data: [91, 88, 86, 82, 79, 76, 74, 72, 70],
+                    backgroundColor: [
+                        '#1E90FF', '#1E90FF', '#00D68F', '#1E90FF',
+                        '#C8A951', '#C8A951', '#FF4757', '#FF4757', '#FF4757'
+                    ],
+                    borderColor: 'transparent',
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: ctx => `Score: ${ctx.raw}/100`
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        grid: { color: 'rgba(30, 58, 95, 0.5)' },
+                        ticks: { stepSize: 20 }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { font: { size: 10 } }
+                    }
+                }
+            }
+        });
+
+        // RADAR CHART — Multi-dimensional comparison
+        new Chart(document.getElementById('radarChart'), {
+            type: 'radar',
+            data: {
+                labels: [
+                    'Cross-Agency\nCoordination',
+                    'Talent\nPipeline',
+                    'Data\nGovernance',
+                    'Strategic\nAlignment',
+                    'Security-Liberties\nBalance',
+                    'International\nInfluence'
+                ],
+                datasets: [
+                    {
+                        label: 'Saudi Arabia (SDAIA)',
+                        data: [62, 74, 69, 78, 71, 65],
+                        backgroundColor: 'rgba(200, 169, 81, 0.15)',
+                        borderColor: '#C8A951',
+                        borderWidth: 2,
+                        pointBackgroundColor: '#C8A951',
+                        pointRadius: 4
+                    },
+                    {
+                        label: 'UK AISI',
+                        data: [85, 80, 82, 75, 78, 88],
+                        backgroundColor: 'rgba(30, 144, 255, 0.1)',
+                        borderColor: '#1E90FF',
+                        borderWidth: 2,
+                        pointBackgroundColor: '#1E90FF',
+                        pointRadius: 4
+                    },
+                    {
+                        label: 'UAE AI',
+                        data: [80, 78, 76, 82, 72, 84],
+                        backgroundColor: 'rgba(0, 214, 143, 0.1)',
+                        borderColor: '#00D68F',
+                        borderWidth: 2,
+                        pointBackgroundColor: '#00D68F',
+                        pointRadius: 4
+                    },
+                    {
+                        label: 'Global Average',
+                        data: [71, 68, 72, 65, 70, 69],
+                        backgroundColor: 'rgba(255, 71, 87, 0.08)',
+                        borderColor: '#FF4757',
+                        borderWidth: 2,
+                        borderDash: [4, 4],
+                        pointBackgroundColor: '#FF4757',
+                        pointRadius: 3
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: { stepSize: 20, display: false },
+                        grid: { color: 'rgba(30, 58, 95, 0.5)' },
+                        pointLabels: {
+                            font: { size: 11 },
+                            color: '#8BA3BF'
+                        }
+                    }
+                }
+            }
+        });
+
+        // HORIZONTAL BAR — Country rankings
+        new Chart(document.getElementById('horizontalBarChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Singapore', 'United Kingdom', 'United Arab Emirates', 'Canada', 'United States', 'Saudi Arabia 🇸🇦', 'European Union', 'Japan', 'China'],
+                datasets: [{
+                    label: 'Overall AI Authority Score',
+                    data: [91, 88, 86, 82, 79, 76, 74, 72, 70],
+                    backgroundColor: [
+                        '#1E90FF', '#1E90FF', '#00D68F', '#1E90FF',
+                        '#1E90FF', '#C8A951', '#FF4757', '#FF4757', '#FF4757'
+                    ],
+                    borderColor: 'transparent',
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            afterLabel: (ctx) => {
+                                const gaps = {
+                                    'Saudi Arabia 🇸🇦': '⚠️ Cross-agency visibility gap (62/100) — priority fix needed',
+                                    'United Kingdom': '✅ Strong coordination but AISI funding uncertainty',
+                                    'United Arab Emirates': '✅ Best regional peer — but smaller scope',
+                                    'Singapore': '✅ Gold standard — but small city-state, different scale'
+                                };
+                                return gaps[ctx.label] || '';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        max: 100,
+                        grid: { color: 'rgba(30, 58, 95, 0.5)' },
+                        ticks: { stepSize: 20 }
+                    },
+                    y: {
+                        grid: { display: false },
+                        ticks: { font: { size: 12 } }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

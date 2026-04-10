@@ -44,6 +44,56 @@ app.router.default_response_class = UTF8JSONResponse
 # ─────────────────────────────────────────────
 proposals_db: dict = {}
 
+def seed_demo_data():
+    """Seed 14 demo proposals for the dashboard demo."""
+    import random
+    demo_proposals = [
+        {"ministry": "Ministry of Health", "project_name": "AI-Powered Chronic Disease Management Platform", "nsaid_pillar": "health", "budget": 35000000, "timeline_months": 18, "beneficiaries": 5200000, "ai_expertise": True, "personal_data": True, "biometric": True, "predictive_ai": True, "transparency": True, "bias": True, "cross_ministry": True, "outcome": "vision_2030_priority"},
+        {"ministry": "Ministry of Health", "project_name": "National Telemedicine Network Expansion", "nsaid_pillar": "health", "budget": 18000000, "timeline_months": 12, "beneficiaries": 3100000, "ai_expertise": True, "personal_data": True, "biometric": False, "predictive_ai": False, "transparency": True, "bias": False, "cross_ministry": False, "outcome": "single_entity"},
+        {"ministry": "Saudi Data & AI Authority", "project_name": "National Government Data Exchange (NGDE)", "nsaid_pillar": "governance", "budget": 80000000, "timeline_months": 24, "beneficiaries": 30000000, "ai_expertise": True, "personal_data": False, "biometric": False, "predictive_ai": False, "transparency": True, "bias": False, "cross_ministry": True, "outcome": "vision_2030_priority"},
+        {"ministry": "Ministry of Interior", "project_name": "Predictive Security & Threat Detection System", "nsaid_pillar": "security", "budget": 120000000, "timeline_months": 30, "beneficiaries": 25000000, "ai_expertise": True, "personal_data": True, "biometric": True, "predictive_ai": True, "transparency": False, "bias": True, "cross_ministry": True, "outcome": "national_impact"},
+        {"ministry": "Ministry of Economy & Planning", "project_name": "AI-Driven Economic Diversification Monitor", "nsaid_pillar": "economy", "budget": 22000000, "timeline_months": 15, "beneficiaries": 5000000, "ai_expertise": True, "personal_data": False, "biometric": False, "predictive_ai": True, "transparency": True, "bias": False, "cross_ministry": True, "outcome": "vision_2030_priority"},
+        {"ministry": "Saudi Arabian Oil Company (Aramco)", "project_name": "AI-Enhanced Oil Field Predictive Maintenance", "nsaid_pillar": "economy", "budget": 95000000, "timeline_months": 20, "beneficiaries": 75000, "ai_expertise": True, "personal_data": False, "biometric": False, "predictive_ai": True, "transparency": True, "bias": False, "cross_ministry": False, "outcome": "economic_growth"},
+        {"ministry": "Capital Market Authority", "project_name": "AI-Powered Market Surveillance & Fraud Detection", "nsaid_pillar": "economy", "budget": 45000000, "timeline_months": 16, "beneficiaries": 1200000, "ai_expertise": True, "personal_data": True, "biometric": False, "predictive_ai": True, "transparency": True, "bias": True, "cross_ministry": False, "outcome": "regulatory_compliance"},
+        {"ministry": "Ministry of Education", "project_name": "National AI Tutoring System — Vision 2030 Aligned", "nsaid_pillar": "society", "budget": 60000000, "timeline_months": 14, "beneficiaries": 10000000, "ai_expertise": True, "personal_data": True, "biometric": False, "predictive_ai": True, "transparency": True, "bias": True, "cross_ministry": True, "outcome": "vision_2030_priority"},
+        {"ministry": "Ministry of Housing", "project_name": "Smart City Infrastructure AI Planning Tool", "nsaid_pillar": "society", "budget": 28000000, "timeline_months": 18, "beneficiaries": 7000000, "ai_expertise": True, "personal_data": False, "biometric": False, "predictive_ai": True, "transparency": True, "bias": True, "cross_ministry": True, "outcome": "vision_2030_priority"},
+        {"ministry": "Ministry of Energy", "project_name": "Renewable Energy Grid Optimization AI", "nsaid_pillar": "economy", "budget": 38000000, "timeline_months": 22, "beneficiaries": 3500000, "ai_expertise": True, "personal_data": False, "biometric": False, "predictive_ai": True, "transparency": True, "bias": False, "cross_ministry": True, "outcome": "sustainability"},
+        {"ministry": "Ministry of Communications", "project_name": "National Fiber Network AI Optimization", "nsaid_pillar": "governance", "budget": 15000000, "timeline_months": 10, "beneficiaries": 28000000, "ai_expertise": True, "personal_data": False, "biometric": False, "predictive_ai": False, "transparency": True, "bias": False, "cross_ministry": True, "outcome": "single_entity"},
+        {"ministry": "Saudi Customs Authority", "project_name": "AI Cargo Inspection & Trade Facilitation", "nsaid_pillar": "security", "budget": 42000000, "timeline_months": 14, "beneficiaries": 450000, "ai_expertise": True, "personal_data": False, "biometric": True, "predictive_ai": True, "transparency": True, "bias": False, "cross_ministry": True, "outcome": "national_security"},
+        {"ministry": "Ministry of Hajj & Umrah", "project_name": "Smart Pilgrimage Crowd Management AI", "nsaid_pillar": "society", "budget": 72000000, "timeline_months": 12, "beneficiaries": 3000000, "ai_expertise": True, "personal_data": True, "biometric": True, "predictive_ai": True, "transparency": True, "bias": True, "cross_ministry": True, "outcome": "vision_2030_priority"},
+        {"ministry": "National Center for AI", "project_name": "Generative AI Sandbox for Government Innovation", "nsaid_pillar": "governance", "budget": 55000000, "timeline_months": 12, "beneficiaries": 500000, "ai_expertise": True, "personal_data": False, "biometric": False, "predictive_ai": True, "transparency": True, "bias": True, "cross_ministry": True, "outcome": "innovation_leader"},
+    ]
+    for p in demo_proposals:
+        proposal = ProposalSubmission(
+            ministry=p["ministry"],
+            project_name=p["project_name"],
+            project_type="government_ai",
+            description=p["project_name"],
+            nsaid_pillar=p["nsaid_pillar"],
+            budget=p["budget"],
+            timeline_months=p["timeline_months"],
+            data_types=["government_ops"],
+            target_beneficiaries=p["beneficiaries"],
+            has_ai_expertise=p["ai_expertise"],
+            uses_personal_data=p["personal_data"],
+            uses_biometric=p["biometric"],
+            uses_predictive_ai=p["predictive_ai"],
+            has_transparency_plan=p["transparency"],
+            has_bias_mitigation=p["bias"],
+            cross_ministry=p["cross_ministry"],
+            expected_outcome=p["outcome"],
+            contact_name="Demo User",
+            contact_email="demo@sdaia.gov.sa",
+        )
+        result = evaluate_proposal(proposal)
+        proposals_db[result.proposal_id] = {
+            "proposal": proposal.model_dump(),
+            "result": result.model_dump(),
+            "submitted_at": result.submitted_at,
+        }
+
+# seed_demo_data() called after evaluate_proposal is defined — see bottom
+
 # ─────────────────────────────────────────────
 # NSDAI STRATEGIC PILLARS & CRITERIA WEIGHTS
 # ─────────────────────────────────────────────
@@ -452,6 +502,10 @@ async def submit_proposal(
     return result
 
 
+# Seed demo data after app is fully set up
+seed_demo_data()
+
+
 @app.get("/api/proposals")
 async def list_proposals():
     return [
@@ -554,6 +608,22 @@ async def get_dashboard():
     # High risk & PDPL flags
     high_risk_count = sum(1 for r in all_results if r["evaluation_details"]["ethical_risk"] > 50)
     pdpl_flags = sum(1 for d in proposals_db.values() if d["proposal"]["uses_personal_data"])
+    cross_ministry_count = sum(1 for d in proposals_db.values() if d["proposal"]["cross_ministry"])
+    total_budget = sum(d["proposal"]["budget"] for d in proposals_db.values())
+
+    # Recent proposals (last 10)
+    recent_sorted = sorted(proposals_db.items(), key=lambda x: x[1]["submitted_at"], reverse=True)
+    recent_proposals = [
+        {
+            "proposal_id": pid,
+            "project_name": d["proposal"]["project_name"],
+            "ministry": d["proposal"]["ministry"],
+            "pillar": d["proposal"]["nsaid_pillar"],
+            "overall_score": d["result"]["overall_score"],
+            "tier": d["result"]["tier"],
+        }
+        for pid, d in recent_sorted[:10]
+    ]
 
     return {
         "total_proposals": total,
@@ -565,6 +635,9 @@ async def get_dashboard():
         "gap_pillars": gap_pillars,
         "high_risk_count": high_risk_count,
         "pdpl_flags": pdpl_flags,
+        "cross_ministry_count": cross_ministry_count,
+        "total_budget": total_budget,
+        "recent_proposals": recent_proposals,
     }
 
 

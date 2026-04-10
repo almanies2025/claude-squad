@@ -46,8 +46,8 @@ body.en .en-only{display:block!important}
 .btn-hdr:hover{background:var(--sg-d);transform:translateY(-1px)}
 
 /* HERO */
-.hero{position:relative;min-height:600px;background:#060e19;display:flex;align-items:center;overflow:hidden;padding:80px 0}
-#particle-canvas{position:absolute;inset:0;z-index:0}
+.hero{position:relative;min-height:600px;background:radial-gradient(ellipse at 50% 40%,#0d2440 0%,#060e19 60%,#030810 100%);display:flex;align-items:center;overflow:hidden;padding:80px 0}
+#three-canvas{position:absolute;inset:0;z-index:0;width:100%;height:100%;display:block}
 .hero-glow,.hero-glow2,.hero-pattern{display:none}
 @keyframes floatA{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-30px) scale(1.05)} }
 @keyframes floatB{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(20px) scale(.97)} }
@@ -307,44 +307,42 @@ body.en .en-only{display:block!important}
 .dash-view-all:hover{color:var(--sg-l)}
 .dash-card-badge{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:#E74C3C}
 .badge-dot-red{width:8px;height:8px;background:#E74C3C;border-radius:50%;animation:pulse 2s infinite}
-.pillar-chart{padding:16px 20px;display:flex;flex-direction:column;gap:12px}
-.pillar-row{display:flex;align-items:center;gap:12px}
-.pillar-row .plabel{flex:0 0 100px;font-size:12px;font-weight:600;color:rgba(255,255,255,.5);text-align:left}
-.pillar-bar-bg{flex:1;height:22px;background:rgba(255,255,255,.06);border-radius:6px;overflow:hidden;position:relative}
-.pillar-bar-fill{height:100%;border-radius:6px;transition:width 1.2s cubic-bezier(.25,.46,.45,.94)}
-.pillar-bar-fill.gap{background:#E74C3C}
-.pillar-bar-fill.mid{background:#C9A84C}
-.pillar-bar-fill.strong{background:#00958A}
-.pillar-row .pcount{flex:0 0 36px;font-size:13px;font-weight:800;color:var(--white);text-align:right}
-.tier-chart{padding:16px 20px;display:flex;flex-direction:column;gap:14px}
-.tier-bar-row{display:flex;align-items:center;gap:10px}
-.tier-bar-row .tlabel{flex:0 0 80px;font-size:11px;font-weight:700;color:rgba(255,255,255,.5);text-align:left}
-.tier-bar-bg{flex:1;height:18px;background:rgba(255,255,255,.06);border-radius:5px;overflow:hidden}
+.pillar-chart{padding:16px 20px}
+.pillar-bars{display:flex;flex-direction:column;gap:10px}
+.pillar-row{display:flex;align-items:center;gap:10px}
+.pillar-lbl{flex:0 0 90px;font-size:12px;font-weight:600;color:rgba(255,255,255,.55);text-align:left;white-space:nowrap}
+.pillar-track{flex:1;height:22px;background:rgba(255,255,255,.06);border-radius:6px;overflow:hidden;position:relative}
+.pillar-bar{height:100%;border-radius:6px;transition:width 1.2s cubic-bezier(.25,.46,.45,.94)}
+.pillar-bar.gap{background:#E74C3C !important}
+.pillar-cnt{flex:0 0 24px;font-size:13px;font-weight:800;color:var(--white);text-align:center}
+.pillar-score{flex:0 0 30px;font-size:11px;color:rgba(255,255,255,.4);text-align:right}
+.tier-chart{padding:16px 20px}
+.tier-bars{display:flex;flex-direction:column;gap:10px}
+.tier-row{display:flex;align-items:center;gap:10px}
+.tier-icon{flex:0 0 20px;font-size:14px;text-align:center}
+.tier-label{flex:0 0 80px;font-size:11px;font-weight:700;color:rgba(255,255,255,.5);text-align:left}
+.tier-track{flex:1;height:18px;background:rgba(255,255,255,.06);border-radius:5px;overflow:hidden}
 .tier-bar-fill{height:100%;border-radius:5px;transition:width 1s ease}
-.tbar1{background:#C9A84C}.tbar2{background:#00958A}.tbar3{background:#E67E22}.tbar4{background:#E74C3C}
-.tier-bar-row .tcount{flex:0 0 32px;font-size:12px;font-weight:800;color:var(--white);text-align:right}
-.heatmap-grid{padding:16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
-.heatmap-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:12px 14px;transition:var(--t)}
-.heatmap-card:hover{border-color:rgba(0,149,138,.4);transform:translateY(-1px)}
-.heatmap-card .hm-name{font-size:12px;font-weight:700;color:var(--white);margin-bottom:6px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.heatmap-card .hm-stats{display:flex;justify-content:space-between;align-items:center}
-.hm-count{font-size:10px;color:rgba(255,255,255,.4);background:rgba(255,255,255,.07);padding:2px 7px;border-radius:4px;font-weight:600}
-.hm-score{font-size:13px;font-weight:900}
-.hm-score.high{color:#00958A}.hm-score.mid{color:#C9A84C}.hm-score.low{color:#E74C3C}
-.hm-budget{font-size:10px;color:rgba(255,255,255,.3);margin-top:4px}
+.tier-count{flex:0 0 72px;font-size:11px;font-weight:700;color:rgba(255,255,255,.55);text-align:right}
+.heatmap-grid{padding:16px;overflow-x:auto}
+.heatmap-grid-inner{display:flex;flex-wrap:wrap;gap:10px;min-width:600px}
+.heat-card{background:rgba(255,255,255,.04);border-radius:10px;padding:12px 14px;min-width:140px;transition:transform 0.3s,box-shadow 0.3s}
+.heat-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.heat-ministry{font-size:11px;font-weight:700;color:var(--white);margin-bottom:6px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.heat-score{font-size:22px;font-weight:900;margin-bottom:2px}
+.heat-count{font-size:10px;color:rgba(255,255,255,.4);margin-bottom:2px}
+.heat-budget{font-size:10px;color:rgba(255,255,255,.3)}
 .recent-table{padding:8px 0;max-height:320px;overflow-y:auto}
-.recent-row{display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.04);transition:var(--t)}
+.recent-table-inner{width:100%;border-collapse:collapse}
+.recent-table-inner thead th{font-size:10px;font-weight:700;color:rgba(255,255,255,.35);text-align:left;padding:6px 12px;border-bottom:1px solid rgba(255,255,255,.08);position:sticky;top:0;background:rgba(11,30,54,.95)}
+.recent-row td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle}
 .recent-row:hover{background:rgba(255,255,255,.04)}
 .recent-row:last-child{border-bottom:none}
-.recent-rank{flex:0 0 24px;width:24px;height:24px;background:rgba(255,255,255,.07);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:rgba(255,255,255,.4)}
-.recent-info{flex:1;min-width:0}
-.recent-name{font-size:12px;font-weight:700;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.recent-ministry{font-size:10px;color:rgba(255,255,255,.4);margin-top:2px}
-.recent-score{flex:0 0 48px;text-align:center}
-.recent-score-val{font-size:16px;font-weight:900}
-.recent-score-val.high{color:#00958A}.recent-score-val.mid{color:#C9A84C}.recent-score-val.low{color:#E74C3C}
-.tier-pill{flex:0 0 auto;font-size:9px;font-weight:800;padding:3px 8px;border-radius:4px}
-.tpill1{background:rgba(201,168,76,.2);color:#C9A84C}.tpill2{background:rgba(0,149,138,.2);color:#00958A}.tpill3{background:rgba(230,126,34,.2);color:#E67E22}.tpill4{background:rgba(231,76,60,.2);color:#E74C3C}
+.recent-name{font-size:12px;font-weight:700;color:var(--white);max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.recent-ministry{font-size:10px;color:rgba(255,255,255,.4);white-space:nowrap}
+.recent-pillar{font-size:10px;color:rgba(255,255,255,.4);white-space:nowrap}
+.recent-score{font-size:15px;font-weight:900;text-align:center}
+.tier-badge{font-size:10px;font-weight:800;padding:3px 8px;border-radius:4px;white-space:nowrap}
 .trends-chart{padding:16px 20px;position:relative}
 .trends-svg{width:100%;height:160px}
 .dash-row-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:0}
@@ -352,6 +350,7 @@ body.en .en-only{display:block!important}
 .kpi-sm-value{font-size:26px;font-weight:900;color:var(--white);margin-bottom:3px}
 .kpi-sm-label{font-size:12px;font-weight:700;color:rgba(255,255,255,.55);margin-bottom:2px}
 .kpi-sm-sub{font-size:10px;color:rgba(255,255,255,.25)}
+.no-data{padding:40px;text-align:center;color:rgba(255,255,255,.3);font-size:13px}
 
 @media(max-width:768px){
 .eval-grid,.about-grid,.contact-grid,.res-body{grid-template-columns:1fr!important}
@@ -588,7 +587,7 @@ body.en .en-only{display:block!important}
 
 <!-- HERO -->
 <section class="hero">
-<canvas id="particle-canvas"></canvas>
+<canvas id="three-canvas" style="position:absolute;inset:0;z-index:0;width:100%;height:100%;display:block"></canvas>
 <div class="hero-glow"></div>
 <div class="hero-glow2"></div>
 <div class="hero-pattern"></div>
@@ -1169,6 +1168,7 @@ body.en .en-only{display:block!important}
 <div id="spinner"><div class="sp"></div></div>
 
 <!-- JAVASCRIPT -->
+<script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
 <script>
 var lang = "ar";
 
@@ -1494,656 +1494,341 @@ function animateCounters(){
 }
 
 /* ═══════════════════════════════════════════════
-   HERO CANVAS — Neural Network + Data Stream
+   HERO CANVAS — Saudi AI Neural Network
+   ═══════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════
+   HERO — Three.js Neural Network (Simple)
    ═══════════════════════════════════════════════ */
 (function(){
-  var canvas = $("particle-canvas");
+  var canvas = document.getElementById("three-canvas");
   if(!canvas) return;
-  var ctx = canvas.getContext("2d");
-  var w, h, t = 0;
-  var nodes = [], streams = [], pulses = [], gridDots = [];
+  var renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:false});
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.setSize(innerWidth, innerHeight);
+  renderer.setClearColor(0x0B1E36, 1);
 
-  var TEAL = {r:0,g:149,b:138};
-  var GOLD = {r:201,g:168,b:76};
-  var NAVY = {r:11,b:30};
+  var scene = new THREE.Scene();
+  var cam = new THREE.PerspectiveCamera(60, innerWidth/innerHeight, 0.1, 2000);
+  cam.position.z = 500;
 
-  function resize(){
-    w = canvas.width = canvas.offsetWidth;
-    h = canvas.height = canvas.offsetHeight;
+  /* 1200 particles */
+  var N = 1200;
+  var pos = new Float32Array(N*3);
+  var col = new Float32Array(N*3);
+  var sz = new Float32Array(N);
+  var sp = new Float32Array(N);
+  var ph = new Float32Array(N);
+  for(var i=0; i<N; i++){
+    pos[i*3]=(Math.random()-0.5)*900;
+    pos[i*3+1]=(Math.random()-0.5)*600;
+    pos[i*3+2]=(Math.random()-0.5)*500;
+    var c = Math.random()<0.75 ? [0,0.58,0.54] : [0.79,0.66,0.3];
+    col[i*3]=c[0]; col[i*3+1]=c[1]; col[i*3+2]=c[2];
+    sz[i] = Math.random()*3+1;
+    sp[i] = Math.random()*0.3+0.1;
+    ph[i] = Math.random()*Math.PI*2;
   }
-  resize();
-  window.addEventListener("resize", resize);
-
-  /* Background grid dots */
-  for(var i=0; i<80; i++){
-    gridDots.push({
-      x: Math.random()*w, y: Math.random()*h,
-      r: Math.random()*1.5+0.3,
-      alpha: Math.random()*0.15+0.03,
-      speed: Math.random()*0.08+0.02
-    });
-  }
-
-  /* Neural nodes — distributed in clusters */
-  var cx = w/2, cy = h/2;
-  var clusters = [
-    {x: cx, y: cy, count: 14, radius: Math.min(w,h)*0.15},
-    {x: cx-w*0.3, y: cy-h*0.25, count: 8, radius: Math.min(w,h)*0.10},
-    {x: cx+w*0.32, y: cy+h*0.2, count: 8, radius: Math.min(w,h)*0.10},
-    {x: cx-w*0.15, y: cy+h*0.35, count: 6, radius: Math.min(w,h)*0.08},
-    {x: cx+w*0.2, y: cy-h*0.32, count: 6, radius: Math.min(w,h)*0.08}
-  ];
-  clusters.forEach(function(cl){
-    for(var i=0; i<cl.count; i++){
-      var ang = Math.random()*Math.PI*2;
-      var dist = Math.random()*cl.radius;
-      nodes.push({
-        x: cl.x + Math.cos(ang)*dist,
-        y: cl.y + Math.sin(ang)*dist,
-        baseX: cl.x + Math.cos(ang)*dist,
-        baseY: cl.y + Math.sin(ang)*dist,
-        r: Math.random()*3+1.5,
-        vx: 0, vy: 0,
-        alpha: Math.random()*0.6+0.2,
-        phase: Math.random()*Math.PI*2,
-        speed: Math.random()*0.5+0.2,
-        color: Math.random()<0.3 ? "gold" : "teal",
-        connections: []
-      });
-    }
+  var geo = new THREE.BufferGeometry();
+  geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+  geo.setAttribute("color", new THREE.BufferAttribute(col, 3));
+  var mat = new THREE.ShaderMaterial({
+    vertexShader:"attribute vec3 color; attribute float size; uniform float time; uniform float pr; varying vec3 c; void main(){c=color;vec3 p=position;p.y+=sin(time*0.5+position.x*0.01)*4.0;vec4 mv=modelViewMatrix*vec4(p,1.0);gl_PointSize=size*pr*(300.0/-mv.z);gl_PointSize=clamp(gl_PointSize,1.0,14.0);gl_Position=projectionMatrix*mv;}",
+    fragmentShader:"varying vec3 c; void main(){float d=length(gl_PointCoord-vec2(0.5));if(d>0.5)discard;float g=pow(1.0-d*2.0,1.5);gl_FragColor=vec4(c,g*0.8);}",
+    uniforms:{time:{value:0}, pr:{value:renderer.getPixelRatio()}},
+    transparent:true, blending:THREE.AdditiveBlending, depthWrite:false
   });
+  scene.add(new THREE.Points(geo, mat));
 
-  /* Build node connections (neural graph) */
-  for(var i=0; i<nodes.length; i++){
-    for(var j=i+1; j<nodes.length; j++){
-      var dx = nodes[i].x-nodes[j].x, dy = nodes[i].y-nodes[j].y;
-      var dist = Math.sqrt(dx*dx+dy*dy);
-      if(dist < Math.min(w,h)*0.22){
-        nodes[i].connections.push(j);
-        nodes[j].connections.push(i);
-      }
-    }
-  }
+  /* Two ambient rings */
+  var ring1 = new THREE.Mesh(new THREE.RingGeometry(200,210,64), new THREE.MeshBasicMaterial({color:0x00958A,transparent:true,opacity:0.08,side:THREE.DoubleSide,blending:THREE.AdditiveBlending}));
+  var ring2 = new THREE.Mesh(new THREE.RingGeometry(320,328,64), new THREE.MeshBasicMaterial({color:0xC9A84C,transparent:true,opacity:0.06,side:THREE.DoubleSide,blending:THREE.AdditiveBlending}));
+  scene.add(ring1, ring2);
 
-  /* Data streams — particles that travel along paths */
-  function spawnStream(){
-    var fromNode = nodes[Math.floor(Math.random()*nodes.length)];
-    var toNode = nodes[Math.floor(Math.random()*nodes.length)];
-    if(fromNode===toNode) return;
-    streams.push({
-      fromX: fromNode.x, fromY: fromNode.y,
-      toX: toNode.x, toY: toNode.y,
-      progress: 0,
-      speed: Math.random()*0.012+0.006,
-      alpha: Math.random()*0.7+0.3,
-      color: Math.random()<0.25 ? "gold" : "teal",
-      width: Math.random()*2+1
-    });
-  }
-  /* Seed streams */
-  for(var i=0; i<12; i++){ spawnStream(); }
+  /* Mouse */
+  var mx=0,my=0;
+  addEventListener("mousemove",function(e){mx=(e.clientX/innerWidth-0.5)*2;my=-(e.clientY/innerHeight-0.5)*2;});
 
-  /* Traveling pulses along connection lines */
-  function spawnPulse(){
-    var ni = Math.floor(Math.random()*nodes.length);
-    var conns = nodes[ni].connections;
-    if(!conns.length) return;
-    var nj = conns[Math.floor(Math.random()*conns.length)];
-    var n1 = nodes[ni], n2 = nodes[nj];
-    pulses.push({
-      n1idx: ni, n2idx: nj,
-      progress: 0,
-      speed: Math.random()*0.025+0.015,
-      alpha: Math.random()*0.6+0.4,
-      color: Math.random()<0.2 ? "gold" : "teal",
-      r: Math.random()*2.5+1.5
-    });
-  }
-  for(var i=0; i<8; i++){ spawnPulse(); }
-
-  /* Mouse influence */
-  var mx=w/2, my=h/2;
-  document.addEventListener("mousemove", function(e){
-    var rect = canvas.getBoundingClientRect();
-    mx = e.clientX - rect.left;
-    my = e.clientY - rect.top;
-  });
-
-  function lerp(a,b,t){ return a+(b-a)*t; }
-  function rgb(c){ return c.r+","+c.g+","+c.b; }
-
-  function draw(){
-    t += 0.004;
-    ctx.clearRect(0, 0, w, h);
-
-    /* Layer 1 — Deep space gradient base */
-    var bgGrad = ctx.createRadialGradient(w/2, h/2, 0, w/2, h/2, Math.max(w,h)*0.7);
-    bgGrad.addColorStop(0, "rgba(14,30,50,1)");
-    bgGrad.addColorStop(0.5, "rgba(11,22,38,1)");
-    bgGrad.addColorStop(1, "rgba(6,14,25,1)");
-    ctx.fillStyle = bgGrad;
-    ctx.fillRect(0, 0, w, h);
-
-    /* Layer 2 — Ambient teal glow (center) */
-    var glow1 = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.min(w,h)*0.45);
-    glow1.addColorStop(0, "rgba(0,149,138,0.07)");
-    glow1.addColorStop(1, "transparent");
-    ctx.fillStyle = glow1;
-    ctx.fillRect(0, 0, w, h);
-
-    /* Layer 3 — Ambient gold glow (off-center) */
-    var glow2 = ctx.createRadialGradient(cx+w*0.3, cy-h*0.2, 0, cx+w*0.3, cy-h*0.2, Math.min(w,h)*0.3);
-    glow2.addColorStop(0, "rgba(201,168,76,0.05)");
-    glow2.addColorStop(1, "transparent");
-    ctx.fillStyle = glow2;
-    ctx.fillRect(0, 0, w, h);
-
-    /* Layer 4 — Animated grid dots */
-    gridDots.forEach(function(d){
-      d.y += d.speed;
-      if(d.y > h) { d.y = 0; d.x = Math.random()*w; }
-      var a = d.alpha * (0.6 + 0.4*Math.sin(t*2 + d.x*0.01));
-      ctx.beginPath();
-      ctx.arc(d.x, d.y, d.r, 0, Math.PI*2);
-      ctx.fillStyle = "rgba(0,149,138,"+a+")";
-      ctx.fill();
-    });
-
-    /* Layer 5 — Node connections (neural links) */
-    for(var i=0; i<nodes.length; i++){
-      var n1 = nodes[i];
-      n1.connections.forEach(function(j){
-        if(j > i) return; /* draw once */
-        var n2 = nodes[j];
-        var dx = n2.x - n1.x, dy = n2.y - n1.y;
-        var dist = Math.sqrt(dx*dx + dy*dy);
-        var baseAlpha = 0.06 * (1 - dist/(Math.min(w,h)*0.22));
-        var pulse = 0.03 * Math.sin(t*3 + n1.phase + j*0.5);
-        var c = n1.color === "gold" ? GOLD : TEAL;
-        ctx.beginPath();
-        ctx.moveTo(n1.x, n1.y);
-        ctx.lineTo(n2.x, n2.y);
-        ctx.strokeStyle = "rgba("+rgb(c)+","+(baseAlpha+pulse)+")";
-        ctx.lineWidth = 0.8;
-        ctx.stroke();
-      });
-    }
-
-    /* Layer 6 — Nodes */
-    for(var i=0; i<nodes.length; i++){
-      var n = nodes[i];
-      /* Gentle floating motion */
-      n.x = n.baseX + Math.sin(t*n.speed + n.phase)*8;
-      n.y = n.baseY + Math.cos(t*n.speed*0.7 + n.phase)*6;
-      /* Mouse push */
-      var mdx = n.x - mx, mdy = n.y - my;
-      var mdist = Math.sqrt(mdx*mdx + mdy*mdy);
-      if(mdist < 150 && mdist > 0){
-        n.x += mdx * 0.015;
-        n.y += mdy * 0.015;
-        n.baseX += mdx * 0.008;
-        n.baseY += mdy * 0.008;
-      }
-      /* Glow halo */
-      var c = n.color === "gold" ? GOLD : TEAL;
-      var glowR = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r*5);
-      glowR.addColorStop(0, "rgba("+rgb(c)+",0.18)");
-      glowR.addColorStop(1, "transparent");
-      ctx.fillStyle = glowR;
-      ctx.fillRect(n.x-n.r*6, n.y-n.r*6, n.r*12, n.r*12);
-      /* Core dot */
-      var pulseR = n.r + 0.5*Math.sin(t*4+n.phase);
-      ctx.beginPath();
-      ctx.arc(n.x, n.y, pulseR, 0, Math.PI*2);
-      ctx.fillStyle = "rgba("+rgb(c)+","+n.alpha+")";
-      ctx.fill();
-      /* Bright center */
-      ctx.beginPath();
-      ctx.arc(n.x, n.y, pulseR*0.5, 0, Math.PI*2);
-      ctx.fillStyle = "rgba(255,255,255,"+(n.alpha*0.4)+")";
-      ctx.fill();
-    }
-
-    /* Layer 7 — Traveling pulses along neural links */
-    for(var i=pulses.length-1; i>=0; i--){
-      var p = pulses[i];
-      p.progress += p.speed;
-      if(p.progress >= 1){
-        /* respawn */
-        var ni = Math.floor(Math.random()*nodes.length);
-        var conns = nodes[ni].connections;
-        if(!conns.length){ pulses.splice(i,1); continue; }
-        var nj = conns[Math.floor(Math.random()*conns.length)];
-        p.n1idx = ni; p.n2idx = nj;
-        p.progress = 0;
-        p.speed = Math.random()*0.025+0.015;
-        p.color = Math.random()<0.2 ? "gold" : "teal";
-      }
-      var n1 = nodes[p.n1idx], n2 = nodes[p.n2idx];
-      var px = lerp(n1.x, n2.x, p.progress);
-      var py = lerp(n1.y, n2.y, p.progress);
-      var c = p.color === "gold" ? GOLD : TEAL;
-      /* trail behind pulse */
-      var trailLen = 0.15;
-      var tx = lerp(n1.x, n2.x, Math.max(0, p.progress-trailLen));
-      var ty = lerp(n1.y, n2.y, Math.max(0, p.progress-trailLen));
-      var grad = ctx.createLinearGradient(tx, ty, px, py);
-      grad.addColorStop(0, "rgba("+rgb(c)+",0)");
-      grad.addColorStop(1, "rgba("+rgb(c)+","+p.alpha+")");
-      ctx.beginPath();
-      ctx.moveTo(tx, ty);
-      ctx.lineTo(px, py);
-      ctx.strokeStyle = grad;
-      ctx.lineWidth = p.r;
-      ctx.lineCap = "round";
-      ctx.stroke();
-      /* pulse head glow */
-      var pg = ctx.createRadialGradient(px, py, 0, px, py, p.r*4);
-      pg.addColorStop(0, "rgba("+rgb(c)+","+p.alpha*0.5+")");
-      pg.addColorStop(1, "transparent");
-      ctx.fillStyle = pg;
-      ctx.fillRect(px-p.r*5, py-p.r*5, p.r*10, p.r*10);
-    }
-
-    /* Layer 8 — Data streams (particles flowing between nodes) */
-    for(var i=streams.length-1; i>=0; i--){
-      var s = streams[i];
-      s.progress += s.speed;
-      if(s.progress >= 1.3){ streams.splice(i,1); spawnStream(); continue; }
-      var c = s.color === "gold" ? GOLD : TEAL;
-      /* draw full path faintly */
-      ctx.beginPath();
-      ctx.moveTo(s.fromX, s.fromY);
-      ctx.lineTo(s.toX, s.toY);
-      ctx.strokeStyle = "rgba("+rgb(c)+",0.04)";
-      ctx.lineWidth = 0.5;
-      ctx.stroke();
-      /* particle head */
-      var tp = Math.min(s.progress, 1);
-      var px = lerp(s.fromX, s.toX, tp);
-      var py = lerp(s.fromY, s.toY, tp);
-      /* trail */
-      var tp2 = Math.max(0, tp - 0.12);
-      var tx = lerp(s.fromX, s.toX, tp2);
-      var ty = lerp(s.fromY, s.toY, tp2);
-      var sg = ctx.createLinearGradient(tx, ty, px, py);
-      sg.addColorStop(0, "rgba("+rgb(c)+",0)");
-      sg.addColorStop(1, "rgba("+rgb(c)+","+s.alpha+")");
-      ctx.beginPath();
-      ctx.moveTo(tx, ty);
-      ctx.lineTo(px, py);
-      ctx.strokeStyle = sg;
-      ctx.lineWidth = s.width;
-      ctx.lineCap = "round";
-      ctx.stroke();
-      /* glow around head */
-      var hg = ctx.createRadialGradient(px, py, 0, px, py, 8);
-      hg.addColorStop(0, "rgba("+rgb(c)+","+s.alpha*0.6+")");
-      hg.addColorStop(1, "transparent");
-      ctx.fillStyle = hg;
-      ctx.fillRect(px-10, py-10, 20, 20);
-    }
-
-    /* Layer 9 — Hexagonal geometric overlay (subtle) */
-    ctx.save();
-    ctx.globalAlpha = 0.025;
-    ctx.strokeStyle = "#00958A";
-    ctx.lineWidth = 0.5;
-    var hexSize = 40;
-    var hexY = ((t*20)%(hexSize*1.732));
-    for(var row=-1; row<h/(hexSize*1.732)+2; row++){
-      for(var col=-1; col<w/hexSize+2; col++){
-        var hx = col*hexSize*1.5;
-        var hy = row*hexSize*1.732 + hexY;
-        drawHex(hx, hy, hexSize*0.5);
-      }
-    }
-    ctx.restore();
-
-    requestAnimationFrame(draw);
-  }
-
-  function drawHex(cx, cy, r){
-    ctx.beginPath();
-    for(var i=0;i<6;i++){
-      var ang = Math.PI/3*i - Math.PI/6;
-      var hx = cx + r*Math.cos(ang), hy = cy + r*Math.sin(ang);
-      if(i===0) ctx.moveTo(hx,hy); else ctx.lineTo(hx,hy);
-    }
-    ctx.closePath();
-    ctx.stroke();
-  }
-
-  draw();
+  var clock = new THREE.Clock();
+  (function anim(){
+    requestAnimationFrame(anim);
+    var t = clock.getElapsedTime();
+    cam.position.x+=(mx*60-cam.position.x)*0.03;
+    cam.position.y+=(my*40-cam.position.y)*0.03;
+    cam.lookAt(0,0,0);
+    mat.uniforms.time.value = t;
+    ring1.rotation.z = t*0.15; ring2.rotation.z = -t*0.08;
+    ring1.scale.setScalar(1+0.06*Math.sin(t*0.9));
+    ring2.scale.setScalar(1+0.08*Math.sin(t*0.6+1.5));
+    renderer.render(scene, cam);
+  })();
+  addEventListener("resize",function(){cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
 })();
 
-/* Header scroll */
-window.addEventListener("scroll", function(){
-  var hdr = $("siteHeader");
-  if(window.scrollY > 10) hdr.classList.add("scrolled");
-  else hdr.classList.remove("scrolled");
-  reveal();
-});
 
-/* Init */
-switchLang("ar");
-setTimeout(function(){
-  reveal();
-  animateCounters();
-}, 200);
-
-window.addEventListener("load", function(){
-  setTimeout(reveal, 100);
-  setTimeout(animateCounters, 300);
-  if($("page-dashboard").classList.contains("active")) dashboardInit();
-});
-
-/* ── DASHBOARD ── */
-var dashboardData = null;
-
-function dashboardRefresh(){
-  dashboardInit();
-}
+/* ═══════════════════════════════════════════════
+   DASHBOARD — Animated SVG Charts & Live Data
+   ═══════════════════════════════════════════════ */
 
 function dashboardInit(){
-  var now = new Date();
-  var timeStr = now.toLocaleTimeString("ar-SA", {hour:"2-digit", minute:"2-digit"});
-  var e = $("dashUpdated");
-  if(e) e.textContent = "آخر تحديث: " + timeStr;
-
-  fetch("/api/dashboard")
-    .then(function(r){ return r.json(); })
-    .then(function(data){
-      dashboardData = data;
-      renderDashboardKPIs(data);
-      renderPillarGapChart(data.pillar_coverage, data.gap_pillars);
-      renderTierDistribution(data.tier_breakdown, data.total_proposals);
-      renderMinistryHeatmap(data.ministry_summary);
-      renderExtraStats(data);
-      fetchRecentProposals();
-      fetchMonthlyTrends();
-    })
-    .catch(function(e){ console.error("Dashboard error:", e); });
+  dashboardRefresh();
+  /* Auto-refresh every 30 seconds */
+  if(window._dashTimer) clearInterval(window._dashTimer);
+  window._dashTimer = setInterval(dashboardRefresh, 30000);
 }
 
-function fetchRecentProposals(){
-  fetch("/api/dashboard/recent")
-    .then(function(r){ return r.json(); })
-    .then(function(proposals){ renderRecentProposals(proposals); });
-}
-
-function fetchMonthlyTrends(){
-  fetch("/api/dashboard")
-    .then(function(r){ return r.json(); })
-    .then(function(data){ renderMonthlyTrendsChart(data.monthly_submissions); });
-}
-
-function renderDashboardKPIs(d){
-  var total = d.total_proposals || 0;
-  var avg = d.avg_score || 0;
-  var tier1 = d.tier_breakdown ? d.tier_breakdown.tier1 : 0;
-  var tier1Rate = total > 0 ? Math.round(tier1/total*100) : 0;
-  var gaps = d.gap_pillars ? d.gap_pillars.length : 0;
-
-  animateNum($("kpiTotalVal"), total);
-  animateNum($("kpiAvgVal"), avg, 1);
-  animateNum($("kpiTier1Val"), tier1);
-  animateNum($("kpiGapVal"), gaps);
-
-  // Color avg score
-  var avgEl = $("kpiAvgVal");
-  if(avgEl){
-    if(avg >= 75) avgEl.style.color = "#00958A";
-    else if(avg >= 60) avgEl.style.color = "#C9A84C";
-    else avgEl.style.color = "#E74C3C";
-  }
-
-  // Gap badge
-  var gapBadge = $("gapBadge");
-  if(gapBadge){
-    gapBadge.style.display = gaps > 0 ? "flex" : "none";
-  }
-
-  // Update gap alert banner with real pillar data
-  var gapBanner = $("gapAlertBanner");
-  var gapPillarBadges = $("gapPillarBadges");
-  if(gapBanner && d.gap_pillars && d.pillar_coverage){
-    if(gaps > 0){
-      gapBanner.style.display = "block";
-      var badgeHtml = "";
-      d.gap_pillars.forEach(function(p){
-        var count = d.pillar_coverage[p] ? d.pillar_coverage[p].count : 0;
-        var icon = PILLAR_ICONS[p] || "";
-        badgeHtml += "<span class='gap-pill'>" + icon + " " + (PILLAR_LABELS[p]||p) + " — " + count + " proposal" + (count !== 1 ? "s" : "") + "</span>";
-      });
-      if(gapPillarBadges) gapPillarBadges.innerHTML = badgeHtml;
+function dashboardRefresh(){
+  fetch("/api/dashboard").then(function(r){return r.json();}).then(function(d){
+    window._dashData = d;
+    renderKPIs(d);
+    renderPillarChart(d);
+    renderTierChart(d);
+    renderMinistryMap(d);
+    renderRecentProposals(d);
+    renderTrendsChart(d);
+    renderExtraStats(d);
+    var now = new Date();
+    var t = (lang==="ar")
+      ? now.toLocaleTimeString("ar-SA",{hour:"2-digit",minute:"2-digit"})
+      : now.toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit"});
+    $("dashUpdated").textContent = (lang==="ar" ? "آخر تحديث: " : "Updated: ") + t;
+    if(d.gap_pillars && d.gap_pillars.length > 0){
+      $("gapAlertBanner").style.display = "block";
+      var pills = d.gap_pillars.map(function(p){
+        var cnt = d.pillar_coverage[p] ? d.pillar_coverage[p].count : 0;
+        var lbl = {health:"الصحة",governance:"الحوكمة",economy:"الاقتصاد",security:"الأمن",society:"المجتمع"}[p] || p;
+        var icon = {health:"🏥",governance:"🏛️",economy:"💰",security:"🛡️",society:"🌍"}[p] || "📊";
+        var _arl = lang==="ar" ? "\u0645\u0642\u062a\u0631\u062d" : "proposals";
+    return "<span class=\"gap-pill\">"+icon+" "+lbl+" \u2014 "+cnt+" "+_arl+"</span>";     }).join("");
+      $("gapPillarBadges").innerHTML = pills;
     } else {
-      gapBanner.style.display = "none";
+      $("gapAlertBanner").style.display = "none";
     }
-  }
+  }).catch(function(e){ console.error("Dashboard error:", e); });
+}
 
-  // Also hide gap alert if no proposals yet
-  if(gapBanner && total === 0){
-    gapBanner.style.display = "none";
+/* ── KPI Cards ── */
+function renderKPIs(d){
+  animateCounter($("kpiTotalVal"), 0, d.total_proposals || 0, 1200);
+  $("kpiAvgVal").textContent = (d.avg_score || 0).toFixed(1);
+  var tier1 = d.tier_breakdown ? d.tier_breakdown.tier1 : 0;
+  var pct = d.total_proposals > 0 ? Math.round(tier1/d.total_proposals*100) : 0;
+  $("kpiTier1Val").textContent = pct+"%";
+  $("kpiGapVal").textContent = (d.gap_pillars||[]).length;
+  var gapCard = $("kpiGapCard");
+  if((d.gap_pillars||[]).length > 0){
+    gapCard.style.border = "1px solid rgba(239,68,68,0.3)";
+    gapCard.style.background = "rgba(239,68,68,0.05)";
+  } else {
+    gapCard.style.border = "1px solid rgba(0,149,138,0.2)";
+    gapCard.style.background = "rgba(0,149,138,0.05)";
   }
 }
 
-function animateNum(el, target, decimals){
-  if(!el) return;
-  var duration = 1500;
-  var start = performance.now();
-  var from = 0;
-  function update(now){
-    var elapsed = now - start;
-    var progress = Math.min(elapsed/duration, 1);
-    var eased = 1 - Math.pow(1-progress, 3);
-    var val = from + (target - from) * eased;
-    el.textContent = decimals ? val.toFixed(decimals) : Math.round(val);
-    if(progress < 1) requestAnimationFrame(update);
-    else el.textContent = decimals ? target.toFixed(decimals) : target;
-  }
-  requestAnimationFrame(update);
-}
-
-var PILLAR_LABELS = {
-  health:"الصحة", governance:"الحوكمة", economy:"الاقتصاد",
-  security:"الأمن", society:"المجتمع"
-};
-
-function renderPillarGapChart(pillarData, gapPillars){
-  var container = $("pillarGapChart");
-  if(!container) return;
-  var html = "";
+/* ── Pillar Gap Chart (horizontal bars) ── */
+function renderPillarChart(d){
   var pillars = ["health","governance","economy","security","society"];
-  var maxCount = Math.max.apply(null, pillars.map(function(p){ return pillarData[p] ? pillarData[p].count : 0; }), 1);
+  var labels = {health:"🏥 الصحة",governance:"🏛️ الحوكمة",economy:"💰 الاقتصاد",security:"🛡️ الأمن",society:"🌍 المجتمع"};
+  var maxCnt = Math.max.apply(null, pillars.map(function(p){return d.pillar_coverage[p]?d.pillar_coverage[p].count:0;})) || 3;
+  var gapMap = {};
+  (d.gap_pillars||[]).forEach(function(g){ gapMap[g]=true; });
+
+  var html = '<div class="pillar-bars">';
   pillars.forEach(function(p){
-    var count = pillarData[p] ? pillarData[p].count : 0;
-    var pct = count > 0 ? (count / maxCount * 100) : 0;
-    var colorClass = count === 0 ? "gap" : count < 3 ? "mid" : "strong";
-    html += "<div class='pillar-row'>"
-      + "<span class='plabel'>" + (PILLAR_LABELS[p] || p) + "</span>"
-      + "<div class='pillar-bar-bg'>"
-        + "<div class='pillar-bar-fill " + colorClass + "' style='width:" + pct + "%'></div>"
-      + "</div>"
-      + "<span class='pcount'>" + count + "</span></div>";
+    var cnt = d.pillar_coverage[p] ? d.pillar_coverage[p].count : 0;
+    var avg = d.pillar_coverage[p] ? d.pillar_coverage[p].avg_score : 0;
+    var pct = (cnt/maxCnt)*100;
+    var isGap = gapMap[p];
+    var color = isGap ? "#E74C3C" : (avg>=80 ? "#00958A" : avg>=68 ? "#C9A84C" : "#6B7280");
+    var barClass = isGap ? "pillar-bar gap" : "pillar-bar";
+    var scoreLbl = cnt > 0 ? '<span class="pillar-score">'+avg.toFixed(0)+'</span>' : '<span class="pillar-score">—</span>';
+    html += '<div class="pillar-row">'+
+      '<span class="pillar-lbl">'+labels[p]+'</span>'+
+      '<div class="pillar-track"><div class="'+barClass+'" style="width:'+pct+'%;background:'+color+'"></div></div>'+
+      '<span class="pillar-cnt">'+cnt+'</span>'+
+      scoreLbl+
+    '</div>';
   });
-  container.innerHTML = html;
-}
-
-function renderTierDistribution(tierBreakdown, total){
-  var container = $("tierDistChart");
-  if(!container) return;
-  var tiers = [
-    {k:"tier1", label:"Tier 1 (80+)", cls:"tbar1"},
-    {k:"tier2", label:"Tier 2 (68-79)", cls:"tbar2"},
-    {k:"tier3", label:"Tier 3 (52-67)", cls:"tbar3"},
-    {k:"tier4", label:"Tier 4 (&lt;52)", cls:"tbar4"}
-  ];
-  var html = "";
-  tiers.forEach(function(t){
-    var count = tierBreakdown ? (tierBreakdown[t.k] || 0) : 0;
-    var pct = total > 0 ? (count / total * 100) : 0;
-    html += "<div class='tier-bar-row'>"
-      + "<span class='tlabel'>" + t.label + "</span>"
-      + "<div class='tier-bar-bg'>"
-        + "<div class='tier-bar-fill " + t.cls + "' style='width:" + pct + "%'></div>"
-      + "</div>"
-      + "<span class='tcount'>" + count + "</span></div>";
-  });
-  container.innerHTML = html;
-}
-
-function renderMinistryHeatmap(ministrySummary){
-  var container = $("ministryHeatmap");
-  if(!container) return;
-  if(!ministrySummary || ministrySummary.length === 0){
-    container.innerHTML = "<div style='padding:20px;color:rgba(255,255,255,.3);font-size:13px'>لا توجد بيانات بعد</div>";
-    return;
-  }
-  var sorted = ministrySummary.slice(0, 12);
-  var html = "";
-  sorted.forEach(function(m){
-    var score = m.avg_score || 0;
-    var scoreClass = score >= 75 ? "high" : score >= 60 ? "mid" : "low";
-    var budgetStr = m.total_budget >= 1000000 ? (m.total_budget/1000000).toFixed(1) + "M" : (m.total_budget/1000).toFixed(0) + "K";
-    html += "<div class='heatmap-card'>"
-      + "<div class='hm-name' title='" + m.ministry + "'>" + m.ministry + "</div>"
-      + "<div class='hm-stats'>"
-        + "<span class='hm-count'>" + m.count + " project" + (m.count > 1 ? "s" : "") + "</span>"
-        + "<span class='hm-score " + scoreClass + "'>" + score.toFixed(0) + "</span>"
-      + "</div>"
-      + "<div class='hm-budget'>SAR " + budgetStr + "</div>"
-    + "</div>";
-  });
-  container.innerHTML = html;
-}
-
-function renderRecentProposals(proposals){
-  var container = $("recentProposals");
-  if(!container) return;
-  if(!proposals || proposals.length === 0){
-    container.innerHTML = "<div style='padding:20px;color:rgba(255,255,255,.3);font-size:13px'>لا توجد مقترحات بعد</div>";
-    return;
-  }
-  var html = "";
-  proposals.forEach(function(p, i){
-    var score = p.overall_score || 0;
-    var scoreClass = score >= 75 ? "high" : score >= 60 ? "mid" : "low";
-    var tierClass = score >= 80 ? "tpill1" : score >= 68 ? "tpill2" : score >= 52 ? "tpill3" : "tpill4";
-    var tierLabel = score >= 80 ? "Tier 1" : score >= 68 ? "Tier 2" : score >= 52 ? "Tier 3" : "Tier 4";
-    var pillarIcon = PILLAR_ICONS[p.pillar] || "";
-    html += "<div class='recent-row'>"
-      + "<div class='recent-rank'>" + (i+1) + "</div>"
-      + "<div class='recent-info'>"
-        + "<div class='recent-name' title='" + p.project_name + "'>" + p.project_name + "</div>"
-        + "<div class='recent-ministry'>" + pillarIcon + " " + p.ministry + "</div>"
-      + "</div>"
-      + "<div class='recent-score'>"
-        + "<div class='recent-score-val " + scoreClass + "'>" + score.toFixed(0) + "</div>"
-      + "</div>"
-      + "<span class='tier-pill " + tierClass + "'>" + tierLabel + "</span>"
-    + "</div>";
-  });
-  container.innerHTML = html;
-}
-
-var PILLAR_ICONS = {
-  health:"🏥", governance:"🏛️", economy:"💰", security:"🛡️", society:"🌍"
-};
-
-function renderMonthlyTrendsChart(monthlyData){
-  var container = $("monthlyTrendsChart");
-  if(!container) return;
-  if(!monthlyData || monthlyData.length === 0){
-    container.innerHTML = "<div style='padding:20px;color:rgba(255,255,255,.3);font-size:13px'>لا توجد بيانات اتجاهية بعد</div>";
-    return;
-  }
-
-  var AR_MONTHS = ["يناير","فبراير","مارس","أبريل","ماي","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
-  var EN_MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-
-  var months = monthlyData.map(function(d){ return d.month; });
-  var counts = monthlyData.map(function(d){ return d.count; });
-  var maxCount = Math.max.apply(null, counts, 1);
-
-  var W = 800, H = 160, PAD = {top:10,right:20,bottom:30,left:35};
-  var chartW = W - PAD.left - PAD.right;
-  var chartH = H - PAD.top - PAD.bottom;
-
-  var xStep = counts.length > 1 ? chartW / (counts.length - 1) : chartW / 2;
-  var points = counts.map(function(c, i){
-    var x = PAD.left + i * xStep;
-    var y = PAD.top + chartH - (c / maxCount * chartH);
-    return {x:x, y:y, c:c};
-  });
-
-  var polyline = points.map(function(p){ return p.x+","+p.y; }).join(" ");
-  var areaPath = "M" + PAD.left + "," + (PAD.top+chartH)
-    + (points.map(function(p){ return " L"+p.x+","+p.y; }).join(""))
-    + " L" + points[points.length-1].x + "," + (PAD.top+chartH) + " Z";
-
-  // Grid lines
-  var gridLines = [];
-  for(var g = 0; g <= 4; g++){
-    var y = PAD.top + (g/4) * chartH;
-    var val = Math.round(maxCount - (g/4) * maxCount);
-    gridLines.push("<line x1='"+PAD.left+"' y1='"+y+"' x2='"+(W-PAD.right)+"' y2='"+y+"' stroke='rgba(255,255,255,0.04)' stroke-width='1'/>");
-    gridLines.push("<text x='"+(PAD.left-4)+"' y='"+(y+4)+"' text-anchor='end' font-size='9' fill='rgba(255,255,255,0.25)'>"+val+"</text>");
-  }
-
-  // X axis labels
-  var xLabels = points.map(function(p, i){
-    var date = new Date(months[i] + "-01");
-    var monthName = lang === "ar" ? AR_MONTHS[date.getMonth()] : EN_MONTHS[date.getMonth()];
-    return "<text x='"+p.x+"' y='"+(H-8)+"' text-anchor='middle' font-size='9' fill='rgba(255,255,255,0.3)'>"+monthName+"</text>";
-  }).join("");
-
-  // Dots
-  var dots = points.map(function(p){
-    return "<circle cx='"+p.x+"' cy='"+p.y+"' r='4' fill='#00958A' opacity='0.9'/>"
-      + "<title>" + months[points.indexOf(p)] + ": " + p.c + " proposals</title>";
-  }).join("");
-
-  var svg = "<svg class='trends-svg' viewBox='0 0 "+W+" "+H+"' preserveAspectRatio='xMidYMid meet'>"
-    + gridLines.join("")
-    + "<defs><linearGradient id='trendGrad' x1='0' y1='0' x2='0' y2='1'>"
-    + "<stop offset='0%' stop-color='rgba(0,149,138,0.25)'/>"
-    + "<stop offset='100%' stop-color='rgba(0,149,138,0)'/></linearGradient></defs>"
-    + "<path d='"+areaPath+"' fill='url(#trendGrad)'/>"
-    + "<polyline points='"+polyline+"' fill='none' stroke='#00958A' stroke-width='2.5' stroke-linejoin='round'/>"
-    + dots
-    + xLabels
-    + "</svg>";
-
-  container.innerHTML = svg;
-}
-
-function renderExtraStats(d){
-  var proposals = dashboardData || d;
-  // Count cross ministry from recent
-  fetch("/api/dashboard/recent")
-    .then(function(r){ return r.json(); })
-    .then(function(recent){
-      var crossCount = 0;
-      // We don't have cross_ministry in recent API, use main dashboard
-      if(dashboardData && dashboardData.pillar_coverage){
-        // Estimate from total
-      }
-      animateNum($("highRiskVal"), d.high_risk_count || 0);
-      animateNum($("pdplFlagVal"), d.pdpl_flags || 0);
-      animateNum($("crossMinistryVal"), 0);
-      var totalBudget = 0;
-      if(d.ministry_summary){
-        d.ministry_summary.forEach(function(m){ totalBudget += m.total_budget || 0; });
-      }
-      var budgetEl = $("totalBudgetVal");
-      if(budgetEl){
-        if(totalBudget >= 1000000000) budgetEl.textContent = (totalBudget/1000000000).toFixed(1) + "B";
-        else if(totalBudget >= 1000000) budgetEl.textContent = (totalBudget/1000000).toFixed(0) + "M";
-        else budgetEl.textContent = (totalBudget/1000).toFixed(0) + "K";
-      }
+  html += '</div>';
+  $("pillarGapChart").innerHTML = html;
+  /* Animate bars */
+  setTimeout(function(){
+    document.querySelectorAll(".pillar-bar").forEach(function(b){
+      var w = b.style.width; b.style.width="0%";
+      setTimeout(function(){ b.style.width=w; }, 50);
     });
+  }, 100);
 }
+
+/* ── Tier Distribution (stacked bars) ── */
+function renderTierChart(d){
+  var t = d.tier_breakdown || {tier1:0,tier2:0,tier3:0,tier4:0};
+  var total = d.total_proposals || 1;
+  var tiers = [
+    {key:"tier1",label:lang==="ar"?"موافق فوراً":"Tier 1",color:"#00958A",icon:"🏆"},
+    {key:"tier2",label:lang==="ar"?"موافق بشروط":"Tier 2",color:"#C9A84C",icon:"✅"},
+    {key:"tier3",label:lang==="ar"?"مراجعة":"Tier 3",color:"#E67E22",icon:"⚠️"},
+    {key:"tier4",label:lang==="ar"?"غير موصى به":"Tier 4",color:"#E74C3C",icon:"❌"},
+  ];
+  var html = '<div class="tier-bars">';
+  tiers.forEach(function(tier){
+    var cnt = t[tier.key] || 0;
+    var pct = (cnt/total*100).toFixed(1);
+    html += '<div class="tier-row">'+
+      '<span class="tier-icon">'+tier.icon+'</span>'+
+      '<span class="tier-label">'+tier.label+'</span>'+
+      '<div class="tier-track"><div class="tier-bar-fill" style="width:'+pct+'%;background:'+tier.color+'"></div></div>'+
+      '<span class="tier-count">'+cnt+' ('+pct+'%)</span>'+
+    '</div>';
+  });
+  html += '</div>';
+  $("tierDistChart").innerHTML = html;
+  setTimeout(function(){
+    document.querySelectorAll(".tier-bar-fill").forEach(function(b){
+      var w=b.style.width; b.style.width="0%";
+      setTimeout(function(){ b.style.width=w; },50);
+    });
+  },100);
+}
+
+/* ── Ministry Heatmap ── */
+function renderMinistryMap(d){
+  var mins = d.ministry_summary || [];
+  if(!mins.length){
+    $("ministryHeatmap").innerHTML = '<div class="no-data">'+(lang==="ar"?"لا توجد بيانات":"No data yet")+'</div>';
+    return;
+  }
+  var maxBudget = Math.max.apply(null, mins.map(function(m){return m.total_budget||0;})) || 1;
+  var scoreColor = function(s){
+    if(s>=80) return "#00958A";
+    if(s>=68) return "#C9A84C";
+    if(s>=52) return "#E67E22";
+    return "#E74C3C";
+  };
+  var html = '<div class="heatmap-grid-inner">';
+  mins.forEach(function(m){
+    var size = 0.6 + (m.total_budget/maxBudget)*0.4;
+    var c = scoreColor(m.avg_score);
+    var budgetStr = (m.total_budget/1000000).toFixed(0)+"M";
+    html += '<div class="heat-card" style="flex:'+size.toFixed(2)+' 1 0;border-top:3px solid '+c+'">'+
+      '<div class="heat-ministry">'+m.ministry+'</div>'+
+      '<div class="heat-score" style="color:'+c+'">'+m.avg_score.toFixed(0)+'</div>'+
+      '<div class="heat-count">'+m.count+' '+(lang==="ar"?"مقترح":"props")+'</div>'+
+      '<div class="heat-budget">'+budgetStr+' SAR</div>'+
+    '</div>';
+  });
+  html += '</div>';
+  $("ministryHeatmap").innerHTML = html;
+}
+
+/* ── Recent Proposals ── */
+function renderRecentProposals(d){
+  var props = d.recent_proposals || [];
+  if(!props.length){
+    $("recentProposals").innerHTML = '<div class="no-data">'+(lang==="ar"?"لا توجد مقترحات":"No proposals yet")+'</div>';
+    return;
+  }
+  var tierColor = function(t){
+    if(!t) return "#E74C3C";
+    if(t.indexOf("Tier 1")>=0) return "#00958A";
+    if(t.indexOf("Tier 2")>=0) return "#C9A84C";
+    if(t.indexOf("Tier 3")>=0) return "#E67E22";
+    return "#E74C3C";
+  };
+  var tierBadge = function(t){
+    if(!t) return "❌ Tier 4";
+    if(t.indexOf("Tier 1")>=0) return "🏆 Tier 1";
+    if(t.indexOf("Tier 2")>=0) return "✅ Tier 2";
+    if(t.indexOf("Tier 3")>=0) return "⚠️ Tier 3";
+    return "❌ Tier 4";
+  };
+  var html = '<table class="recent-table-inner"><thead><tr>'+
+    '<th>'+(lang==="ar"?"المشروع":"Project")+'</th>'+
+    '<th>'+(lang==="ar"?"الجهة":"Ministry")+'</th>'+
+    '<th>'+(lang==="ar"?"المحور":"Pillar")+'</th>'+
+    '<th>'+(lang==="ar"?"الدرجة":"Score")+'</th>'+
+    '<th>'+(lang==="ar"?"المستوى":"Tier")+'</th>'+
+  '</tr></thead><tbody>';
+  props.slice(0,10).forEach(function(p){
+    var score = p.overall_score || 0;
+    var sColor = score>=80?"#00958A":score>=68?"#C9A84C":score>=52?"#E67E22":"#E74C3C";
+    var pillarLbl = {health:"🏥",governance:"🏛️",economy:"💰",security:"🛡️",society:"🌍"}[p.pillar] || "📊";
+    var c = tierColor(p.tier);
+    html += '<tr class="recent-row">'+
+      '<td class="recent-name" title="'+p.project_name+'">'+p.project_name+'</td>'+
+      '<td class="recent-ministry">'+p.ministry+'</td>'+
+      '<td class="recent-pillar">'+pillarLbl+'</td>'+
+      '<td class="recent-score" style="color:'+sColor+'">'+score.toFixed(1)+'</td>'+
+      '<td><span class="tier-badge" style="background:'+c+'20;color:'+c+';border:1px solid '+c+'40">'+tierBadge(p.tier)+'</span></td>'+
+    '</tr>';
+  });
+  html += '</tbody></table>';
+  $("recentProposals").innerHTML = html;
+}
+
+/* ── Extra Stats ── */
+function renderExtraStats(d){
+  $("highRiskVal").textContent = d.high_risk_count || 0;
+  $("pdplFlagVal").textContent = d.pdpl_flags || 0;
+  $("crossMinistryVal").textContent = d.cross_ministry_count || 0;
+  var budget = (d.total_budget || 0);
+  var bStr = budget >= 1000000000 ? (budget/1000000000).toFixed(1)+"B" : (budget/1000000).toFixed(0)+"M";
+  $("totalBudgetVal").textContent = bStr;
+}
+
+/* ── Animate Counter ── */
+function animateCounter(el, from, to, dur){
+  if(!el) return;
+  var start = null;
+  var fn = function(ts){
+    if(!start) start = ts;
+    var pct = Math.min((ts-start)/dur, 1);
+    var eased = 1-Math.pow(1-pct, 3);
+    el.textContent = Math.round(from + (to-from)*eased);
+    if(pct < 1) requestAnimationFrame(fn);
+  };
+  requestAnimationFrame(fn);
+}
+
 </script>
 </body>
 </html>
+/* Build connection list once */
+    var connList = [];
+    for(var l=0; l<3; l++){
+      for(var i=0; i<LAYER_N[l]; i++){
+        var A = POS[l][i];
+        for(var j=i+1; j<LAYER_N[l]; j++){
+          var B = POS[l][j];
+          var dx=A.x-B.x, dy=A.y-B.y, dz=A.z-B.z;
+          var dist=Math.sqrt(dx*dx+dy*dy+dz*dz);
+          if(dist < CONN_DIST){
+            connList.push({ax:A.x,ay:A.y,az:A.z, bx:B.x,by:B.y,bz:B.z, dist:dist, gold:Math.random()<0.28, ph:Math.random()*Math.PI*2});
+          }
+        }
+      }
+    }
+    var NC = connList.length;
+    var cP = new Float32Array(NC*6), cC = new Float32Array(NC*6);
+    for(var ci=0; ci<NC; ci++){
+      cP[ci*6]=connList[ci].ax; cP[ci*6+1]=connList[ci].ay; cP[ci*6+2]=connList[ci].az;
+      cP[ci*6+3]=connList[ci].bx; cP[ci*6+4]=connList[ci].by; cP[ci*6+5]=connList[ci].bz;
+    }
+    var cGeo = new THREE.BufferGeometry();
+    cGeo.setAttribute('position', new THREE.BufferAttribute(cP, 3));
+    cGeo.setAttribute('color', new THREE.BufferAttribute(cC, 3));
+    scene.add(new THREE.LineSegments(cGeo, new THREE.LineBasicMaterial({vertexColors:true,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false})));
+    /* Per-frame: only update color alpha — positions are fixed */
+    var cAttr = cGeo.attributes.color;
+    function updateConns(t){
+      for(var ci=0; ci<NC; ci++){
+        var c = connList[ci], f = (1-c.dist/CONN_DIST);
+        var rc = c.gold ? GOLD : TEAL;
+        var bright = f * (0.5 + 0.5*Math.sin(t*2+c.ph));
+        cC[ci*6]=rc.r*bright; cC[ci*6+1]=rc.g*bright; cC[ci*6+2]=rc.b*bright;
+        cC[ci*6+3]=rc.r*bright; cC[ci*6+4]=rc.g*bright; cC[ci*6+5]=rc.b*bright;
+      }
+      cAttr.needsUpdate = true;
+    }
+
+

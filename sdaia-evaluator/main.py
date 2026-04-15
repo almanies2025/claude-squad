@@ -14,8 +14,95 @@ import json
 import os
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+PORT = int(os.environ.get("PORT", 8000))
+DB_PATH = os.path.join(BASE_DIR, "proposals.db")
+
 app = FastAPI(title="SDAIA AI Proposal Evaluator", version="1.0.0")
 app.mount("/static", StaticFiles(directory=os.path.join(BASE_DIR, "static")), name="static")
+
+# ─────────────────────────────────────────────
+# SQLite Database
+# ─────────────────────────────────────────────
+import sqlite3
+
+def get_db():
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+def init_db():
+    conn = get_db()
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS proposals (
+            proposal_id TEXT PRIMARY KEY,
+            ministry TEXT,
+            project_name TEXT,
+            nsaid_pillar TEXT,
+            budget REAL,
+            timeline_months INTEGER,
+            data_types TEXT,
+            ai_techniques TEXT,
+            cross_ministry INTEGER,
+            ethical_safeguards TEXT,
+            contact_email TEXT,
+            contact_name TEXT,
+            overall_score REAL,
+            tier TEXT,
+            status TEXT DEFAULT 'pending',
+            evaluation_json TEXT,
+            submitted_at TEXT
+        )
+    """)
+    conn.commit()
+    conn.close()
+
+def load_proposals():
+    conn = get_db()
+    cursor = conn.execute("SELECT * FROM proposals")
+    rows = cursor.fetchall()
+    conn.close()
+    db = {}
+    for row in rows:
+        d = dict(row)
+        d["data_types"] = d["data_types"].split(",") if d["data_types"] else []
+        db[d["proposal_id"]] = d
+    return db
+
+def save_proposal(proposal_id, data):
+    conn = get_db()
+    d = data["proposal"]
+    r = data["result"]
+    conn.execute("""
+        INSERT OR REPLACE INTO proposals
+        (proposal_id, ministry, project_name, nsaid_pillar, budget, timeline_months,
+         data_types, ai_techniques, cross_ministry, ethical_safeguards,
+         contact_email, contact_name, overall_score, tier, status, evaluation_json, submitted_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """, (
+        proposal_id,
+        d["ministry"],
+        d["project_name"],
+        d["nsaid_pillar"],
+        d["budget"],
+        d["timeline_months"],
+        ",".join(d.get("data_types", [])),
+        ",".join(d.get("ai_techniques", [])),
+        d.get("cross_ministry", 0),
+        d.get("ethical_safeguards", ""),
+        d.get("contact_email", ""),
+        d.get("contact_name", ""),
+        r["overall_score"],
+        r["tier"],
+        r.get("status", "pending"),
+        json.dumps(r),
+        data["submitted_at"],
+    ))
+    conn.commit()
+    conn.close()
+
+# Initialize DB and load proposals
+init_db()
+proposals_db = load_proposals()
 
 # ─────────────────────────────────────────────
 # UTF-8 ENCODING FIX — ensure all JSON responses include charset=utf-8
@@ -86,11 +173,13 @@ def seed_demo_data():
             contact_email="demo@sdaia.gov.sa",
         )
         result = evaluate_proposal(proposal)
-        proposals_db[result.proposal_id] = {
+        record = {
             "proposal": proposal.model_dump(),
             "result": result.model_dump(),
             "submitted_at": result.submitted_at,
         }
+        proposals_db[result.proposal_id] = record
+        save_proposal(result.proposal_id, record)
 
 # seed_demo_data() called after evaluate_proposal is defined — see bottom
 
@@ -443,7 +532,7 @@ def evaluate_proposal(p: ProposalSubmission) -> EvaluationResult:
 
 @app.get("/", response_class=HTMLResponse)
 async def root():
-    return open("static/index.html").read()
+    return open(os.path.join(BASE_DIR, "static", "index.html")).read()
 
 
 @app.post("/api/submit", response_model=EvaluationResult)
@@ -494,11 +583,13 @@ async def submit_proposal(
     )
 
     result = evaluate_proposal(proposal)
-    proposals_db[result.proposal_id] = {
+    record = {
         "proposal": proposal.model_dump(),
         "result": result.model_dump(),
         "submitted_at": result.submitted_at,
     }
+    proposals_db[result.proposal_id] = record
+    save_proposal(result.proposal_id, record)
     return result
 
 

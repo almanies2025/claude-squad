@@ -1,49 +1,54 @@
-# SDAIA AI Project Proposal Evaluator
+# SDAIA National AI Portfolio Evaluator
 
-## What It Is
+A professional web-based tool for evaluating AI portfolios and projects against the SDAIA National AI Strategy framework.
 
-A working internal tool for SDAIA that evaluates AI project proposals from Saudi government ministries against NSDAI strategic criteria. Ministries submit proposals → the engine scores them across 6 dimensions → SDAIA staff see instant recommendations.
+## Features
 
-## To Run
+- **Dashboard Overview** — Real-time visualization of portfolio metrics and evaluation status
+- **Comprehensive Evaluation** — Assess AI projects against national AI maturity frameworks
+- **Bilingual Support** — Full English and Arabic language support
+- **PDF Report Generation** — Export detailed evaluation reports
+- **Risk Assessment** — Built-in risk scoring and mitigation recommendations
+- **Interactive UI** — Modern, responsive interface built with vanilla JavaScript
+
+## Deployment
+
+### One-Click Deploy to Render.com
+
+1. Fork this repository to your GitHub account
+2. Go to [render.com](https://render.com) and sign in with GitHub
+3. Click "New +" → "Web Service"
+4. Connect your forked repository
+5. Render will auto-detect the `render.yaml` configuration
+6. Click "Deploy"
+
+### Local Development
 
 ```bash
-cd sdaia-evaluator
+git clone https://github.com/almanies2025/claude-squad.git
+cd claude-squad/sdaia-evaluator
 pip install -r requirements.txt
 python main.py
 ```
 
 Then open **http://localhost:8000** in your browser.
 
-## What It Does
+### Important: PORT Environment Variable
 
-**Submit View** — Ministries fill out a 5-section form:
-1. Project identity (name, ministry, type, NSDAI pillar, description)
-2. Resources (budget, timeline, beneficiaries, data types)
-3. AI characteristics (expertise, biometric, predictive AI, cross-ministry)
-4. Governance safeguards (transparency plan, bias mitigation)
-5. Contact info
+Render.com sets the `PORT` environment variable automatically. The application uses `os.environ.get("PORT", 8000)` to respect this.
 
-**Evaluation Engine** scores each proposal on:
-- NSDAI Strategic Alignment (25%) — keyword matching against Vision 2030 pillars
-- Technical Feasibility (20%) — budget, timeline, AI expertise
-- Ethical & Bias Risk (15%) — biometric, personal data, predictive AI flags
-- Data Governance Readiness (15%) — data types, PDPL compliance signals
-- Budget & Resource Adequacy (10%) — realistic funding for scope
-- Impact & Scalability (15%) — beneficiary count, national scope
+### Temporary Sharing with LocalTunnel
 
-**Result View** — Radar chart, score breakdown, ethical risk profile, NSDAI alignment card, gaps, strengths, and recommended actions.
+```bash
+npx localtunnel --port 8000
+```
 
-**Dashboard** — SDAIA staff see all submitted proposals with scores and tier badges.
+## Tech Stack
 
-## Tier System
+- **Backend:** FastAPI, Pydantic, Uvicorn
+- **Frontend:** Vanilla JavaScript, CSS animations
+- **Deployment:** Render.com
 
-| Score | Tier | Decision |
-|-------|------|----------|
-| 80+ | 🏆 Tier 1 | APPROVE — Fast-track NSDAI funding |
-| 68-79 | ✅ Tier 2 | APPROVE WITH CONDITIONS |
-| 52-67 | ⚠️ Tier 3 | REVISE AND RESUBMIT |
-| <52 | ❌ Tier 4 | NOT RECOMMENDED |
+## License
 
-## The Argument
-
-> SDAIA's biggest blind spot globally: no unified view of all government AI projects. This evaluator gives SDAIA the infrastructure to receive, score, and track every AI proposal coming in — and gives the president a dashboard showing exactly where Saudi Arabia's AI portfolio stands against Vision 2030 targets.
+MIT

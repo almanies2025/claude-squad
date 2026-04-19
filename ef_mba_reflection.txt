@@ -1,0 +1,20 @@
+Subject: EF MBA Reflection – Angel Investors to Venture Capital Meeting Simulation
+
+To: Dang Anh
+Cc: Prof. Ang Ser Keng
+
+Module: FNCE696 – Entrepreneurial Finance, Sessions 2-4
+
+Reflection: Angel to Venture Capital – Meeting Simulation
+
+From the simulation exercise in Sessions 2–4, I gained firsthand insight into how early-stage fundraising actually works — beyond textbook definitions of angels and VCs. The session covered the full financing lifecycle: from bootstrapping and angel investment through seed and Series A rounds, to the structure and operation of VC/PE funds.
+
+A key insight was the "funding gap" that exists between what angels can provide (typically US$50,000–200,000) and what institutional VCs deploy (usually US$2 million and above). This "missing middle" of roughly US$500,000 to US$5 million is especially pronounced in Southeast Asia, where angel networks are fragmented and ticket sizes jump too quickly. This structural observation helped me understand why micro-VCs, venture debt, and corporate VC have emerged as bridging mechanisms.
+
+The simulation also clarified the qualitative dimensions of investor selection. Angels are not purely financial actors — they are often successful entrepreneurs motivated by non-financial factors, which means establishing personal credibility and shared vision is as important as the pitch itself. VCs, by contrast, operate under institutional discipline: managed capital with LP obligations, formal due diligence, and exit timelines that make their decision-making process more structured but also more rigid.
+
+Understanding the VC value chain — sourcing, due diligence, investing, managing, and exiting — gave me a framework for what happens after the term sheet is signed. The GP's role in adding value through board involvement, milestone monitoring, and strategic advice is not decorative; it directly affects the venture's valuation trajectory.
+
+Most instructive was the realistic success rate framing: of 1,000 proposals a VC receives annually, only 2 are funded (0.2%), and of those, only 10% generate outsized returns that drive the fund's overall performance. This math explains why VCs are so selective — and why founders must treat fundraising as a credibility-building process, not a transactional event.
+
+Overall, the session reinforced that early-stage financing is not merely about capital allocation — it is a complex interplay of trust, structure, and incentives across all parties.

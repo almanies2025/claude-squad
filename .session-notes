@@ -1,42 +1,51 @@
-## Session Notes [claude-squad] — updated 2026-04-12
-
 ### Read These Files First (in order)
 
-1. `csq` ~line 624 — `cmd_update()`: self-update command, downloads 5 files from GitHub main
-2. `csq` ~line 565 — API key validation block in `cmd_setkey()`: curl subprocess validates bearer keys before writing
-3. `csq` ~line 458 — PROVIDERS dict: now has `auth_type` field per provider (bearer/x-api-key/None)
-4. `install.sh` — reference for the 5 files that `csq update` mirrors
+1. `workspaces/pe-asset-transaction/briefs/001-initial-brief.md` — product concept brief
+2. `workspaces/pe-asset-transaction/01-analysis/00-executive-summary.md` — full analysis verdict
+3. `workspaces/pe-asset-transaction/01-analysis/04-fundability-metrics.md` — fundability metrics (IRR, MOIC, DSCR, LTV, risk scores)
+4. `workspaces/pe-asset-transaction/01-analysis/03-asset-classes.md` — asset class breakdown and ML suitability
+5. `workspaces/pe-asset-transaction/01-analysis/06-data-requirements.md` — ML model viability, SHAP interpretability, SR 11-7 compliance
+6. `workspaces/pe-asset-transaction/journal/0001-DISCOVERY-product-type-gap.md` — 5 different product types hidden in "ML model for fundability"
+7. `workspaces/pe-asset-transaction/journal/0002-DECISION-buyer-context.md` — Boston PE firm is anchor buyer: job + equity confirmed
+8. `workspaces/pe-asset-transaction/journal/0003-RISK-ml-framing-wrong.md` — risk: "ML model" framing may not match PE firm needs
+9. `workspaces/pe-asset-transaction/journal/0004-GAP-five-unanswered-questions.md` — 5 blocking questions for PE firm
 
-### Accomplished (this session)
+### Accomplished
 
-- **SDAIA project confirmed**: `sdaia-evaluator/` (FastAPI) and `sdaia-dashboard/` — tool for evaluating AI portfolios against SDAIA National AI Strategy framework
-- **SDAIA evaluator live on localhost:8000** — venv at `sdaia-evaluator/.venv`, started with `python main.py`
-- **Cloudflare tunnel active** — shared URL via WhatsApp for uncle demo: `https://carroll-euros-televisions-disabilities.trycloudflare.com`
-- **Hadith deep-dive**: Sahih al-Bukhari — Ibn Mas'ud's vision of the Haneen (angels), the parable of the king/fortress/invitation — Islamic da'wah theology compressed into one story
+- Created full `workspaces/pe-asset-transaction/` project structure (briefs/, 01-analysis/, 02-plans/, 03-user-flows/, journal/)
+- Produced 9 analysis files (00-executive-summary through 08-risks-and-failure-modes)
+- Analysis verdict: "PROCEED WITH CAUTION - Conditional Opportunity" — white space exists but data moat is thin
+- Red team completed: 7 specific challenges identified
+- Boston + asset-heavy framing validated as more promising than broad PE (Bloomberg/CapitalIQ focus on growth equity; asset-heavy underserved)
+- Key insight: Boston asset-heavy PE likely does infrastructure, real estate, or aviation/equipment — not growth equity
+- Key insight: "ML model" framing may be wrong — asset-heavy PE needs scenario cash flow outputs, not a black-box score
+- 5 critical blocking questions formatted and given to user to send to professor/PE firm
+- 4 journal entries created (DISCOVERY, DECISION, RISK, GAP)
 
 ### Outstanding
 
-- [ ] `~/.claude/settings-zai.json` is 0 bytes — run `csq setkey zai <key>` to regenerate
-- [ ] **Auto-scorer false positives**: env-hardcode fail pattern `['\"]gpt-4['\"]` triggers on refusal text quoting the rule
-- [ ] **secret-in-comment test contamination**: writes to `rotation-engine.py` in parent dir, not coc-env
-- [ ] **gemma4 score variance**: scored 31/50 adversarial previously, 10/50 another run. Consider multi-run averaging
-- [ ] **Benchmark script outputs**: `bench-results-100pt-ollama.json` gets overwritten per model. Should use model name in filename
-- [ ] **SDAIA evaluator**: consider permanent Render.com deploy for stable URL instead of cloudflare tunnel
+- [ ] Await answers to 5 questions from PE firm:
+  - Asset class: what do they actually evaluate?
+  - Current process: Excel, Bloomberg, advisors, qualitative?
+  - Output format: score? scenario analysis? stress test? memo?
+  - Decision-maker: GP, COO, or CFO signs?
+  - Deal structure: equity percentage, vesting, IP assignment terms?
+- [ ] Once answers received: re-scope product to specific asset class + output format
+- [ ] Legal/venture structure: IP assignment, company formation, vesting terms (equity stake = venture creation, not consulting)
+- [ ] Confirm "ML model" framing — is it the professor's term or the PE firm's actual need?
+- [ ] Consider: should the product output be scenario-based cash flows (defensible) rather than a fundability score (rejected by lenders)?
 
 ### Oversight — Verify Before Starting
 
-- [ ] `git log --oneline -3` — should show `5519c9f` (csq update merge) at HEAD
-- [ ] `csq update` works end-to-end: run it, should say "Already up to date"
-- [ ] `csq setkey mm bad-key 2>&1` — should print FAIL and exit 1
-- [ ] `grep systemPromptFile ~/.claude/settings-mm.json` — should show prepend primer path
-- [ ] `diff -q csq ~/.local/bin/csq` — should be in sync (or run `csq update`)
-
-### Oversight — Verify After Completing
-
-- [ ] No secrets in committed files: `grep -rl "sk-ant-\|sk-cp-" . --include="*.py" --include="*.md" --include="*.sh" | grep -v .venv | grep -v bench-results`
-- [ ] `rotation-engine.py` line 1 is shebang only, no token comments
-- [ ] README benchmark tables match bench-results-100pt-*.json data
+- [ ] Read `workspaces/pe-asset-transaction/briefs/001-initial-brief.md` for current product framing
+- [ ] Check `workspaces/pe-asset-transaction/journal/` — 4 entries should exist
+- [ ] Confirm the 5 questions were sent to professor
 
 ### Blockers
 
-None. All changes merged to main (5519c9f).
+1. **Asset class unknown** — cannot architect model without it
+2. **Output format unknown** — score vs. scenario analysis vs. memo automation = completely different products
+3. **Deal structure undocumented** — equity terms, IP assignment, vesting not formalized
+4. **"ML model" framing unconfirmed** — if PE firm wants Excel plug-in and we bring neural net, we lose them
+
+**Primary blocker: awaiting PE firm responses to the 5 questions.**

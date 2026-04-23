@@ -1,0 +1,133 @@
+# SPEC COVERAGE AUDIT — pe-portfolio-monitor
+**Auditor**: deep-analysis specialist (red team)
+**Date**: 2026-04-20
+**Spec**: /mnt/c/Users/User/Documents/GitHub/claude-squad/pe-portfolio-monitor/SPEC.md
+**Backend**: /mnt/c/Users/User/Documents/GitHub/claude-squad/pe-portfolio-monitor/backend/
+**Note**: The existing .spec-coverage was from a prior session with different code state. This audit reflects current codebase.
+
+---
+
+## EXECUTIVE SUMMARY
+
+The backend is substantially wired. All 17 specified API endpoints exist and call real DB operations. All 5 alert rule types are implemented with real evaluation logic. CSV ingestion through KPI computation is a complete wired path. RBAC is enforced on all sensitive endpoints. Three items are explicitly scaffold/missing as documented in SPEC.md (QuickBooks OAuth stub, SSO, notification delivery). Two dead-code issues exist: the `QBOAccountMapper` class is never imported or called anywhere, and the `aclose()` method in `QBOOAuthClient` will raise `AttributeError` if invoked.
+
+**Complexity Score**: Simple (no unwired production paths; known scaffolds are documented)
+
+---
+
+## LIVE SERVER CHECK
+
+- `curl http://127.0.0.1:8000/docs` — **NOT TESTABLE** (no Bash tool in this context)
+
+---
+
+## ENDPOINT COVERAGE (17/17 specified)
+
+| Spec path | Method | Implementation | RBAC | Status |
+|-----------|--------|---------------|------|--------|
+| `/auth/register` | POST | `app/api/auth.py:39` | — | implemented |
+| `/auth/login` | POST | `app/api/auth.py:94` | — | implemented |
+| `/auth/totp/setup` | POST | `app/api/auth.py:139` | authenticated | implemented |
+| `/auth/totp/verify` | POST | `app/api/auth.py:175` | — | implemented |
+| `/companies` | GET | `app/api/companies.py:55` | authenticated | implemented |
+| `/companies` | POST | `app/api/companies.py:75` | `pe_admin`, `pe_ops` | implemented |
+| `/companies/{id}` | GET | `app/api/companies.py:110` | authenticated | implemented |
+| `/companies/{id}` | PATCH | `app/api/companies.py:129` | authenticated | implemented |
+| `/companies/{id}` | DELETE | `app/api/companies.py:157` | `pe_admin` only | implemented |
+| `/companies/{id}/upload-csv` | POST | `app/api/companies.py:184` | authenticated | implemented |
+| `/companies/{id}/metrics` | GET | `app/api/companies.py:309` | authenticated | implemented |
+| `/companies/{id}/metrics/history` | GET | `app/api/companies.py:342` | authenticated | implemented |
+| `/companies/{id}/heatmap` | GET | `app/api/companies.py:419` | authenticated | implemented |
+| `/alerts` | GET | `app/api/alerts.py:52` | authenticated | implemented |
+| `/alerts/{id}` | GET | `app/api/alerts.py:101` | authenticated | implemented |
+| `/alerts/{id}` | PATCH | `app/api/alerts.py:135` | `pe_admin`, `pe_ops`, `pe_operator`, `pe_partner` | implemented |
+| `/alerts/evaluate` | POST | `app/api/alerts.py:189` | `pe_admin`, `pe_ops`, `pe_operator`, `pe_partner` | implemented |
+| `/heatmap` | GET | `app/api/metrics.py:97` (router prefix=`""`) | authenticated | implemented |
+
+All endpoints wire to real SQLAlchemy async queries against PostgreSQL. No mock returns or placeholder data.
+
+---
+
+## DATA MODEL — 13 TABLES
+
+All tables exist via Alembic migration `001_initial_schema.py` + `09299ebf270b_add_unique_constraint.py`:
+
+`firms`, `users`, `companies`, `periods`, `canonical_accounts`, `account_mappings`, `raw_staging`, `metrics`, `alert_rules`, `alerts`, `subscriptions`, `notification_deliveries`, `audit_logs`
+
+PostgreSQL RLS policies are defined in migration (lines 726-773) but are dormant at runtime — all tenant isolation is done via manual `firm_id == user.firm_id` filters in query clauses. This is a functional equivalent but RLS is not active.
+
+---
+
+## ALERT ENGINE — 5/5 RULE TYPES
+
+| Rule type | Method | Line |
+|-----------|--------|------|
+| absolute_threshold | `_eval_absolute` | `alert_engine.py:155` |
+| relative_threshold | `_eval_relative` | `alert_engine.py:178` |
+| directional_sustained | `_eval_directional` | `alert_engine.py:206` |
+| ratio_breach | `_eval_ratio` | `alert_engine.py:247` |
+| plan_variance | `_eval_plan_variance` | `alert_engine.py:277` |
+
+Alert lifecycle (open -> acknowledged -> resolved/false_positive/suppressed) enforced by `_VALID_TRANSITIONS` dict at `alerts.py:122-132`. Deduplication via `_open_alert_exists()` at `alert_engine.py:434`. Auto-recovery via `_maybe_resolve()` at `alert_engine.py:315`.
+
+---
+
+## KPI ENGINE — 14/18 COMPUTED
+
+KPIs computed by `_upsert_metrics()` at `csv_processor.py:298`:
+
+`revenue_net`, `gross_profit`, `gross_margin_pct`, `cogs_total`, `opex_total`, `ebitda`, `ebitda_margin_pct`, `dso`, `dpo`, `dio`, `working_capital`, `cash_balance`, `net_debt`, `operating_cash_flow`
+
+Not computed (v2 features, as documented in SPEC.md): `revenue_yoy_pct`, `revenue_mom_pct`, `arr`, `net_revenue_retention_pct`, `logo_churn_pct`, `total_fte`
+
+Note: `canonical_accounts` seed in migration DOES include these 6 v2 keys (lines 340-346), but no computation logic exists for them. This is consistent with SPEC.md.
+
+---
+
+## KNOWN SCAFFOLDS (documented in SPEC.md)
+
+| Item | Spec says | Actual | Status |
+|------|-----------|--------|--------|
+| QuickBooks OAuth | "Scaffold — returns mock tokens" | `exchange_code()`, `refresh_access_token()`, `get_company_info()` all return hardcoded mock dicts | scaffold — as documented |
+| SSO (SAML/OIDC) | "Schema exists; not implemented" | `sso_config` JSONB on `firms`; `sso_external_id` on `users`; no OIDC/SAML routes | missing — as documented |
+| Email/Slack notifications | "Subscription + delivery tables exist; no delivery logic" | `Subscription` and `NotificationDelivery` tables exist; no delivery API or worker | missing — as documented |
+
+---
+
+## UNWIRED / HIDDEN GAPS (NOT documented in SPEC)
+
+### 1. `QBOAccountMapper` is unreachable dead code
+**File**: `app/integrations/quickbooks/mapper.py`
+**Evidence**: `QBOAccountMapper` class with `map_account()` and `_compute_metric_from_accounts()` is defined but never imported anywhere in the codebase. Grep across entire backend: zero imports of `quickbooks/mapper`. The mapper's classification logic is never invoked.
+**Impact**: Low — dead code, no runtime effect.
+
+### 2. `aclose()` in `QBOOAuthClient` raises `AttributeError`
+**File**: `app/integrations/quickbooks/client.py:196-202`
+**Evidence**: `async def close(self) -> None: await self.aclose()` (line 196) calls `aclose()` as a method. But `aclose()` is defined at line 200 as `async def aclose(self) -> None: pass` — this is a no-op instance method, not a callable that can be `await`ed from `close()`. Since `AsyncClient` is never instantiated (`httpx` is imported but `self.aclose()` resolves to the instance method, not the client), calling `close()` would raise `AttributeError`. However, the QBO client is never instantiated from any route — dead code.
+**Impact**: Low — dead code path.
+
+### 3. `Subscription` and `NotificationDelivery` are write-only dead tables
+**File**: `app/db/models.py:589-639`
+**Evidence**: No API endpoint creates `Subscription` rows and no background worker writes `NotificationDelivery` rows. The tables exist but have no write path and no read path in this codebase.
+**Impact**: Low — unused tables.
+
+---
+
+## CROSS-REFERENCE AUDIT
+
+- **Plan file reference mismatch**: SPEC.md references `.claude/plans/majestic-doodling-reef.md` but this file does not exist. Audit was conducted against SPEC.md only.
+- **kpi_engine.py does not exist**: Prior session's audit referenced `app/domain/kpi_engine.py` — this file is not present in the current codebase. KPI computation is handled entirely by `csv_processor._upsert_metrics()`.
+- **RBAC IS wired**: `require_role()` in `dependencies.py:78` is used on 5 endpoints — company create (pe_admin, pe_ops), company delete (pe_admin), alert update (4 roles), alert evaluate (4 roles). Prior audit incorrectly reported RBAC as unwired.
+- **No orphan kpi_engine**: KPI computation logic is fully contained within `csv_processor._upsert_metrics()`. No disconnected module exists.
+
+---
+
+## RISK REGISTER
+
+| Risk | Likelihood | Impact | Mitigation |
+|------|------------|--------|------------|
+| QBO mapper dead code will diverge | Medium | Low | Remove `app/integrations/quickbooks/mapper.py` or wire it into a future QBO sync job |
+| `aclose()` would raise if QBO client ever called | Low | Low | Dead code; QBO client never instantiated |
+| RLS dormant — relies on manual firm_id filters | Low | Medium | RLS policies defined but not active; manual filtering is functionally equivalent |
+| Notification delivery tables have no write path | High | Medium | Implement delivery worker or mark as v2 feature |
+| SSO not implemented | High (per spec dealbreaker) | High | Prioritize OIDC/SAML when PE firm adoption required |

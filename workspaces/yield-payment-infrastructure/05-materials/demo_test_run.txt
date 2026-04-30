@@ -1,0 +1,37 @@
+
+=== FloatYield Scenario ===
+  Deposit: $1,000,000
+  Rate: 4.50%
+  Days: 30
+
+  FloatYield Accrual: $3,698.63
+  Treasury Accrual: $3,688.52
+  Reconciliation Gap: $10.11
+  Gap (annualized): 1.23 bps
+  Net Yield: $3,688.52
+
+=== FloatYield Partner Economics ===
+
+  Tier: year1
+  Accounts: 100,000
+  Avg Balance: $2,000
+  ADB: $200,000,000
+  Rate: 75 bps
+  Annual Fee: $1,500,000
+  Monthly Fee: $125,000
+
+  Tier: year2
+  Accounts: 100,000
+  Avg Balance: $2,000
+  ADB: $200,000,000
+  Rate: 65 bps
+  Annual Fee: $1,300,000
+  Monthly Fee: $108,333
+
+  Tier: year3
+  Accounts: 100,000
+  Avg Balance: $2,000
+  ADB: $200,000,000
+  Rate: 50 bps
+  Annual Fee: $1,000,000
+  Monthly Fee: $83,333

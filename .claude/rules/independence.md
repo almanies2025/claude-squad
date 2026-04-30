@@ -29,17 +29,15 @@ MUST NOT reference, discuss, compare with, or design against any commercial or p
 
 ### 3. Foundation-Only and Upstream Dependencies
 
-claude-squad MUST depend only on:
+claude-squad's primary runtime dependencies are:
 
-- **Python 3 standard library** (the engine is intentionally stdlib-only, plus `ctypes` on Windows)
+- **Python 3 standard library** (plus `ctypes` on Windows)
 - **POSIX/macOS/Windows system tools** available by default (`bash`, `jq`, `security` on macOS, `mklink` on Windows)
 - **Claude Code itself** — the one upstream we integrate with
 
-MUST NOT add PyPI dependencies, Node modules, Rust crates, or any other third-party runtime requirement. The tool must remain installable with a single `./install.sh` on a vanilla system.
+Additional dependencies may be added when justified by a specific task. Use good judgment: every dependency adds maintenance burden and install surface. Prefer stdlib where practical.
 
-**Why**: Every dependency is a potential point of failure across 15 concurrent terminals and five platforms. The tool manages credentials; every imported package is attack surface. stdlib-only keeps both blast radius and install friction near zero.
-
-**How to apply**: Before adding `import foo`, check if it's in the stdlib. If not, write it yourself or don't do it.
+**How to apply**: Before adding `import foo`, ask whether it's worth the cost. If yes, add it.
 
 ### 4. No "Open-Source Version Of" Language
 

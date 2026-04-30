@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FloatYield — Yield-Bearing Payment Infrastructure</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a0a1a; color: #e0e0e0; }
+.slide { display: none; min-height: 100vh; padding: 60px 80px; background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3a 100%); }
+.slide.active { display: flex; flex-direction: column; justify-content: center; }
+.slide-number { position: fixed; bottom: 20px; right: 30px; font-size: 14px; color: #666; }
+.nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 12px; }
+.nav button { background: #2a2a5a; color: #fff; border: 1px solid #4a4a8a; padding: 8px 20px; border-radius: 4px; cursor: pointer; font-size: 14px; }
+.nav button:hover { background: #3a3a7a; }
+h1 { font-size: 52px; font-weight: 700; color: #fff; margin-bottom: 20px; letter-spacing: -1px; }
+h2 { font-size: 36px; font-weight: 600; color: #fff; margin-bottom: 28px; }
+h3 { font-size: 22px; font-weight: 600; color: #6c8ee8; margin-bottom: 12px; }
+.subtitle { font-size: 22px; color: #999; margin-bottom: 36px; }
+p { font-size: 20px; line-height: 1.6; color: #bbb; margin-bottom: 16px; }
+.highlight { color: #6c8ee8; font-weight: 600; }
+.green { color: #64c896; }
+.red { color: #ff7864; }
+.stat { background: rgba(108,142,232,0.1); border: 1px solid rgba(108,142,232,0.3); border-radius: 8px; padding: 20px; margin: 10px 0; text-align: center; }
+.stat-value { font-size: 42px; font-weight: 700; color: #6c8ee8; }
+.stat-label { font-size: 14px; color: #888; margin-top: 6px; }
+.grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin: 20px 0; }
+.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 20px 0; }
+.grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin: 20px 0; }
+.card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 24px; }
+.card h3 { font-size: 18px; color: #6c8ee8; margin-bottom: 10px; }
+.card p { font-size: 16px; margin-bottom: 8px; }
+.flow { display: flex; align-items: center; justify-content: center; gap: 20px; margin: 32px 0; flex-wrap: wrap; }
+.flow-step { background: rgba(108,142,232,0.12); border: 1px solid rgba(108,142,232,0.4); border-radius: 8px; padding: 16px 24px; text-align: center; min-width: 120px; }
+.flow-step .num { font-size: 24px; color: #6c8ee8; font-weight: bold; }
+.flow-step .label { font-size: 14px; color: #aaa; margin-top: 4px; }
+.flow-step .value { font-size: 18px; color: #fff; font-weight: 600; margin-top: 4px; }
+.flow-arrow { font-size: 28px; color: #6c8ee8; }
+table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); }
+th { color: #6c8ee8; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
+td { font-size: 16px; color: #ccc; }
+tr:hover { background: rgba(108,142,232,0.05); }
+.warning { background: rgba(255,120,100,0.1); border: 1px solid rgba(255,120,100,0.3); border-radius: 8px; padding: 16px; margin: 16px 0; }
+.warning h3 { color: #ff7864; font-size: 16px; margin-bottom: 6px; }
+.fix-tag { display: inline-block; background: rgba(100,200,150,0.2); color: #64c896; padding: 3px 10px; border-radius: 4px; font-size: 12px; margin-left: 10px; }
+.marker { width: 8px; height: 8px; background: #6c8ee8; border-radius: 50%; display: inline-block; margin-right: 8px; }
+.placeholder { background: rgba(108,142,232,0.05); border: 2px dashed rgba(108,142,232,0.3); border-radius: 8px; padding: 40px; text-align: center; color: #666; font-size: 18px; }
+.placeholder span { color: #6c8ee8; }
+pre { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 16px; font-size: 14px; color: #aaa; margin: 12px 0; overflow-x: auto; }
+</style>
+</head>
+<body>
+
+<!-- Slide 1: Title -->
+<div class="slide active" id="s1">
+  <h1>FloatYield</h1>
+  <p class="subtitle">Yield-Bearing Payment Infrastructure</p>
+  <p style="font-size:18px; color:#888;">B2B infrastructure enabling banks and fintechs to offer interest on payment accounts</p>
+  <div class="grid4" style="margin-top:40px;">
+    <div class="stat"><div class="stat-value">$50-80B</div><div class="stat-label">Annual US float income</div></div>
+    <div class="stat"><div class="stat-value">0%</div><div class="stat-label">What customers earn</div></div>
+    <div class="stat"><div class="stat-value">3-6mo</div><div class="stat-label">Time to market</div></div>
+    <div class="stat"><div class="stat-value">FDIC</div><div class="stat-label">vs stablecoins</div></div>
+  </div>
+</div>
+
+<!-- Slide 2: The Problem -->
+<div class="slide" id="s2">
+  <h2>The Problem</h2>
+  <div class="flow">
+    <div class="flow-step"><div class="num">1</div><div class="value">Banks earn</div><div class="label">2-3% on deposits</div></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step"><div class="num">2</div><div class="value">Your balance</div><div class="label">Checking account</div></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step"><div class="num">3</div><div class="value">You earn</div><div class="label">0%</div></div>
+  </div>
+  <div class="grid">
+    <div class="card">
+      <h3>The Arithmetic</h3>
+      <p>$5.5–7T in checking deposits generates $220–280B/year in float income at 4%. Banks pay customers 0.1–0.5%. The spread is pure profit.</p>
+    </div>
+    <div class="card">
+      <h3>The Validation</h3>
+      <p>Stablecoins (USDC + USDT, $150B+ AUM) prove customers will shift for yield. They earn issuers ~$6–7B/year in seigniorage.</p>
+    </div>
+  </div>
+  <p style="margin-top:20px; color:#888; font-size:16px;">Neobanks with 20M+ users offer 0% yield. They have the users — but not the regulatory path.</p>
+</div>
+
+<!-- Slide 3: The Solution -->
+<div class="slide" id="s3">
+  <h2>The Solution</h2>
+  <p><span class="highlight">B2B infrastructure</span> that lets banks and fintechs offer interest-bearing payment accounts — without their own bank charter.</p>
+  <div class="flow">
+    <div class="flow-step"><div class="num">Bank</div><div class="value">Holds deposits</div><div class="label">at Federal Reserve</div></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step"><div class="num">Treasury</div><div class="value">Generates yield</div><div class="label">4-5% annually</div></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step"><div class="num">FloatYield</div><div class="value">Distributes</div><div class="label">net of fee</div></div>
+  </div>
+  <div class="grid">
+    <div class="card"><h3>For Banks</h3><p>Offer competitive yield products. Keep FDIC insurance and compliance. No infrastructure to build.</p></div>
+    <div class="card"><h3>For Fintechs</h3><p>Access yield-bearing accounts via API. No money transmitter license required. Focus on your product.</p></div>
+  </div>
+</div>
+
+<!-- Slide 4: How It Works -->
+<div class="slide" id="s4">
+  <h2>How It Works</h2>
+  <div class="flow" style="flex-direction:column; gap:12px;">
+    <div style="display:flex; gap:16px; align-items:center;"><div class="flow-step" style="flex:1;"><div class="num">①</div><div class="value">Customer deposits</div><div class="label">ACH / wire</div></div><div class="flow-arrow">→</div><div class="flow-step" style="flex:1;"><div class="num">②</div><div class="value">Bank holds at Fed</div><div class="label">Master account</div></div><div class="flow-arrow">→</div><div class="flow-step" style="flex:1;"><div class="num">③</div><div class="value">Bank invests in Treasuries</div><div class="label">via custodian</div></div></div>
+    <div style="display:flex; gap:16px; align-items:center;"><div class="flow-step" style="flex:1;"><div class="num">④</div><div class="value">Treasury yield accrues</div><div class="label">daily</div></div><div class="flow-arrow">→</div><div class="flow-step" style="flex:1;"><div class="num">⑤</div><div class="value">FloatYield calculates</div><div class="label">balance × rate × 1/365</div></div><div class="flow-arrow">→</div><div class="flow-step" style="flex:1;"><div class="num">⑥</div><div class="value">Yield distributed monthly</div><div class="label">net of platform fee</div></div></div>
+  </div>
+  <div class="warning"><h3>Critical: FloatYield never holds funds</h3><p>All deposits flow through Sponsor Bank's balance sheet. FloatYield is the technology provider, not the account holder.</p></div>
+</div>
+
+<!-- Slide 5: The Market -->
+<div class="slide" id="s5">
+  <h2>The Market</h2>
+  <div class="grid4">
+    <div class="stat"><div class="stat-value">$220-280B</div><div class="stat-label">TAM (total float)</div></div>
+    <div class="stat"><div class="stat-value">$500M-2B</div><div class="stat-label">SAM (B2B platform)</div></div>
+    <div class="stat"><div class="stat-value">$100-300M</div><div class="stat-label">SOM (Year 3)</div></div>
+    <div class="stat"><div class="stat-value">$150B+</div><div class="stat-label">Stablecoin AUM</div></div>
+  </div>
+  <table>
+    <tr><th>Segment</th><th>Accounts</th><th>Balance</th><th>Float at 4%</th></tr>
+    <tr><td>Consumer Checking</td><td>180M</td><td>$2.5–3T</td><td>$100–120B/yr</td></tr>
+    <tr><td>Business Checking</td><td>30M</td><td>$3–4T</td><td>$120–160B/yr</td></tr>
+    <tr><td class="highlight">Neobank Opportunity</td><td>50M users</td><td>$25–50B</td><td class="green">$1–2B/yr</td></tr>
+  </table>
+</div>
+
+<!-- Slide 6: Regulatory Path -->
+<div class="slide" id="s6">
+  <h2>Regulatory Path</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>United States: Sponsor Bank</h3>
+      <p><strong>Cost:</strong> $50K–200K/year</p>
+      <p><strong>Timeline:</strong> 3–6 months to launch</p>
+      <p><strong>Model:</strong> Community/regional bank holds deposits, extends FDIC insurance, handles Reg E/CFPB compliance. FloatYield operates as technology/service provider.</p>
+      <p style="color:#64c896; font-size:14px; margin-top:10px;">Partners: Pathward, Celtic Bank, Blue Ridge Bank</p>
+    </div>
+    <div class="card">
+      <h3>European Union: EMI Partnership</h3>
+      <p><strong>Cost:</strong> €100K–200K</p>
+      <p><strong>Timeline:</strong> 3–6 months (MVP)</p>
+      <p><strong>Model:</strong> Partner with existing EMI (Electronic Money Institution). One license covers all 27 EU states via passporting.</p>
+      <p style="color:#64c896; font-size:14px; margin-top:10px;">MiCA in effect. EMD2 permits yield on e-money.</p>
+    </div>
+  </div>
+  <div class="warning"><h3>Key Rule</h3><p>FloatYield must NEVER hold customer funds directly. Architecture ensures bank always holds deposits.</p></div>
+</div>
+
+<!-- Slide 7: Unit Economics -->
+<div class="slide" id="s7">
+  <h2>Unit Economics: Tiered bps on ADB</h2>
+  <table>
+    <tr><th>Tier</th><th>ADB Range</th><th>Fee (bps)</th><th>Year 1</th><th>Year 3</th></tr>
+    <tr><td>Pilot</td><td>&lt;$50M</td><td>75 bps</td><td>$750K (100M ADB)</td><td>—</td></tr>
+    <tr><td>Growth</td><td>$50M–$500M</td><td>65 bps</td><td>—</td><td>—</td></tr>
+    <tr><td>Scale</td><td>&gt;$500M</td><td>50 bps</td><td>—</td><td>$7.5M (1.5B ADB)</td></tr>
+  </table>
+  <div class="grid" style="margin-top:24px;">
+    <div class="card"><h3>Year 1 (50K accounts)</h3><p>ADB: $100M | Revenue: $750K | Reconciliation: $90K | Net: $660K</p></div>
+    <div class="card"><h3>Year 3 (1M accounts)</h3><p>ADB: $1.5B | Revenue: $7.5M | Reconciliation: $1.35M | Net: $6.15M</p></div>
+  </div>
+  <p style="margin-top:16px; color:#64c896; font-size:18px;">Reconciliation coverage ratio: <span class="highlight">5.6×</span> at Year 3</p>
+</div>
+
+<!-- Slide 8: Competitive Landscape -->
+<div class="slide" id="s8">
+  <h2>Competitive Landscape</h2>
+  <table>
+    <tr><th>Competitor</th><th>Model</th><th>Yield</th><th>FloatYield Advantage</th></tr>
+    <tr><td>USDC / USDT</td><td>Stablecoin (self-custody)</td><td>3–5%</td><td class="green">FDIC insurance — they cannot provide</td></tr>
+    <tr><td>Marcus (Goldman)</td><td>Direct consumer</td><td>4.0–4.2%</td><td>B2B focus — we enable fintechs</td></tr>
+    <tr><td>Unit / Column</td><td>BaaS</td><td>3–5%</td><td>Pure-play yield infrastructure</td></tr>
+    <tr><td>Brex / Ramp</td><td>Business cash</td><td>3–4%</td><td>B2B infra for their customers</td></tr>
+  </table>
+  <div class="grid" style="margin-top:20px;">
+    <div class="card"><h3>vs. Stablecoins</h3><p>FDIC insurance is the differentiator. Mainstream adoption requires regulatory protection most users don't know they need.</p></div>
+    <div class="card"><h3>vs. Marcus/BaaS</h3><p>B2B means FloatYield's customers are banks and fintechs — not consumers. No direct competition.</p></div>
+  </div>
+</div>
+
+<!-- Slide 9: Go-to-Market -->
+<div class="slide" id="s9">
+  <h2>Go-to-Market</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>First Partner Profile</h3>
+      <ul style="font-size:16px; line-height:2; color:#ccc;">
+        <li><span class="marker"></span>50K–500K account holders</li>
+        <li><span class="marker"></span>$500M+/year in payment volume</li>
+        <li><span class="marker"></span>Existing treasury function</li>
+        <li><span class="marker"></span>No existing yield-on-checking</li>
+      </ul>
+      <p style="margin-top:10px; color:#888; font-size:14px;">Target: Mid-tier neobanks, regional banks, payment processors</p>
+    </div>
+    <div class="card">
+      <h3>Pricing to Partners</h3>
+      <table style="font-size:14px;">
+        <tr><th>Scale</th><th>Monthly</th><th>Annual</th></tr>
+        <tr><td>100K accounts</td><td>$10K–25K</td><td>$120K–300K</td></tr>
+        <tr><td>1M accounts</td><td>$100K–250K</td><td>$1.2M–3M</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="grid3" style="margin-top:20px;">
+    <div class="card"><h3>Phase 1 (0–6mo)</h3><p>Secure Sponsor Bank partnership. Launch in 1–2 states.</p></div>
+    <div class="card"><h3>Phase 2 (6–12mo)</h3><p>Begin CUSO discussions. Validate credit union appetite.</p></div>
+    <div class="card"><h3>Phase 3 (12–36mo)</h3><p>ILC charter application. Full CUSO migration.</p></div>
+  </div>
+</div>
+
+<!-- Slide 10: Business Model Redesign -->
+<div class="slide" id="s10">
+  <h2>Business Model Redesign <span class="fix-tag">Red Team Fixes</span></h2>
+  <div class="grid">
+    <div class="card">
+      <h3>Fix #1: Tiered bps on ADB</h3>
+      <p>Original problem: Revenue scales with accounts; liability scales with deposits. At Year 3: 30–75% of revenue eaten by reconciliation losses.</p>
+      <p style="color:#64c896; margin-top:8px;">Solution: 75→65→50 bps on Average Daily Balance. Revenue now scales with float. 5.6× reconciliation coverage.</p>
+    </div>
+    <div class="card">
+      <h3>Fix #2: CUSO Structure</h3>
+      <p>Original problem: Sponsor bank bears FDIC risk; FloatYield captures upside. At scale, bank has incentive to build alternatives.</p>
+      <p style="color:#64c896; margin-top:8px;">Solution: Partner with credit unions (NCUA-insured). Aligned incentives — they need loanable deposits.</p>
+    </div>
+  </div>
+  <table style="margin-top:20px;">
+    <tr><th>Year</th><th>Accounts</th><th>ADB</th><th>Fee</th><th>Revenue</th><th>Recon</th><th>Net</th></tr>
+    <tr><td>1</td><td>50K</td><td>$100M</td><td>75</td><td>$750K</td><td>$90K</td><td class="green">$660K</td></tr>
+    <tr><td>3</td><td>1M</td><td>$1.5B</td><td>50</td><td>$7.5M</td><td>$1.35M</td><td class="green">$6.15M</td></tr>
+    <tr><td>5</td><td>3M</td><td>$4B</td><td>50</td><td>$20M</td><td>$3.6M</td><td class="green">$16.4M</td></tr>
+  </table>
+</div>
+
+<!-- Slide 11: Red Team Analysis -->
+<div class="slide" id="s11">
+  <h2>Red Team: Key Risks</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>Critical Risks</h3>
+      <ul style="font-size:15px; line-height:1.8; color:#ccc;">
+        <li><span class="red">●</span> Reconciliation divergence: ~$900K/yr on $1B book</li>
+        <li><span class="red">●</span> CUSO partnership takes >18 months (vs. 6-12 projected)</li>
+        <li><span class="red">●</span> ILC charter denied (~50% denial rate 2024-2026)</li>
+        <li><span class="red">●</span> Sponsor Bank terminates at Year 2–3</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Fatal Risk: Cash Flow Timing</h3>
+      <p style="font-size:14px; color:#ccc;">ILC needs $4–8M capital. Capital raised from projected CUSO fees. But CUSO takes 12–18 months. Fee revenue delayed → runway depleted → ILC application lapses → model collapses.</p>
+      <p style="color:#ff7864; margin-top:8px; font-size:14px;">Classic fintech death spiral.</p>
+    </div>
+  </div>
+  <div class="grid" style="margin-top:16px;">
+    <div class="card">
+      <h3>Interest Rate Risk</h3>
+      <p>Below 3.5% Treasury, banks don't need FloatYield. Current 4.5% is optimal. Build fee-based revenue diversification.</p>
+    </div>
+    <div class="card">
+      <h3>Mitigations</h3>
+      <ul style="font-size:14px; line-height:1.8; color:#ccc;">
+        <li><span class="marker"></span>Raise capital upfront (not from future fees)</li>
+        <li><span class="marker"></span>Buffer CUSO timeline by 6 months</li>
+        <li><span class="marker"></span>3-year min Sponsor Bank contract</li>
+        <li><span class="marker"></span>ILC denial contingency planned</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 12: The Team / Ask -->
+<div class="slide" id="s12">
+  <h2>The Team / Ask</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>Team</h3>
+      <p style="font-size:16px;">Placeholder for team bios and photos.</p>
+      <pre style="font-size:12px; margin-top:12px;">
+[CEO Name]
+Background in banking/fintech
+
+[CTO Name]
+Backend and compliance systems
+
+[CRO Name]
+Bank and fintech partnerships</pre>
+    </div>
+    <div class="card">
+      <h3>The Ask</h3>
+      <div style="text-align:center; padding: 20px;">
+        <div class="stat-value" style="font-size:36px;">$2M</div>
+        <div class="stat-label">Seed round for Year 1</div>
+      </div>
+      <ul style="font-size:14px; line-height:1.8; color:#ccc; margin-top:16px;">
+        <li><span class="marker"></span>Sponsor Bank partnership (6 months)</li>
+        <li><span class="marker"></span>First 3 bank/fintech clients</li>
+        <li><span class="marker"></span>CUSO partnership establishment</li>
+        <li><span class="marker"></span>ILC charter application</li>
+      </ul>
+    </div>
+  </div>
+  <div class="grid" style="margin-top:20px;">
+    <div class="card"><h3>Use of Funds</h3><p>Legal/compliance: $500K<br/>Engineering: $800K<br/>Business development: $500K<br/>Operations: $200K</p></div>
+    <div class="card"><h3>Milestones</h3><p>Q1: Sponsor Bank signed<br/>Q2: First clients live<br/>Q3: CUSO partnerships active<br/>Q4: ILC application filed</p></div>
+  </div>
+</div>
+
+<!-- Slide 13: Demo -->
+<div class="slide" id="s13">
+  <h2>Demo: CLI Tools</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>Yield Calculation Engine</h3>
+      <pre style="font-size:12px;">
+python3 yield_engine.py --scenario \
+  --deposit 1000000 --rate 0.045 --days 30
+
+=== FloatYield Scenario ===
+  Deposit: $1,000,000
+  Rate: 4.50%
+  Days: 30
+
+  FloatYield Accrual: $3,698.63
+  Treasury Accrual: $3,688.52
+  Reconciliation Gap: $10.11
+  Gap (annualized): 1.23 bps
+  Net Yield: $3,688.52</pre>
+    </div>
+    <div class="card">
+      <h3>Interactive CLI</h3>
+      <pre style="font-size:12px;">
+python3 yield_cli.py
+
+(FloatYield) scenario 1000000 0.045 30
+(FloatYield) reconcile 1000000 0.045 10
+(FloatYield) compare 500000 30
+(FloatYield) partner 100000 2000
+(FloatYield) help reconciliation</pre>
+    </div>
+  </div>
+  <div class="placeholder" style="margin-top:24px;">
+    <p>Screenshot placeholder: <span>yield_cli.py output showing scenario analysis</span></p>
+    <p style="font-size:14px; margin-top:8px;">Run: <span>python3 yield_cli.py</span> to interact</p>
+  </div>
+</div>
+
+<!-- Slide 14: Conclusion -->
+<div class="slide" id="s14">
+  <h2>Conclusion</h2>
+  <div class="stat" style="text-align:center; margin-bottom:28px;">
+    <div class="stat-value" style="font-size:32px;">$50-80B market. No pure-play B2B winner.</div>
+  </div>
+  <div class="grid">
+    <div class="card">
+      <h3>The Opportunity</h3>
+      <ul style="font-size:15px; line-height:1.8; color:#ccc;">
+        <li><span class="marker"></span>Clear regulatory path (Sponsor Bank, 3–6mo)</li>
+        <li><span class="marker"></span>TAM validated by stablecoins ($150B+ AUM)</li>
+        <li><span class="marker"></span>Unit economics work with redesigned fee model</li>
+        <li><span class="marker"></span>Competitive landscape fragmented</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>The Risks</h3>
+      <ul style="font-size:15px; line-height:1.8; color:#ccc;">
+        <li><span class="marker"></span>CUSO partnership timeline</li>
+        <li><span class="marker"></span>ILC charter capital requirements</li>
+        <li><span class="marker"></span>Interest rate environment dependency</li>
+        <li><span class="marker"></span>Sponsor Bank transition cliff</li>
+      </ul>
+    </div>
+  </div>
+  <p style="margin-top:24px; text-align:center; font-size:20px; color:#6c8ee8;">Discussion</p>
+  <div class="grid" style="margin-top:20px;">
+    <div class="card"><h3>Most Important Action</h3><p class="green" style="font-size:16px;">Secure Sponsor Bank partnership.</p><p style="font-size:14px; color:#888;">Everything else depends on it.</p></div>
+    <div class="card"><h3>Key Differentiator</h3><p class="green" style="font-size:16px;">FDIC insurance vs stablecoins.</p><p style="font-size:14px; color:#888;">What mainstream users don't know they need.</p></div>
+  </div>
+</div>
+
+<div class="nav">
+  <button onclick="prev()">← Prev</button>
+  <button onclick="next()">Next →</button>
+</div>
+<div class="slide-number" id="slideNum">1 / 14</div>
+
+<script>
+let current = 1;
+const total = 14;
+
+function show(n) {
+  document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+  document.getElementById('s' + n).classList.add('active');
+  document.getElementById('slideNum').textContent = n + ' / ' + total;
+}
+
+function next() { if (current < total) show(++current); }
+function prev() { if (current > 1) show(--current); }
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); next(); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); prev(); }
+});
+</script>
+</body>
+</html>

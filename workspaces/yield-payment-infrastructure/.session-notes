@@ -1,0 +1,40 @@
+### Read These Files First (in order)
+
+1. `workspaces/yield-payment-infrastructure/05-materials/FloatYield_Report.md` — full 25-page written report with market analysis, regulatory path, business model, unit economics
+2. `workspaces/yield-payment-infrastructure/05-materials/pitch_deck.html` — 12-slide standalone HTML deck (open in browser)
+3. `workspaces/yield-payment-infrastructure/05-materials/yield_engine.py` — Python stdlib engine; run `python3 yield_engine.py --scenario` to verify
+4. `workspaces/yield-payment-infrastructure/05-materials/yield_cli.py` — interactive CLI; run `python3 yield_cli.py` then type `help`
+5. `workspaces/yield-payment-infrastructure/01-analysis/00-executive-summary.md` — analysis verdict and key findings
+6. `workspaces/yield-payment-infrastructure/01-analysis/product/business-model-redesign.md` — reconciliation fee fix (tiered bps on ADB) and CUSO vs ILC analysis
+7. `workspaces/yield-payment-infrastructure/04-validate/redesign-red-team.md` — capital sequencing problem (raise capital FIRST before partnerships)
+
+### Accomplished
+
+- Built all 6 course deliverables for FloatYield (B2B yield-bearing payment infrastructure):
+  - `yield_engine.py` — stdlib Python engine with reconciliation divergence (1.23 bps on $1B/year confirmed)
+  - `yield_cli.py` — interactive CLI (scenario, partner, compare, help commands)
+  - `pitch_deck.html` — 12-slide standalone HTML with keyboard nav
+  - `FloatYield_Report.md` — 12-section, 545-line comprehensive report
+  - `demo_test_run.txt` — verified test output
+  - `README.md` — project packaging and how to run
+- Red team resolved two fatal flaws: per-account fee misalignment (fixed with tiered bps on ADB, 5.6× coverage) and Sponsor Bank conflict (fixed with CUSO + ILC)
+- Third red team identified capital sequencing problem: raise capital FIRST before signing partnerships (ILC takes 18-24 months, Year 1 revenue only covers 2-3 months operations)
+- All deliverables verified running: `python3 yield_engine.py --scenario` and `python3 yield_cli.py` both work cleanly
+
+### Outstanding
+
+- None. All 6 deliverables complete and verified.
+
+### Oversight — Verify Before Starting
+
+- [ ] Confirm `yield_engine.py` still runs: `python3 yield_engine.py --scenario --deposit 1000000 --rate 0.045 --days 30`
+- [ ] Confirm `pitch_deck.html` still opens in browser (no external dependencies)
+
+### Oversight — Verify After Completing
+
+- [ ] If modifying engine, verify reconciliation gap still ~1.23 bps on $1B/year
+- [ ] If editing report, confirm all 12 sections still present
+
+### Blockers
+
+None. Course deliverables complete. User confirmed demo running successfully.

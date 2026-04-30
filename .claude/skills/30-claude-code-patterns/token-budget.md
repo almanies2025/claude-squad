@@ -71,11 +71,11 @@ SKILL.md (entry point)     → ~700 tokens, answers 80% of questions
 Descriptions are loaded into EVERY agent selection decision. Every character costs.
 
 ```
-# BAD: 156 chars
-description: "A comprehensive security specialist that reviews code for vulnerabilities, secrets exposure, OWASP issues, and authentication patterns across the codebase"
+# BAD: 180 chars
+description: "A comprehensive specialist for database operations including schema design, query optimization, migration management, and performance tuning using DataFlow framework"
 
-# GOOD: 94 chars
-description: "Security vulnerability specialist. Use proactively before commits and for sensitive changes."
+# GOOD: 95 chars
+description: "DataFlow database specialist. Use for models, CRUD, bulk operations, migrations."
 ```
 
 ### 4. Command Brevity

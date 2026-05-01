@@ -158,18 +158,9 @@ def load_records(records: list[dict]) -> tuple[int, int]:
 
     with get_db() as db:
         for rec in records:
-            exists = db.execute(
-                "SELECT 1 FROM yield_events WHERE account_id = ? AND event_date = ?",
-                (rec["account_id"], rec["event_date"]),
-            ).fetchone()
-
-            if exists:
-                skipped += 1
-                continue
-
-            db.execute(
+            cursor = db.execute(
                 """
-                INSERT INTO yield_events
+                INSERT OR IGNORE INTO yield_events
                     (account_id, event_date, balance_snapshot, rate_snapshot,
                      daily_yield, accrued_yield)
                 VALUES (?, ?, ?, ?, ?, ?)
@@ -183,7 +174,10 @@ def load_records(records: list[dict]) -> tuple[int, int]:
                     rec["accrued_yield"],
                 ),
             )
-            inserted += 1
+            if cursor.rowcount == 0:
+                skipped += 1
+            else:
+                inserted += 1
 
         db.commit()
 
@@ -266,8 +260,18 @@ def main():
         print(f"ETL complete: {inserted} inserted, {skipped} deduplicated")
         return
 
-    # ── CSV path ─────────────────────────────────────────────────────────────
-    source_path = Path(args.source)
+    # ── CSV path — validate containment ─────────────────────────────────────
+    source_path = Path(args.source).resolve()
+    # Anchor to workspace data directory — reject paths that escape upward
+    allowed_dir = Path(__file__).resolve().parent.parent.parent / "data"
+    try:
+        source_path.relative_to(allowed_dir)
+    except ValueError:
+        print(
+            f"[ERROR] Source path must be within {allowed_dir}: {source_path}",
+            file=sys.stderr,
+        )
+        sys.exit(1)
     if not source_path.exists():
         print(f"[ERROR] File not found: {source_path}", file=sys.stderr)
         sys.exit(1)

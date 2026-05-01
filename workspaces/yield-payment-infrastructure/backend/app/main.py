@@ -10,7 +10,7 @@ from typing import Any
 
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 
 # ─── App Setup ────────────────────────────────────────────────────────────────
 
@@ -55,6 +55,9 @@ def init_db() -> None:
                 daily_yield REAL NOT NULL,
                 accrued_yield REAL NOT NULL
             );
+
+            CREATE UNIQUE INDEX IF NOT EXISTS idx_yield_events_account_date
+                ON yield_events(account_id, event_date);
 
             -- Seed demo data if empty — DEMO ONLY, not live partners
             INSERT OR IGNORE INTO accounts (id, partner_name, balance, yield_rate)
@@ -107,6 +110,27 @@ class ForecastParams(BaseModel):
     account_id: int
     days: int = 30
     rate_scenario: str = "base"  # "base" | "stress" | "upside"
+
+    @field_validator("account_id")
+    @classmethod
+    def account_id_positive(cls, v: int) -> int:
+        if v <= 0:
+            raise ValueError("account_id must be a positive integer")
+        return v
+
+    @field_validator("days")
+    @classmethod
+    def days_range(cls, v: int) -> int:
+        if not (1 <= v <= 365):
+            raise ValueError("days must be between 1 and 365")
+        return v
+
+    @field_validator("rate_scenario")
+    @classmethod
+    def valid_scenario(cls, v: str) -> str:
+        if v not in ("base", "stress", "upside"):
+            raise ValueError("rate_scenario must be 'base', 'stress', or 'upside'")
+        return v
 
 
 class HealthResponse(BaseModel):
@@ -332,7 +356,8 @@ def _compute_intervals(
         sigma = np.maximum(sigma, sigma_level * 0.5)
         lower, upper = [], []
         for h, (pred, se) in enumerate(zip(point_preds, sigma), 1):
-            se_h = sigma_level + sigma_trend * h
+            # sigma[h-1] = sqrt(sigma_level² + sigma_trend² * h²) — widens with horizon
+            se_h = sigma[h - 1]
             cum_lower = sum(point_preds[:h]) - z_80 * se_h
             cum_upper = sum(point_preds[:h]) + z_80 * se_h
             lower.append(max(0.0, round(cum_lower, 2)))
@@ -347,21 +372,16 @@ def _compute_intervals(
         # Residual variance from AR(1) fit on differenced series
         residuals = dy[1:] - phi * dy[:-1]
         sigma2 = float(np.var(residuals)) if len(residuals) > 1 else 0.0
-        # PSI weights: ψ_i = phi^i  →  sum(ψ_i²) = phi² / (1 - phi²)
+        # PSI weights: ψ_i = phi^i.  Σ_{i=0}^{h-1} ψ_i² = Σ_{i=0}^{h-1} phi^{2i}
+        # = 1 + phi² + phi⁴ + ... + phi^{2(h-1)} = (1 - phi^{2h}) / (1 - phi²)
         phi2 = phi * phi
-        psi_sum = phi2 / (1.0 - phi2) if abs(phi2) < 0.99 else 10.0
         lower, upper = [], []
         for h in range(1, len(point_preds) + 1):
-            # Variance at horizon h: σ² × (1 + Σ_{i=0}^{h-1} ψ_i²)
-            # Approximate Σψ_i² for first h terms
-            if h == 1:
-                psi_cumsum = 1.0
+            if abs(phi2) < 0.99:
+                # Geometric series: (1 - phi^{2h}) / (1 - phi²)
+                psi_cumsum = (1.0 - phi2**h) / (1.0 - phi2)
             else:
-                psi_cumsum = (
-                    1.0 + phi2 * (1.0 - phi2 ** (2 * (h - 1))) / (1.0 - phi2**2)
-                    if abs(phi2) < 0.99
-                    else float(h)
-                )
+                psi_cumsum = float(h)
             se_h = np.sqrt(max(sigma2 * psi_cumsum, 1e-9))
             cum_lower = sum(point_preds[:h]) - z_80 * se_h
             cum_upper = sum(point_preds[:h]) + z_80 * se_h

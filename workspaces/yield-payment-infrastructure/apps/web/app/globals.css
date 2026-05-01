@@ -1,0 +1,70 @@
+/* ── FloatYield Futuristic Theme ─────────────────────────────────── */
+/* Fonts loaded via next/font in layout.tsx — no external fetch needed */
+
+:root {
+  --bg-void:       #060912;
+  --bg-panel:      #0B1220;
+  --bg-card:       #0F1929;
+  --bg-card-hover: #141F35;
+  --border-dim:    #1E2D45;
+  --border-glow:   #00D4FF33;
+
+  --cyan:          #00D4FF;
+  --cyan-dim:      #00D4FF66;
+  --cyan-glow:     #00D4FF22;
+  --purple:        #7C3AED;
+  --purple-dim:    #7C3AED66;
+  --green:         #00F5A0;
+  --green-dim:     #00F5A044;
+  --red:           #FF6B6B;
+  --gold:          #FFD93D;
+  --gold-dim:      #FFD93D44;
+
+  --text-primary:  #E8F0FE;
+  --text-secondary:#7A8BA8;
+  --text-dim:      #3D5068;
+
+  --font-display:  var(--font-orbitron), monospace;
+  --font-body:    var(--font-inter), system-ui, sans-serif;
+  --font-mono:    var(--font-jetbrains-mono), monospace;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  min-height: 100%;
+  background: var(--bg-void);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Dot-grid background texture */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 1px 1px, #1E2D45 1px, transparent 0);
+  background-size: 32px 32px;
+  opacity: 0.35;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Neon glow utility */
+.glow-cyan { text-shadow: 0 0 12px var(--cyan), 0 0 24px var(--cyan-dim); }
+.glow-gold { text-shadow: 0 0 10px var(--gold), 0 0 20px var(--gold-dim); }
+.glow-green { text-shadow: 0 0 10px var(--green); }
+
+/* Card glow border */
+.card-glow {
+  border: 1px solid var(--border-dim);
+  box-shadow: 0 0 0 1px var(--border-glow) inset,
+              0 4px 24px #00000066;
+}

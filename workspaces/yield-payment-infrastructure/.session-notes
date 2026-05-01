@@ -1,40 +1,47 @@
 ### Read These Files First (in order)
 
-1. `workspaces/yield-payment-infrastructure/05-materials/FloatYield_Report.md` — full 25-page written report with market analysis, regulatory path, business model, unit economics
-2. `workspaces/yield-payment-infrastructure/05-materials/pitch_deck.html` — 12-slide standalone HTML deck (open in browser)
-3. `workspaces/yield-payment-infrastructure/05-materials/yield_engine.py` — Python stdlib engine; run `python3 yield_engine.py --scenario` to verify
-4. `workspaces/yield-payment-infrastructure/05-materials/yield_cli.py` — interactive CLI; run `python3 yield_cli.py` then type `help`
-5. `workspaces/yield-payment-infrastructure/01-analysis/00-executive-summary.md` — analysis verdict and key findings
-6. `workspaces/yield-payment-infrastructure/01-analysis/product/business-model-redesign.md` — reconciliation fee fix (tiered bps on ADB) and CUSO vs ILC analysis
-7. `workspaces/yield-payment-infrastructure/04-validate/redesign-red-team.md` — capital sequencing problem (raise capital FIRST before partnerships)
+1. `.session-notes.md` (this file) — current session state
+2. `journal/0034-DECISION-adr06-suppress-model-comparison.md` — ARIMA winner badge + vs ARIMA column removed
+3. `journal/0035-DECISION-adr07-recon-gap-disclosure.md` — recon gap shown as system reference with mandatory disclosure
+4. `journal/0036-DECISION-adr08-demo-partner-names.md` — partners renamed Demo Partner A/B/C
+5. `journal/0031-DISCOVERY-yield-events-table-empty.md` — yield_events ETL pipeline does not exist
+6. `journal/0032-DISCOVERY-flat-synthetic-history-kills-model-comparison.md` — flat history → all 3 models return identical output
+7. `journal/0033-GAP-recon-gap-hardcoded.md` — recon_gap_bps = 1.23 hardcoded constant
+8. `01-analysis/data-audit/01-data-audit.md` — Phase 02 trust-plane audit: full data inventory, feature classification
+9. `01-analysis/data-audit/02-feature-framing.md` — Phase 03 feature framing: ADRs 06–08, Sprint 1–3 priority matrix
+10. `SPRINT1.md` — Sprint 1 setup prompt
+11. `briefs/001-initial-brief.md` — original FloatYield product brief
 
 ### Accomplished
 
-- Built all 6 course deliverables for FloatYield (B2B yield-bearing payment infrastructure):
-  - `yield_engine.py` — stdlib Python engine with reconciliation divergence (1.23 bps on $1B/year confirmed)
-  - `yield_cli.py` — interactive CLI (scenario, partner, compare, help commands)
-  - `pitch_deck.html` — 12-slide standalone HTML with keyboard nav
-  - `FloatYield_Report.md` — 12-section, 545-line comprehensive report
-  - `demo_test_run.txt` — verified test output
-  - `README.md` — project packaging and how to run
-- Red team resolved two fatal flaws: per-account fee misalignment (fixed with tiered bps on ADB, 5.6× coverage) and Sponsor Bank conflict (fixed with CUSO + ILC)
-- Third red team identified capital sequencing problem: raise capital FIRST before signing partnerships (ILC takes 18-24 months, Year 1 revenue only covers 2-3 months operations)
-- All deliverables verified running: `python3 yield_engine.py --scenario` and `python3 yield_cli.py` both work cleanly
+- **Phase 02 + 03 complete**: trust-plane data audit + feature framing. Full analysis in `01-analysis/data-audit/`
+- **ADR-06 implemented**: removed "★ ARIMA winner" badge, removed "vs ARIMA" delta column, replaced validation legend with scenario description box
+- **ADR-07 implemented**: `POST /forecast` and `POST /forecast/all` now return `recon_gap_description` + `scenario_description`. UI shows yellow disclosure box explaining 1.23 bps is a system reference, not measured per-account gap
+- **ADR-08 implemented**: partners renamed to Demo Partner A/B/C. Amber demo banner added to dashboard header
+- **Scenario metadata added**: base ("Fed funds rate unchanged"), stress ("Fed cuts 50bps..."), upside ("Fed hikes 30bps...") — both in API response and UI description box
+- **Backend fixes**: `requirements.txt` missing `numpy`; `_recon_gap()` formula returned 0.0 (fixed to return 1.23); `yield_events` confirmed empty — no ETL pipeline exists
+- **DB reset**: `floatyield.db` deleted and recreated with renamed partners. Backend live on :8000, frontend on :3000
 
 ### Outstanding
 
-- None. All 6 deliverables complete and verified.
+- [ ] Sprint 2 data feed: `yield_events` ETL pipeline from sponsor bank Treasury statements — PRIMARY technical gap; unblocks all downstream features
+- [ ] Capital sequencing problem (journal 0025) — unresolved; ILC charter timeline (18-24 months) vs. Year 1 revenue runway
+- [ ] `yield_events` schema is correct; population is EMPTY — no row has ever been inserted
 
 ### Oversight — Verify Before Starting
 
-- [ ] Confirm `yield_engine.py` still runs: `python3 yield_engine.py --scenario --deposit 1000000 --rate 0.045 --days 30`
-- [ ] Confirm `pitch_deck.html` still opens in browser (no external dependencies)
+- [ ] Backend loads: `cd backend && python3 -c "from app.main import app; print('OK')"`
+- [ ] Partners renamed: `curl -s http://localhost:8000/accounts` → Demo Partner A/B/C
+- [ ] Scenario metadata: `curl -s -X POST http://localhost:8000/forecast/all -H "Content-Type: application/json" -d '{"account_id":1,"days":30,"rate_scenario":"stress"}'` → `scenario_description` and `recon_gap_description` present in response
+- [ ] TypeScript clean: `cd apps/web && npx tsc --noEmit` (exit 0)
 
 ### Oversight — Verify After Completing
 
-- [ ] If modifying engine, verify reconciliation gap still ~1.23 bps on $1B/year
-- [ ] If editing report, confirm all 12 sections still present
+- [ ] Preflight: `python3 scripts/preflight.py` → ALL CHECKS PASSED
+- [ ] Frontend renders demo banner + scenario/recon gap description boxes
+- [ ] `yield_events` still empty: `sqlite3 backend/floatyield.db "SELECT COUNT(*) FROM yield_events"` → 0
 
 ### Blockers
 
-None. Course deliverables complete. User confirmed demo running successfully.
+- `yield_events` empty — Sprint 2 blocked on ETL pipeline; cannot demonstrate real ARIMA differentiation or measured reconciliation gap
+- Capital sequencing unresolved — ILC charter (18-24 months) vs. Year 1 operating runway gap

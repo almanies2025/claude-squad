@@ -12,13 +12,15 @@ from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, field_validator
 
+from app.core.config import settings
+
 # ─── App Setup ────────────────────────────────────────────────────────────────
 
 app = FastAPI(title="FloatYield API", version="0.1.0")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=settings.get_cors_origins(),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -235,11 +237,7 @@ def forecast(params: ForecastParams):
         "upside": "Fed hikes 30bps; Treasury yield rises ~25bps. Short-duration assets reprice upward.",
     }
     scenario_desc = SCENARIOS.get(params.rate_scenario, SCENARIOS["base"])
-    recon_gap_desc = (
-        "System reference gap: 1.23 bps on $1B/year annualized. "
-        "This is the normalized system gap — not your account's measured reconciliation gap. "
-        "Measured gap = bank actual yield − FloatYield calculated yield (computed from your yield history)."
-    )
+    gap_bps, recon_gap_desc = _recon_gap_info(params.account_id)
     return YieldForecast(
         account_id=dict(acct)["id"],
         partner_name=dict(acct)["partner_name"],
@@ -248,7 +246,7 @@ def forecast(params: ForecastParams):
         forecast_days=params.days,
         rows=rows,
         total_projected_yield=round(cumulative, 2),
-        recon_gap_bps=_recon_gap(params.account_id),
+        recon_gap_bps=gap_bps,
         recon_gap_description=recon_gap_desc,
         scenario_description=scenario_desc,
     )
@@ -327,8 +325,8 @@ def _compute_intervals(
         lower, upper = [], []
         for h in range(1, len(point_preds) + 1):
             se = sigma * np.sqrt(h)
-            cum_lower = sum(point_preds[:h]) - z_80 * se * np.sqrt(h)
-            cum_upper = sum(point_preds[:h]) + z_80 * se * np.sqrt(h)
+            cum_lower = sum(point_preds[:h]) - z_80 * se
+            cum_upper = sum(point_preds[:h]) + z_80 * se
             lower.append(max(0.0, round(cum_lower, 2)))
             upper.append(round(cum_upper, 2))
         return lower, upper
@@ -394,7 +392,7 @@ def sigma_fallback(s: float) -> float:
     return max(s, 1.0)
 
 
-def _recon_gap(account_id: int) -> float:
+def _recon_gap_info(account_id: int) -> tuple[float, str]:
     """
     Compute measured reconciliation gap from yield_events.
 
@@ -402,8 +400,8 @@ def _recon_gap(account_id: int) -> float:
 
     where calculated_yield = balance_snapshot * (rate_snapshot / 365).
 
-    Falls back to 1.23 (system reference) if yield_events has fewer than
-    5 rows for this account — insufficient history for a reliable measurement.
+    Returns (gap_bps, description). Falls back to (1.23, system_reference_desc)
+    if yield_events has fewer than 5 rows for this account.
     """
     with get_db() as db:
         rows = db.execute(
@@ -418,7 +416,13 @@ def _recon_gap(account_id: int) -> float:
         ).fetchall()
 
     if len(rows) < 5:
-        return 1.23  # system reference — insufficient history
+        return (
+            1.23,
+            (
+                "System reference gap: 1.23 bps on $1B/year annualized. "
+                "Insufficient yield history for a measured gap — falling back to normalized system reference."
+            ),
+        )
 
     gaps = []
     for r in rows:
@@ -431,7 +435,15 @@ def _recon_gap(account_id: int) -> float:
         gap_bps = (gap_daily * 365 / balance) * 10000
         gaps.append(gap_bps)
 
-    return round(sum(gaps) / len(gaps), 2)
+    measured = round(sum(gaps) / len(gaps), 2)
+    return (
+        measured,
+        (
+            f"Measured gap: {measured:.2f} bps on $1B/year annualized "
+            f"({len(rows)} events, {30}-day lookback). "
+            "This is your account's measured reconciliation gap — bank actual yield minus FloatYield calculated yield."
+        ),
+    )
 
 
 @app.post("/forecast/all", response_model=MultiModelForecast)
@@ -448,10 +460,14 @@ def forecast_all(params: ForecastParams):
     today = date.today()
     base_rate = acct["yield_rate"]
 
+    # Scenario rate adjustment — a parallel shift applied to the yield curve.
+    # Stress: -15% (Fed cuts 50bps, Treasuries reprice down ~40bps).
+    # Upside: +10% (Fed hikes 30bps, Treasuries reprice up ~25bps).
+    scenario_multiplier = 1.0
     if params.rate_scenario == "stress":
-        base_rate *= 0.85
+        scenario_multiplier = 0.85
     elif params.rate_scenario == "upside":
-        base_rate *= 1.10
+        scenario_multiplier = 1.10
 
     balance = acct["balance"]
     base_yield_daily = balance * (base_rate / 365)
@@ -476,13 +492,24 @@ def forecast_all(params: ForecastParams):
     else:
         history = [base_yield_daily] * max(60, params.days)
 
-    # Naive uses last observed yield (history[-1]), not the scenario rate.
-    # Scenario modifier is applied via base_yield_daily for Holt/ARIMA.
+    # Scenario adjustment is applied as a parallel shift to model outputs.
+    # The historical series was generated at base_rate; scenario rates shift
+    # the entire projected yield curve proportionally.
     naive_preds = _naive_forecast(
         history[-1] if len(history) >= 1 else base_yield_daily, params.days
     )
     holt_preds = _holt_forecast(history, params.days)
     arima_preds = _arima_forecast(history, params.days)
+
+    # Apply scenario parallel shift to all model outputs (dollar terms).
+    # Holt/ARIMA forecast in daily yield $; multiply by scenario_multiplier.
+    # Naive is already a flat forecast at history[-1] — shift it too.
+    if scenario_multiplier != 1.0:
+        naive_preds = [p * scenario_multiplier for p in naive_preds]
+        holt_preds = [p * scenario_multiplier for p in holt_preds]
+        arima_preds = [p * scenario_multiplier for p in arima_preds]
+
+    gap_bps, recon_gap_desc = _recon_gap_info(params.account_id)
 
     def make_model(name: str, preds: list[float]) -> ModelResult:
         total = sum(preds)
@@ -495,27 +522,23 @@ def forecast_all(params: ForecastParams):
             model_name=name,
             total_projected_yield=round(total, 2),
             avg_daily=round(np.mean(preds), 2),
-            recon_gap_bps=_recon_gap(params.account_id),
+            recon_gap_bps=gap_bps,
             lower_bound=lower_total,
             upper_bound=upper_total,
         )
 
+    scenario_rate = base_rate * scenario_multiplier
     SCENARIOS = {
         "base": "Fed funds rate unchanged; Treasury yield at current market levels (~4.5%).",
         "stress": "Fed cuts 50bps; Treasury yield declines ~40bps. Short-duration assets reprice downward.",
         "upside": "Fed hikes 30bps; Treasury yield rises ~25bps. Short-duration assets reprice upward.",
     }
     scenario_desc = SCENARIOS.get(params.rate_scenario, SCENARIOS["base"])
-    recon_gap_desc = (
-        "System reference gap: 1.23 bps on $1B/year annualized. "
-        "This is the normalized system gap — not your account's measured reconciliation gap. "
-        "Measured gap = bank actual yield − FloatYield calculated yield (computed from your yield history)."
-    )
     return MultiModelForecast(
         account_id=acct["id"],
         partner_name=acct["partner_name"],
         current_balance=balance,
-        yield_rate=base_rate,
+        yield_rate=scenario_rate,
         forecast_days=params.days,
         models=[
             make_model("Naive (Persistence)", naive_preds),

@@ -1,0 +1,155 @@
+{
+  "Celtic Bank": {
+    "Name": "Celtic Bank",
+    "balance": 50000000,
+    "rate": 0.045,
+    "seed": 10,
+    "series_stats": {
+      "base_daily_yield": 6164.38,
+      "mean_daily_yield": 10471.03,
+      "std_daily_yield": 6827.11,
+      "signal_to_noise": 0.9
+    },
+    "results": [
+      {
+        "model_name": "ARIMA(1,1,1)",
+        "mae": 1801.0736639675474,
+        "mape": 18.589484528909143,
+        "dir_acc": 0.5928571428571429,
+        "naive_loss_rate": 0.3933333333333333,
+        "avg_forecast": 8680.270373013178,
+        "final_30d_total": 260408.1111903953,
+        "final_30d_naive": 517911.4574145815,
+        "improvement_over_naive": 257503.34622418619,
+        "rank": 1
+      },
+      {
+        "model_name": "Naive (Persistence)",
+        "mae": 1972.876090417722,
+        "mape": 19.56555722737024,
+        "dir_acc": 0.4928571428571429,
+        "naive_loss_rate": 0.0,
+        "avg_forecast": 7883.736924513282,
+        "final_30d_total": 236512.10773539846,
+        "final_30d_naive": 517911.4574145815,
+        "improvement_over_naive": 281399.34967918304,
+        "rank": 2
+      },
+      {
+        "model_name": "Holt (Double Exp Smoothing)",
+        "mae": 6348.784583623597,
+        "mape": 58.056096261991335,
+        "dir_acc": 0.5071428571428571,
+        "naive_loss_rate": 0.8,
+        "avg_forecast": 11708.730083945968,
+        "final_30d_total": 351261.90251837904,
+        "final_30d_naive": 517911.4574145815,
+        "improvement_over_naive": 166649.55489620246,
+        "rank": 3
+      }
+    ],
+    "winner": "ARIMA(1,1,1)"
+  },
+  "BlueRidge Credit Union": {
+    "Name": "BlueRidge Credit Union",
+    "balance": 120000000,
+    "rate": 0.0475,
+    "seed": 20,
+    "series_stats": {
+      "base_daily_yield": 15616.44,
+      "mean_daily_yield": 1843.72,
+      "std_daily_yield": 15434.13,
+      "signal_to_noise": 1.01
+    },
+    "results": [
+      {
+        "model_name": "ARIMA(1,1,1)",
+        "mae": 5801.577933434594,
+        "mape": 1312.0260208759018,
+        "dir_acc": 0.4714285714285714,
+        "naive_loss_rate": 0.26666666666666666,
+        "avg_forecast": 11108.378806992434,
+        "final_30d_total": 333251.364209773,
+        "final_30d_naive": -150606.58705735396,
+        "improvement_over_naive": -483857.95126712695,
+        "rank": 1
+      },
+      {
+        "model_name": "Naive (Persistence)",
+        "mae": 6797.960417247978,
+        "mape": 1156.217765947984,
+        "dir_acc": 0.5,
+        "naive_loss_rate": 0.0,
+        "avg_forecast": 7373.9817407873825,
+        "final_30d_total": 221219.45222362148,
+        "final_30d_naive": -150606.58705735396,
+        "improvement_over_naive": -371826.03928097547,
+        "rank": 2
+      },
+      {
+        "model_name": "Holt (Double Exp Smoothing)",
+        "mae": 15668.09660773891,
+        "mape": 3185.3783617315753,
+        "dir_acc": 0.5,
+        "naive_loss_rate": 0.7666666666666667,
+        "avg_forecast": 16943.869150809078,
+        "final_30d_total": 508316.07452427235,
+        "final_30d_naive": -150606.58705735396,
+        "improvement_over_naive": -658922.6615816263,
+        "rank": 3
+      }
+    ],
+    "winner": "ARIMA(1,1,1)"
+  },
+  "Coastal Community Bank": {
+    "Name": "Coastal Community Bank",
+    "balance": 78000000,
+    "rate": 0.044,
+    "seed": 30,
+    "series_stats": {
+      "base_daily_yield": 9402.74,
+      "mean_daily_yield": 407.24,
+      "std_daily_yield": 10400.41,
+      "signal_to_noise": 0.9
+    },
+    "results": [
+      {
+        "model_name": "ARIMA(1,1,1)",
+        "mae": 3503.437791564837,
+        "mape": 550.2149057957382,
+        "dir_acc": 0.42142857142857143,
+        "naive_loss_rate": 0.4,
+        "avg_forecast": 8583.127026641267,
+        "final_30d_total": 257493.810799238,
+        "final_30d_naive": -163716.47292005748,
+        "improvement_over_naive": -421210.2837192955,
+        "rank": 1
+      },
+      {
+        "model_name": "Naive (Persistence)",
+        "mae": 4080.154710213901,
+        "mape": 521.0449460061067,
+        "dir_acc": 0.4785714285714286,
+        "naive_loss_rate": 0.0,
+        "avg_forecast": 12086.215123391225,
+        "final_30d_total": 362586.45370173675,
+        "final_30d_naive": -163716.47292005748,
+        "improvement_over_naive": -526302.9266217942,
+        "rank": 2
+      },
+      {
+        "model_name": "Holt (Double Exp Smoothing)",
+        "mae": 9695.84072289099,
+        "mape": 1962.61713743976,
+        "dir_acc": 0.4785714285714286,
+        "naive_loss_rate": 0.64,
+        "avg_forecast": 7384.019447109535,
+        "final_30d_total": 221520.58341328605,
+        "final_30d_naive": -163716.47292005748,
+        "improvement_over_naive": -385237.0563333435,
+        "rank": 3
+      }
+    ],
+    "winner": "ARIMA(1,1,1)"
+  }
+}

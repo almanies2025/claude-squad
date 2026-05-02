@@ -6,7 +6,7 @@ B2B yield-bearing payment infrastructure API
 import sqlite3
 from datetime import date, timedelta
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
@@ -60,6 +60,43 @@ def init_db() -> None:
 
             CREATE UNIQUE INDEX IF NOT EXISTS idx_yield_events_account_date
                 ON yield_events(account_id, event_date);
+
+            CREATE TABLE IF NOT EXISTS recon_disputes (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                account_id INTEGER NOT NULL REFERENCES accounts(id),
+                dispute_date TEXT NOT NULL,
+                filed_by TEXT NOT NULL,
+                gap_bps REAL NOT NULL,
+                gap_dollar_amount REAL NOT NULL,
+                dispute_type TEXT NOT NULL DEFAULT 'recon_gap',
+                reason TEXT NOT NULL,
+                status TEXT NOT NULL DEFAULT 'open',
+                notes TEXT,
+                created_at TEXT NOT NULL DEFAULT (date('now'))
+            );
+
+            CREATE TABLE IF NOT EXISTS threshold_alerts (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                account_id INTEGER NOT NULL REFERENCES accounts(id),
+                alert_date TEXT NOT NULL,
+                gap_bps REAL NOT NULL,
+                threshold_bps REAL NOT NULL,
+                severity TEXT NOT NULL DEFAULT 'warning',
+                acknowledged INTEGER NOT NULL DEFAULT 0,
+                created_at TEXT NOT NULL DEFAULT (date('now'))
+            );
+
+            CREATE TABLE IF NOT EXISTS rate_discrepancies (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                account_id INTEGER NOT NULL REFERENCES accounts(id),
+                discrepancy_date TEXT NOT NULL,
+                contract_rate REAL NOT NULL,
+                applied_rate REAL NOT NULL,
+                discrepancy_bps REAL NOT NULL,
+                status TEXT NOT NULL DEFAULT 'open',
+                notes TEXT,
+                created_at TEXT NOT NULL DEFAULT (date('now'))
+            );
 
             -- Seed demo data if empty — DEMO ONLY, not live partners
             INSERT OR IGNORE INTO accounts (id, partner_name, balance, yield_rate)
@@ -168,6 +205,176 @@ class MultiModelForecast(BaseModel):
     models: list[ModelResult]
     recon_gap_description: str
     scenario_description: str
+
+
+class Dispute(BaseModel):
+    id: int
+    account_id: int
+    partner_name: str
+    dispute_date: str
+    filed_by: str
+    gap_bps: float
+    gap_dollar_amount: float
+    dispute_type: str
+    reason: str
+    status: str
+    notes: str | None
+    created_at: str
+
+    class Config:
+        from_attributes = True
+
+
+class DisputeCreate(BaseModel):
+    account_id: int
+    dispute_date: str
+    filed_by: str
+    gap_bps: float
+    gap_dollar_amount: float
+    dispute_type: str = "recon_gap"
+    reason: str
+    notes: str | None = None
+
+    @field_validator("gap_bps", "gap_dollar_amount")
+    @classmethod
+    def gap_must_be_nonnegative(cls, v: float) -> float:
+        if v < 0:
+            raise ValueError("gap_bps and gap_dollar_amount must be non-negative")
+        return v
+
+    @field_validator("dispute_date")
+    @classmethod
+    def dispute_date_must_be_valid_iso(cls, v: str) -> str:
+        from datetime import datetime
+
+        try:
+            datetime.strptime(v, "%Y-%m-%d")
+        except ValueError:
+            raise ValueError("dispute_date must be in YYYY-MM-DD format")
+        return v
+
+    @field_validator("filed_by")
+    @classmethod
+    def filed_by_max_length(cls, v: str) -> str:
+        if len(v) > 200:
+            raise ValueError("filed_by must be 200 characters or fewer")
+        return v
+
+    @field_validator("reason")
+    @classmethod
+    def reason_max_length(cls, v: str) -> str:
+        if len(v) > 2000:
+            raise ValueError("reason must be 2000 characters or fewer")
+        return v
+
+
+class DisputeUpdate(BaseModel):
+    status: Literal["open", "resolved", "escalated"] | None = None
+    notes: str | None = None
+
+    @field_validator("notes")
+    @classmethod
+    def notes_max_length(cls, v: str | None) -> str | None:
+        if v is not None and len(v) > 2000:
+            raise ValueError("notes must be 2000 characters or fewer")
+        return v
+
+
+class DisputeSummary(BaseModel):
+    total_disputes: int
+    open_disputes: int
+    resolved_disputes: int
+    escalated_disputes: int
+    total_disputed_amount: float
+
+
+class RateDiscrepancy(BaseModel):
+    id: int
+    account_id: int
+    partner_name: str
+    discrepancy_date: str
+    contract_rate: float
+    applied_rate: float
+    discrepancy_bps: float
+    status: str
+    notes: str | None
+    created_at: str
+
+    class Config:
+        from_attributes = True
+
+
+class RateDiscrepancyCreate(BaseModel):
+    account_id: int
+    discrepancy_date: str
+    contract_rate: float
+    applied_rate: float
+    discrepancy_bps: float
+    notes: str | None = None
+
+    @field_validator("discrepancy_date")
+    @classmethod
+    def discrepancy_date_must_be_valid_iso(cls, v: str) -> str:
+        from datetime import datetime
+
+        try:
+            datetime.strptime(v, "%Y-%m-%d")
+        except ValueError:
+            raise ValueError("discrepancy_date must be in YYYY-MM-DD format")
+        return v
+
+    @field_validator("discrepancy_bps")
+    @classmethod
+    def discrepancy_bps_must_be_nonnegative(cls, v: float) -> float:
+        if v < 0:
+            raise ValueError("discrepancy_bps must be non-negative")
+        return v
+
+    @field_validator("contract_rate", "applied_rate")
+    @classmethod
+    def rate_must_be_nonnegative(cls, v: float) -> float:
+        if v < 0:
+            raise ValueError("rate must be non-negative")
+        return v
+
+
+class ThresholdAlert(BaseModel):
+    id: int
+    account_id: int
+    partner_name: str
+    alert_date: str
+    gap_bps: float
+    threshold_bps: float
+    severity: str
+    acknowledged: bool
+    created_at: str
+
+    class Config:
+        from_attributes = True
+
+
+class PortfolioStats(BaseModel):
+    total_accounts: int
+    total_balance: float
+    total_disputes: int
+    open_disputes: int
+    threshold_alerts: int
+    unacknowledged_alerts: int
+    avg_gap_bps: float
+    max_gap_bps: float
+    annualized_yield: float
+    projected_30d_yield: float
+
+
+class RegulatoryReport(BaseModel):
+    account_id: int
+    partner_name: str
+    report_type: str
+    tax_year: int
+    total_yield: float
+    account_balance: float
+    yield_rate: float
+    generated_at: str
 
 
 # ─── Routes ──────────────────────────────────────────────────────────────────
@@ -576,4 +783,506 @@ def forecast_summary(days: int = Query(default=30)):
         weighted_avg_rate=round(weighted_rate, 6),
         annualized_yield=round(annualized_yield, 2),
         projected_30d_yield=round(projected_30d, 2),
+    )
+
+
+# ─── Reconciliation Disputes ─────────────────────────────────────────────────
+
+
+@app.get("/disputes", response_model=list[Dispute])
+def list_disputes(account_id: int | None = Query(default=None)):
+    """List all recon disputes, optionally filtered by account."""
+    with get_db() as db:
+        if account_id is not None:
+            rows = db.execute(
+                """
+                SELECT d.*, a.partner_name
+                  FROM recon_disputes d
+                  JOIN accounts a ON d.account_id = a.id
+                 WHERE d.account_id = ?
+                 ORDER BY d.created_at DESC
+                """,
+                (account_id,),
+            ).fetchall()
+        else:
+            rows = db.execute(
+                """
+                SELECT d.*, a.partner_name
+                  FROM recon_disputes d
+                  JOIN accounts a ON d.account_id = a.id
+                 ORDER BY d.created_at DESC
+                """,
+            ).fetchall()
+    return [dict(r) for r in rows]
+
+
+@app.post("/disputes", response_model=Dispute)
+def create_dispute(data: DisputeCreate):
+    """File a new reconciliation dispute."""
+    with get_db() as db:
+        acct = db.execute(
+            "SELECT partner_name FROM accounts WHERE id = ?", (data.account_id,)
+        ).fetchone()
+    if not acct:
+        raise HTTPException(404, f"Account {data.account_id} not found")
+    with get_db() as db:
+        cur = db.execute(
+            """
+            INSERT INTO recon_disputes
+                (account_id, dispute_date, filed_by, gap_bps, gap_dollar_amount,
+                 dispute_type, reason, status, notes)
+            VALUES (?, ?, ?, ?, ?, ?, ?, 'open', ?)
+            """,
+            (
+                data.account_id,
+                data.dispute_date,
+                data.filed_by,
+                data.gap_bps,
+                data.gap_dollar_amount,
+                data.dispute_type,
+                data.reason,
+                data.notes,
+            ),
+        )
+        db.commit()
+        row = db.execute(
+            """
+            SELECT d.*, a.partner_name
+              FROM recon_disputes d
+              JOIN accounts a ON d.account_id = a.id
+             WHERE d.id = ?
+            """,
+            (cur.lastrowid,),
+        ).fetchone()
+    return dict(row)
+
+
+@app.patch("/disputes/{dispute_id}", response_model=Dispute)
+def update_dispute(dispute_id: int, data: DisputeUpdate):
+    """Update dispute status or notes."""
+    with get_db() as db:
+        existing = db.execute(
+            "SELECT * FROM recon_disputes WHERE id = ?", (dispute_id,)
+        ).fetchone()
+    if not existing:
+        raise HTTPException(404, f"Dispute {dispute_id} not found")
+    with get_db() as db:
+        if data.status is not None and data.notes is not None:
+            db.execute(
+                "UPDATE recon_disputes SET status = ?, notes = ? WHERE id = ?",
+                (data.status, data.notes, dispute_id),
+            )
+        elif data.status is not None:
+            db.execute(
+                "UPDATE recon_disputes SET status = ? WHERE id = ?",
+                (data.status, dispute_id),
+            )
+        elif data.notes is not None:
+            db.execute(
+                "UPDATE recon_disputes SET notes = ? WHERE id = ?",
+                (data.notes, dispute_id),
+            )
+        else:
+            raise HTTPException(400, "No fields to update")
+        db.commit()
+        row = db.execute(
+            """
+            SELECT d.*, a.partner_name
+              FROM recon_disputes d
+              JOIN accounts a ON d.account_id = a.id
+             WHERE d.id = ?
+            """,
+            (dispute_id,),
+        ).fetchone()
+    return dict(row)
+
+
+@app.get("/disputes/summary", response_model=DisputeSummary)
+def disputes_summary():
+    """Aggregate dispute counts and totals."""
+    with get_db() as db:
+        rows = db.execute(
+            "SELECT status, gap_dollar_amount FROM recon_disputes"
+        ).fetchall()
+    total = len(rows)
+    open_d = sum(1 for r in rows if r["status"] == "open")
+    resolved = sum(1 for r in rows if r["status"] == "resolved")
+    escalated = sum(1 for r in rows if r["status"] == "escalated")
+    total_amt = sum(float(r["gap_dollar_amount"]) for r in rows)
+    return DisputeSummary(
+        total_disputes=total,
+        open_disputes=open_d,
+        resolved_disputes=resolved,
+        escalated_disputes=escalated,
+        total_disputed_amount=round(total_amt, 2),
+    )
+
+
+# ─── Rate Discrepancies ─────────────────────────────────────────────────────
+
+
+@app.get("/rate-discrepancies", response_model=list[RateDiscrepancy])
+def list_rate_discrepancies(account_id: int | None = Query(default=None)):
+    with get_db() as db:
+        if account_id is not None:
+            rows = db.execute(
+                """
+                SELECT r.*, a.partner_name
+                  FROM rate_discrepancies r
+                  JOIN accounts a ON r.account_id = a.id
+                 WHERE r.account_id = ?
+                 ORDER BY r.created_at DESC
+                """,
+                (account_id,),
+            ).fetchall()
+        else:
+            rows = db.execute(
+                """
+                SELECT r.*, a.partner_name
+                  FROM rate_discrepancies r
+                  JOIN accounts a ON r.account_id = a.id
+                 ORDER BY r.created_at DESC
+                """,
+            ).fetchall()
+    return [dict(r) for r in rows]
+
+
+@app.post("/rate-discrepancies", response_model=RateDiscrepancy)
+def create_rate_discrepancy(data: RateDiscrepancyCreate):
+    with get_db() as db:
+        acct = db.execute(
+            "SELECT partner_name FROM accounts WHERE id = ?", (data.account_id,)
+        ).fetchone()
+    if not acct:
+        raise HTTPException(404, f"Account {data.account_id} not found")
+    with get_db() as db:
+        cur = db.execute(
+            """
+            INSERT INTO rate_discrepancies
+                (account_id, discrepancy_date, contract_rate, applied_rate,
+                 discrepancy_bps, status, notes)
+            VALUES (?, ?, ?, ?, ?, 'open', ?)
+            """,
+            (
+                data.account_id,
+                data.discrepancy_date,
+                data.contract_rate,
+                data.applied_rate,
+                data.discrepancy_bps,
+                data.notes,
+            ),
+        )
+        db.commit()
+        row = db.execute(
+            """
+            SELECT r.*, a.partner_name
+              FROM rate_discrepancies r
+              JOIN accounts a ON r.account_id = a.id
+             WHERE r.id = ?
+            """,
+            (cur.lastrowid,),
+        ).fetchone()
+    return dict(row)
+
+
+# ─── Threshold Alerts ────────────────────────────────────────────────────────
+
+
+@app.get("/alerts", response_model=list[ThresholdAlert])
+def list_alerts(
+    account_id: int | None = Query(default=None),
+    acknowledged: bool | None = Query(default=None),
+):
+    """
+    List threshold breach alerts.
+    - account_id: filter by partner account
+    - acknowledged: true = acknowledged only, false = unacknowledged only, omitted = all
+    """
+    with get_db() as db:
+        if account_id is not None:
+            base = """
+                SELECT t.*, a.partner_name
+                  FROM threshold_alerts t
+                  JOIN accounts a ON t.account_id = a.id
+                 WHERE t.account_id = ?
+            """
+            params = [account_id]
+            if acknowledged is not None:
+                base += " AND t.acknowledged = ?"
+                params.append(1 if acknowledged else 0)
+            rows = db.execute(base + " ORDER BY t.created_at DESC", params).fetchall()
+        else:
+            if acknowledged is not None:
+                rows = db.execute(
+                    """
+                    SELECT t.*, a.partner_name
+                      FROM threshold_alerts t
+                      JOIN accounts a ON t.account_id = a.id
+                     WHERE t.acknowledged = ?
+                     ORDER BY t.created_at DESC
+                    """,
+                    (1 if acknowledged else 0,),
+                ).fetchall()
+            else:
+                rows = db.execute(
+                    """
+                    SELECT t.*, a.partner_name
+                      FROM threshold_alerts t
+                      JOIN accounts a ON t.account_id = a.id
+                     ORDER BY t.created_at DESC
+                    """,
+                ).fetchall()
+    result = []
+    for r in rows:
+        d = dict(r)
+        d["acknowledged"] = bool(d["acknowledged"])
+        result.append(d)
+    return result
+
+
+@app.post("/alerts/{alert_id}/acknowledge")
+def acknowledge_alert(alert_id: int):
+    """Acknowledge a threshold alert."""
+    with get_db() as db:
+        existing = db.execute(
+            "SELECT * FROM threshold_alerts WHERE id = ?", (alert_id,)
+        ).fetchone()
+    if not existing:
+        raise HTTPException(404, f"Alert {alert_id} not found")
+    with get_db() as db:
+        db.execute(
+            "UPDATE threshold_alerts SET acknowledged = 1 WHERE id = ?",
+            (alert_id,),
+        )
+        db.commit()
+    return {"status": "acknowledged", "alert_id": alert_id}
+
+
+# ─── Portfolio View ─────────────────────────────────────────────────────────
+
+# Default gap threshold in bps — triggers an alert when measured gap exceeds this.
+# In production this would be per-account, stored in the accounts table.
+DEFAULT_GAP_THRESHOLD_BPS = 2.0
+
+
+@app.get("/portfolio", response_model=PortfolioStats)
+def portfolio_stats():
+    """Aggregate stats across all partner accounts — single source of truth for FloatYield ops."""
+    today = date.today().isoformat()
+
+    with get_db() as db:
+        accounts = db.execute("SELECT * FROM accounts").fetchall()
+        dispute_counts = db.execute(
+            "SELECT account_id, status, COUNT(*) as cnt FROM recon_disputes GROUP BY account_id, status"
+        ).fetchall()
+        alert_counts = db.execute(
+            "SELECT account_id, acknowledged, COUNT(*) as cnt FROM threshold_alerts GROUP BY account_id, acknowledged"
+        ).fetchall()
+        gap_rows = db.execute(
+            """
+            SELECT account_id, balance_snapshot, rate_snapshot, daily_yield
+              FROM yield_events
+             ORDER BY event_date DESC
+            """,
+        ).fetchall()
+        # Existing unacknowledged alert dates per account — for deduplication
+        existing_alerts = db.execute(
+            """
+            SELECT account_id, alert_date FROM threshold_alerts
+             WHERE acknowledged = 0
+            """,
+        ).fetchall()
+
+    # Deduplication map: account_id → set of alert dates with open alerts
+    existing_alert_dates: dict[int, set[str]] = {}
+    for row in existing_alerts:
+        existing_alert_dates.setdefault(row["account_id"], set()).add(row["alert_date"])
+
+    total_balance = sum(float(a["balance"]) for a in accounts)
+    weighted_rate = (
+        sum(float(a["balance"]) * float(a["yield_rate"]) for a in accounts)
+        / total_balance
+        if total_balance
+        else 0
+    )
+    annualized_yield = total_balance * weighted_rate
+
+    # Dispute summary
+    total_disputes = sum(d["cnt"] for d in dispute_counts)
+    open_count = sum(d["cnt"] for d in dispute_counts if d["status"] == "open")
+
+    # Alert summary
+    unack_count = sum(a["cnt"] for a in alert_counts if not a["acknowledged"])
+    total_alerts = sum(a["cnt"] for a in alert_counts)
+
+    # Gap stats from yield_events
+    if gap_rows:
+        by_acct: dict[int, list] = {}
+        for r in gap_rows:
+            by_acct.setdefault(r["account_id"], []).append(r)
+        gaps = []
+        for acct_id, rows in by_acct.items():
+            for r in rows:
+                balance = float(r["balance_snapshot"])
+                rate = float(r["rate_snapshot"])
+                actual = float(r["daily_yield"])
+                calculated = balance * (rate / 365)
+                gap_bps = ((actual - calculated) * 365 / balance) * 10000
+                gaps.append(gap_bps)
+        avg_gap = sum(gaps) / len(gaps) if gaps else 1.23
+        max_gap = max(gaps) if gaps else 1.23
+    else:
+        avg_gap = 1.23
+        max_gap = 1.23
+
+    # ── Threshold Monitoring ────────────────────────────────────────────────
+    # Check each account's worst (max) gap across all historical days.
+    # Insert an alert if: worst gap exceeds threshold AND no open alert already exists today.
+    if gap_rows:
+        by_acct_gaps: dict[int, list] = {}
+        for r in gap_rows:
+            by_acct_gaps.setdefault(r["account_id"], []).append(r)
+        new_alerts = []
+        for acct_id, rows in by_acct_gaps.items():
+            # Find worst gap across all historical days for this account
+            worst_gap = None
+            for r in rows:
+                balance = float(r["balance_snapshot"])
+                rate = float(r["rate_snapshot"])
+                actual = float(r["daily_yield"])
+                calculated = balance * (rate / 365)
+                gap_bps = ((actual - calculated) * 365 / balance) * 10000
+                if worst_gap is None or gap_bps > worst_gap:
+                    worst_gap = gap_bps
+            if worst_gap is not None and worst_gap > DEFAULT_GAP_THRESHOLD_BPS:
+                already_alerted_today = today in existing_alert_dates.get(
+                    acct_id, set()
+                )
+                if not already_alerted_today:
+                    severity = (
+                        "critical"
+                        if worst_gap > DEFAULT_GAP_THRESHOLD_BPS * 2
+                        else "warning"
+                    )
+                    new_alerts.append(
+                        {
+                            "account_id": acct_id,
+                            "alert_date": today,
+                            "gap_bps": round(worst_gap, 4),
+                            "threshold_bps": DEFAULT_GAP_THRESHOLD_BPS,
+                            "severity": severity,
+                        }
+                    )
+        if new_alerts:
+            with get_db() as db:
+                for alert in new_alerts:
+                    db.execute(
+                        """
+                        INSERT INTO threshold_alerts
+                            (account_id, alert_date, gap_bps, threshold_bps, severity, acknowledged)
+                        VALUES (?, ?, ?, ?, ?, 0)
+                        """,
+                        (
+                            alert["account_id"],
+                            alert["alert_date"],
+                            alert["gap_bps"],
+                            alert["threshold_bps"],
+                            alert["severity"],
+                        ),
+                    )
+                db.commit()
+            # Refresh alert counts after inserting
+            with get_db() as db:
+                alert_counts = db.execute(
+                    "SELECT account_id, acknowledged, COUNT(*) as cnt FROM threshold_alerts GROUP BY account_id, acknowledged"
+                ).fetchall()
+            unack_count = sum(a["cnt"] for a in alert_counts if not a["acknowledged"])
+            total_alerts = sum(a["cnt"] for a in alert_counts)
+
+    return PortfolioStats(
+        total_accounts=len(accounts),
+        total_balance=round(total_balance, 2),
+        total_disputes=total_disputes,
+        open_disputes=open_count,
+        threshold_alerts=total_alerts,
+        unacknowledged_alerts=unack_count,
+        avg_gap_bps=round(avg_gap, 4),
+        max_gap_bps=round(max_gap, 4),
+        annualized_yield=round(annualized_yield, 2),
+        projected_30d_yield=round(total_balance * (weighted_rate / 365) * 30, 2),
+    )
+
+
+# ─── Regulatory Reporting ───────────────────────────────────────────────────
+
+
+@app.get("/regulatory/1099-int/{account_id}", response_model=RegulatoryReport)
+def report_1099_int(account_id: int, tax_year: int = Query(default=2025)):
+    if not (2000 <= tax_year <= 2100):
+        raise HTTPException(400, "tax_year must be between 2000 and 2100")
+    """Generate mock 1099-INT for a partner account."""
+    with get_db() as db:
+        acct = db.execute(
+            "SELECT * FROM accounts WHERE id = ?", (account_id,)
+        ).fetchone()
+    if not acct:
+        raise HTTPException(404, f"Account {account_id} not found")
+    acct = dict(acct)
+    # Use yield_events to compute actual yield paid
+    with get_db() as db:
+        rows = db.execute(
+            """
+            SELECT SUM(daily_yield) as total_yield
+              FROM yield_events
+             WHERE account_id = ?
+               AND event_date LIKE ?
+            """,
+            (account_id, f"{tax_year}%"),
+        ).fetchone()
+    total_yield = float(rows["total_yield"]) if rows and rows["total_yield"] else 0.0
+    return RegulatoryReport(
+        account_id=account_id,
+        partner_name=acct["partner_name"],
+        report_type="1099-INT",
+        tax_year=tax_year,
+        total_yield=round(total_yield, 2),
+        account_balance=acct["balance"],
+        yield_rate=acct["yield_rate"],
+        generated_at=date.today().isoformat(),
+    )
+
+
+@app.get("/regulatory/unclaimed-property/{account_id}", response_model=RegulatoryReport)
+def report_unclaimed_property(account_id: int, tax_year: int = Query(default=2025)):
+    if not (2000 <= tax_year <= 2100):
+        raise HTTPException(400, "tax_year must be between 2000 and 2100")
+    """
+    Generate mock unclaimed property notice.
+    Triggered when account has unclaimed yield (e.g., closed account with residual balance).
+    """
+    with get_db() as db:
+        acct = db.execute(
+            "SELECT * FROM accounts WHERE id = ?", (account_id,)
+        ).fetchone()
+    if not acct:
+        raise HTTPException(404, f"Account {account_id} not found")
+    acct = dict(acct)
+    # Mock: no unclaimed property unless balance is zero and disputes exist
+    unclaimed = 0.0
+    if acct["balance"] == 0:
+        with get_db() as db:
+            rows = db.execute(
+                "SELECT SUM(gap_dollar_amount) as total FROM recon_disputes WHERE account_id = ? AND status = 'resolved'",
+                (account_id,),
+            ).fetchone()
+            unclaimed = float(rows["total"]) if rows and rows["total"] else 0.0
+    return RegulatoryReport(
+        account_id=account_id,
+        partner_name=acct["partner_name"],
+        report_type="Unclaimed Property Notice",
+        tax_year=tax_year,
+        total_yield=round(unclaimed, 2),
+        account_balance=acct["balance"],
+        yield_rate=acct["yield_rate"],
+        generated_at=date.today().isoformat(),
     )

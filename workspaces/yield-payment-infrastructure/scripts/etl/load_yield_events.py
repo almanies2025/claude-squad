@@ -40,7 +40,7 @@ DB_PATH = Path(__file__).resolve().parent.parent.parent / "backend" / "floatyiel
 
 
 def get_db() -> sqlite3.Connection:
-    conn = sqlite3.connect(DB_PATH)
+    conn = sqlite3.connect(DB_PATH, check_same_thread=False)
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -136,7 +136,10 @@ def parse_treasury_csv(f: TextIO) -> list[dict]:
                 }
             )
         except (KeyError, ValueError) as e:
-            print(f"  [WARN] Line {lineno}: skipped — {e} ({raw})", file=sys.stderr)
+            print(
+                f"  [WARN] Line {lineno}: skipped — {e} (missing or invalid field)",
+                file=sys.stderr,
+            )
     return rows
 
 

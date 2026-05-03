@@ -1,0 +1,113 @@
+# FloatYield — Full Spec Coverage Audit (Sprints 1-3)
+
+**Date:** 2026-05-03
+**Reference:** `01-analysis/data-audit/02-feature-framing.md`
+**Scope:** All 18 items across Sprint 1 (6), Sprint 2 (6), Sprint 3 (5+1)
+
+---
+
+## Sprint 1 — Demo Integrity (6 items) ✅ ALL IMPLEMENTED
+
+| # | Feature | Spec Action | Implementation | Verification | Status |
+|---|---------|-----------|---------------|--------------|--------|
+| 1 | Demo data disclosure banner | Add to dashboard | `page.tsx:1540-1564` — amber DEMO MODE banner with synthetic data disclosure | Banner renders on every page load; text states "Synthetic data. Models are structurally verified but not statistically validated on live Fed rate environments." | ✅ IMPLEMENTED + WIRED |
+| 2 | Rename demo partners to A/B/C | A/B/C naming in seed data | `main.py:102-109` — seeds "Demo Partner A/B/C" (was Celtic Bank, BlueRidge CU, Coastal Community Bank) | `GET /accounts` returns Demo Partner A/B/C; no real bank names in codebase | ✅ IMPLEMENTED + WIRED |
+| 3 | Remove "★ ARIMA winner" badge | Suppress from UI | `page.tsx` — no winner badge in model table | Grep for "winner\|★\|star.*ARIMA" in page.tsx returns only `alignItems: "flex-start"` (CSS property); no badge | ✅ IMPLEMENTED + WIRED |
+| 4 | Remove "vs ARIMA" delta column | Suppress from UI | `page.tsx:2166-2172` — model table columns: "Model", "30d Yield", "80% CI Range", "Avg/Day", "Recon Gap" | No delta column present; no "vs ARIMA" text anywhere in page.tsx | ✅ IMPLEMENTED + WIRED |
+| 5 | Label recon_gap_bps as "Reference gap" | Add description to API | `main.py:144` — `recon_gap_description: str` in YieldForecast; `_recon_gap_info()` returns dynamic description | `POST /forecast` and `POST /forecast/all` return `recon_gap_description`; UI displays it at `page.tsx:2137` | ✅ IMPLEMENTED + WIRED |
+| 6 | Scenario metadata | Add descriptions to API response | `main.py:145,207` — `scenario_description: str`; SCENARIOS dict at lines 441-445 and 738-742 | Stress/upside/base each have economic descriptions; UI displays at `page.tsx:2112` | ✅ IMPLEMENTED + WIRED |
+
+---
+
+## Sprint 2 — Data Feed Integration (6 items) ✅ ALL IMPLEMENTED
+
+| # | Feature | Spec Action | Implementation | Verification | Status |
+|---|---------|-----------|---------------|--------------|--------|
+| 1 | yield_events ETL pipeline | `load_yield_events.py` + `run_t1_batch.py` | `scripts/etl/load_yield_events.py` — CSV loader + synthetic generator; `scripts/etl/run_t1_batch.py` — T+1 batch simulator | Both scripts exist; INSERT OR IGNORE + UNIQUE INDEX on `(account_id, event_date)`; `check_same_thread=False` fixed | ✅ IMPLEMENTED + WIRED |
+| 2 | Replace flat history with real lookback | Query yield_events in `POST /forecast/all` | `main.py:684-700` — queries `yield_events ORDER BY event_date DESC LIMIT 60`; falls back to `[base_yield_daily] * 60` only if no rows | 783 rows in DB (261/account); models return differentiated outputs; fallback only triggers when `rows` is empty | ✅ IMPLEMENTED + WIRED |
+| 3 | Measured recon gap | Compute from yield_events | `_recon_gap_info()` at `main.py:602-653` — computes `mean(actual_yield - calculated_yield)` across last 30 events; falls back to 1.23 bps only if <5 rows | Returns dynamic description with event count and lookback; "Measured gap: X.XX bps" when sufficient history | ✅ IMPLEMENTED + WIRED |
+| 4 | ARIMA model re-validation | `validate_db.py` walk-forward | `scripts/forecast_models/validate_db.py` — 5 windows × 30-day test on 120-day lookback; outputs MAE, MAPE, dir_acc, naive_loss_rate | ARIMA(1,1,1) wins all 3 accounts in walk-forward; results written to `scripts/backend/model_comparison.json` | ✅ IMPLEMENTED + WIRED |
+| 5 | Uncertainty intervals | 80% CI in `_compute_intervals()` | `main.py:508-600` — empirical residual variance per model; Naive uses √h scaling, Holt uses h² trend term, ARIMA uses ψ_i² damping | `ModelResult` has `lower_bound` and `upper_bound`; displayed as "80% CI Range" in UI | ✅ IMPLEMENTED + WIRED |
+| 6 | Live account balance feed | N/A for course project | N/A — simulated via T+1 batch | N/A | N/A |
+
+---
+
+## Sprint 3 — Production Hardening (5 items) ✅ ALL IMPLEMENTED
+
+| # | Feature | Spec Action | Implementation | Verification | Status |
+|---|---------|-----------|---------------|--------------|--------|
+| 1 | Reconciliation dispute log | `recon_disputes` table + API | `main.py:64-76` (schema), `792-918` (routes) — GET/POST/PATCH `/disputes` + `/disputes/summary`; `DisputeFormWidget` in `page.tsx:410-470` | Disputes panel renders at `page.tsx:2280`; form + table + edit functionality wired to real API | ✅ IMPLEMENTED + WIRED |
+| 2 | Rate discrepancy tracking | `rate_discrepancies` table + API | `main.py:89-99` (schema), `924-985` (routes) — GET/POST `/rate-discrepancies`; `RateDiscrepancyFormWidget` at `page.tsx:957-1022` | Rate discrepancies panel at `page.tsx:2585`; form computes `discrepancy_bps = abs(contract - applied) * 10000`; wired | ✅ IMPLEMENTED + WIRED |
+| 3 | Threshold breach alerts | `threshold_alerts` table + API | `main.py:78-87` (schema), `991-1058` (routes) — GET `/alerts` + POST `/alerts/{id}/acknowledge`; auto-generation in `GET /portfolio` at `1138-1200` | Alerts panel at `page.tsx:2349`; acknowledge button wired; auto-generation checks worst_gap > 2.0 bps threshold | ✅ IMPLEMENTED + WIRED |
+| 4 | Multi-partner portfolio view | `GET /portfolio` | `main.py:1068-1213` — `PortfolioStats` with total_balance, disputes, alerts, gap stats, annualized yield | Portfolio panel at `page.tsx:2775`; 6 stat cards (balance, annualized yield, projected 30d, open disputes, avg/max gap) | ✅ IMPLEMENTED + WIRED |
+| 5 | Regulatory reporting module | 1099-INT + unclaimed property | `main.py:1219-1288` — `GET /regulatory/1099-int/{account_id}` and `GET /regulatory/unclaimed-property/{account_id}` | Regulatory panel at `page.tsx:2952`; fetches 1099-INT + unclaimed for all 3 accounts; unclaimed shows $0 by design (demo balances > 0) | ✅ IMPLEMENTED + WIRED |
+
+---
+
+## Mock/Hardcoded Pattern Audit
+
+**No MOCK_/FAKE_/DUMMY_ constants found in production API paths.**
+
+Occurrences of "mock" in codebase:
+- `main.py:1223` — docstring: "Generate mock 1099-INT for a partner account." — This is a label, not a data source. The 1099-INT endpoint computes actual yield from `yield_events` rows.
+- `main.py:1260` — docstring: "Generate mock unclaimed property notice." — Label; returns $0 for non-zero balance accounts by design (no unclaimed property in demo scope).
+- `main.py:1270` — comment: "# Mock: no unclaimed property unless balance is zero" — Design decision documented inline.
+
+**Fallback behavior audit:**
+- `main.py:700` — `history = [base_yield_daily] * max(60, params.days)` — Only used when `yield_events` is empty. Correct graceful degradation.
+- `main.py:625-632` — `_recon_gap_info()` falls back to 1.23 bps only when `<5` rows exist. Correct threshold.
+- `main.py:523-525` — `_compute_intervals()` returns degenerate intervals (point_preds as both bounds) when history < 5 rows. Correct.
+
+**No hardcoded values returned as live data:**
+- The 1.23 bps reference gap is only returned when `<5` historical events exist (correct — system reference, not measured).
+- All model forecasts pull from `yield_events` when populated (783 rows confirmed).
+
+---
+
+## Complete Spec Coverage Table (18 items)
+
+```
+Sprint 1 (Demo Integrity)     — 6/6 ✅
+Sprint 2 (Data Feed)          — 5/5 ✅ + 1 N/A
+Sprint 3 (Production Hard.)   — 5/5 ✅
+────────────────────────────────────────
+TOTAL                         — 16/17 ✅ + 1 N/A
+```
+
+| # | Sprint | Feature | Status |
+|---|--------|---------|--------|
+| 1  | Sprint 1 | Demo data disclosure banner | ✅ IMPLEMENTED + WIRED |
+| 2  | Sprint 1 | Rename demo partners to A/B/C | ✅ IMPLEMENTED + WIRED |
+| 3  | Sprint 1 | Remove "★ ARIMA winner" badge | ✅ IMPLEMENTED + WIRED |
+| 4  | Sprint 1 | Remove "vs ARIMA" delta column | ✅ IMPLEMENTED + WIRED |
+| 5  | Sprint 1 | Label recon_gap_bps as "Reference gap" | ✅ IMPLEMENTED + WIRED |
+| 6  | Sprint 1 | Scenario metadata (description field) | ✅ IMPLEMENTED + WIRED |
+| 7  | Sprint 2 | yield_events ETL pipeline | ✅ IMPLEMENTED + WIRED |
+| 8  | Sprint 2 | Replace flat history with real lookback | ✅ IMPLEMENTED + WIRED |
+| 9  | Sprint 2 | Measured recon gap | ✅ IMPLEMENTED + WIRED |
+| 10 | Sprint 2 | ARIMA model re-validation | ✅ IMPLEMENTED + WIRED |
+| 11 | Sprint 2 | Uncertainty intervals (80% CI) | ✅ IMPLEMENTED + WIRED |
+| 12 | Sprint 2 | Live account balance feed | N/A (course project — T+1 batch simulation) |
+| 13 | Sprint 3 | Reconciliation dispute log | ✅ IMPLEMENTED + WIRED |
+| 14 | Sprint 3 | Rate discrepancy tracking | ✅ IMPLEMENTED + WIRED |
+| 15 | Sprint 3 | Threshold breach alerts | ✅ IMPLEMENTED + WIRED |
+| 16 | Sprint 3 | Multi-partner portfolio view | ✅ IMPLEMENTED + WIRED |
+| 17 | Sprint 3 | Regulatory reporting (1099-INT) | ✅ IMPLEMENTED + WIRED |
+| 18 | Sprint 3 | Regulatory reporting (unclaimed property) | ✅ IMPLEMENTED + WIRED |
+
+---
+
+## Data Integrity Facts
+
+- `yield_events`: 783 rows (261/account × 3 accounts)
+- `recon_disputes`: table exists, seeded via user input
+- `rate_discrepancies`: table exists, seeded via user input
+- `threshold_alerts`: table exists, auto-generated by `GET /portfolio`
+- All 3 demo accounts use "Demo Partner A/B/C" naming
+- No real bank names (Celtic Bank, BlueRidge CU, Coastal Community Bank) remain in seed data or UI
+
+---
+
+## Previous Session's Claim Correction
+
+Journal 0047 stated "threshold monitoring and rate discrepancies UI were already implemented" — this was confirmed correct. Both features are fully wired to their respective API endpoints and render in the correct UI panels.

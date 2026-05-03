@@ -57,10 +57,33 @@ body::before {
   z-index: 0;
 }
 
-/* Neon glow utility */
-.glow-cyan { text-shadow: 0 0 12px var(--cyan), 0 0 24px var(--cyan-dim); }
-.glow-gold { text-shadow: 0 0 10px var(--gold), 0 0 20px var(--gold-dim); }
-.glow-green { text-shadow: 0 0 10px var(--green); }
+/* Neon glow utility — diffuse blur + solid offset for neon tube effect */
+.glow-cyan {
+  text-shadow:
+    0 0 6px var(--cyan),
+    0 0 14px color-mix(in srgb, var(--cyan) 70%, transparent),
+    2px 2px 0 #005577;
+}
+.glow-gold {
+  text-shadow:
+    0 0 6px var(--gold),
+    0 0 14px color-mix(in srgb, var(--gold) 70%, transparent),
+    2px 2px 0 #8B6000;
+}
+.glow-green {
+  text-shadow: 0 0 8px var(--green), 2px 2px 0 #005530;
+}
+.glow-purple {
+  text-shadow: 0 0 8px var(--purple), 2px 2px 0 #3d1a7a;
+}
+
+/* Dark backing for text rendered over busy backgrounds */
+.text-backing {
+  background: #06030c99;
+  border-radius: 3px;
+  padding: 2px 6px;
+  backdrop-filter: blur(4px);
+}
 
 /* Card glow border */
 .card-glow {

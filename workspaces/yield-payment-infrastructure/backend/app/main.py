@@ -267,6 +267,13 @@ class DisputeCreate(BaseModel):
             raise ValueError("reason must be 2000 characters or fewer")
         return v
 
+    @field_validator("dispute_type")
+    @classmethod
+    def dispute_type_must_be_valid(cls, v: str) -> str:
+        if v not in ("recon_gap",):
+            raise ValueError("dispute_type must be 'recon_gap'")
+        return v
+
 
 class DisputeUpdate(BaseModel):
     status: Literal["open", "resolved", "escalated"] | None = None
@@ -1043,6 +1050,8 @@ def list_alerts(
 @app.post("/alerts/{alert_id}/acknowledge")
 def acknowledge_alert(alert_id: int):
     """Acknowledge a threshold alert."""
+    if alert_id <= 0:
+        raise HTTPException(400, "alert_id must be a positive integer")
     with get_db() as db:
         existing = db.execute(
             "SELECT * FROM threshold_alerts WHERE id = ?", (alert_id,)

@@ -1,0 +1,2 @@
+{"id":"obs_1777750607298_7ynabhlo9","timestamp":"2026-05-02T19:36:47.298Z","type":"test_pattern","data":{"test_tier":"unit","test_path":null,"is_pytest":false,"command_flags":[]},"context":{"session_id":"unknown","cwd":"/mnt/c/Users/User/Documents/GitHub/claude-squad/workspaces/yield-payment-infrastructure/apps/web/public/videos","framework":"unknown"}}
+{"timestamp":"2026-05-02T19:37:07.824Z","type":"stop","session_id":"8103c763-b6f3-4ca2-8691-935dcc1cb31f","reason":"signal","success":true}

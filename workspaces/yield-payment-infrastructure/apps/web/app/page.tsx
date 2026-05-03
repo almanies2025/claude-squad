@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import VideoCityscape from "../components/VideoCityscape";
 
 const API = "http://localhost:8000";
 
@@ -1376,14 +1377,17 @@ export default function Dashboard() {
   const scen = scenarioConfig[scenario] ?? scenarioConfig.base;
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "var(--bg-void)",
-        position: "relative",
-        zIndex: 1,
-      }}
-    >
+    <>
+      <VideoCityscape />
+      <div
+        style={{
+          minHeight: "100vh",
+          background: "transparent",
+          position: "relative",
+          zIndex: 1,
+        }}
+      >
+
       {/* ── HEADER ─────────────────────────────────────── */}
       <header
         style={{
@@ -3091,11 +3095,23 @@ export default function Dashboard() {
                 fontSize: "0.65rem",
                 color: "var(--text-dim)",
                 letterSpacing: "0.15em",
-                marginBottom: "1rem",
+                marginBottom: "0.3rem",
                 marginTop: "1.5rem",
               }}
             >
               ▷ UNCLAIMED PROPERTY NOTICES
+            </div>
+            <div
+              style={{
+                fontFamily: "var(--font-mono)",
+                fontSize: "0.6rem",
+                color: "var(--text-dim)",
+                marginBottom: "1rem",
+                opacity: 0.7,
+              }}
+            >
+              Triggered for closed accounts with residual balances — all demo
+              accounts are active
             </div>
             {unclaimedReports.map((rep) => (
               <div
@@ -3290,6 +3306,7 @@ export default function Dashboard() {
           100% { transform: translateX(350%); }
         }
       `}</style>
-    </div>
+      </div>
+    </>
   );
 }

@@ -1,47 +1,56 @@
 ### Read These Files First (in order)
 
-1. `.session-notes.md` (this file) — current session state
-2. `journal/0034-DECISION-adr06-suppress-model-comparison.md` — ARIMA winner badge + vs ARIMA column removed
-3. `journal/0035-DECISION-adr07-recon-gap-disclosure.md` — recon gap shown as system reference with mandatory disclosure
-4. `journal/0036-DECISION-adr08-demo-partner-names.md` — partners renamed Demo Partner A/B/C
-5. `journal/0031-DISCOVERY-yield-events-table-empty.md` — yield_events ETL pipeline does not exist
-6. `journal/0032-DISCOVERY-flat-synthetic-history-kills-model-comparison.md` — flat history → all 3 models return identical output
-7. `journal/0033-GAP-recon-gap-hardcoded.md` — recon_gap_bps = 1.23 hardcoded constant
-8. `01-analysis/data-audit/01-data-audit.md` — Phase 02 trust-plane audit: full data inventory, feature classification
-9. `01-analysis/data-audit/02-feature-framing.md` — Phase 03 feature framing: ADRs 06–08, Sprint 1–3 priority matrix
-10. `SPRINT1.md` — Sprint 1 setup prompt
-11. `briefs/001-initial-brief.md` — original FloatYield product brief
+1. `.session-notes` (this file) — current session state
+2. `.spec-coverage` — 18/18 spec coverage audit with verification evidence
+3. `journal/0049-REDTEAM-sprint4-round2-convergence.md` — Sprint 4 convergence report
+4. `journal/0048-CORRECTION-stale-findings-sprint4-round1.md` — threshold/rate discrepancies correction
+5. `apps/web/app/page.tsx` — main page (now returns `<> <VideoCityscape /> <div transparent> ... </div> </>`)
+6. `apps/web/components/VideoCityscape.tsx` — video backdrop component (z-index 0 fixed)
+7. `apps/web/public/videos/backdrop.mp4` — user-supplied 1280x720 14s looping video
 
 ### Accomplished
 
-- **Phase 02 + 03 complete**: trust-plane data audit + feature framing. Full analysis in `01-analysis/data-audit/`
-- **ADR-06 implemented**: removed "★ ARIMA winner" badge, removed "vs ARIMA" delta column, replaced validation legend with scenario description box
-- **ADR-07 implemented**: `POST /forecast` and `POST /forecast/all` now return `recon_gap_description` + `scenario_description`. UI shows yellow disclosure box explaining 1.23 bps is a system reference, not measured per-account gap
-- **ADR-08 implemented**: partners renamed to Demo Partner A/B/C. Amber demo banner added to dashboard header
-- **Scenario metadata added**: base ("Fed funds rate unchanged"), stress ("Fed cuts 50bps..."), upside ("Fed hikes 30bps...") — both in API response and UI description box
-- **Backend fixes**: `requirements.txt` missing `numpy`; `_recon_gap()` formula returned 0.0 (fixed to return 1.23); `yield_events` confirmed empty — no ETL pipeline exists
-- **DB reset**: `floatyield.db` deleted and recreated with renamed partners. Backend live on :8000, frontend on :3000
+**Frontend backdrop — video:**
+- User provided `c:\Users\User\Downloads\333849_medium.mp4` → copied to `public/videos/backdrop.mp4` (3.4MB, 1280x720, 14s loop)
+- User also provided image `leyre-71SHXwBLp5w-unsplash.jpg` → copied to `public/videos/backdrop.jpg` (866KB, 2203x2386) — unused
+- Video confirmed served at `http://localhost:3000/videos/backdrop.mp4` → 200 OK
+- TypeScript: exit 0 ✅
+
+**Fixed root cause of backdrop not showing:**
+- `page.tsx` return was: `<div bg=var(--bg-void)> <VideoCityscape /> ...` → opaque background covered VideoCityscape
+- Fix: restructured to `<> <VideoCityscape /> <div bg=transparent> ... </div> </>` (root-level Fragment with VideoCityscape as sibling at z-index 0)
+- Content div now `background: transparent`, sits at `z-index: 1`
+- VideoCityscape: `position: fixed, inset:0, zIndex:0` + dark gradient overlay at z-index 1
+
+**Components created:**
+- `components/VideoCityscape.tsx` — `<video autoPlay loop muted playsInline>` at 55% opacity + dark gradient overlay
+- `components/ImageCityscape.tsx` — CSS background-image version (unused, user has video)
+- `components/CyberpunkCityscape.tsx` — canvas-based animated version (caused hydration errors due to `Math.random()` in JSX; orphaned)
 
 ### Outstanding
 
-- [ ] Sprint 2 data feed: `yield_events` ETL pipeline from sponsor bank Treasury statements — PRIMARY technical gap; unblocks all downstream features
-- [ ] Capital sequencing problem (journal 0025) — unresolved; ILC charter timeline (18-24 months) vs. Year 1 revenue runway
-- [ ] `yield_events` schema is correct; population is EMPTY — no row has ever been inserted
+- [ ] `CyberpunkCityscape.tsx` and `ImageCityscape.tsx` are orphaned in `components/` — delete them
+- [ ] `public/videos/backdrop.jpg` unused — delete it (only `backdrop.mp4` is used)
+- [ ] User's dashboard renders but "lost numbers and features" complaint — page content div restructuring may have shifted stacking; verify all 8 API panels (accounts, disputes, alerts, rate-discrepancies, portfolio, forecast, regulatory 1099-int, regulatory unclaimed) render correctly
+- [ ] Capital sequencing problem (journal 0040) — ILC charter 18-24 months vs Year 1 runway gap
+- [ ] Sprint 5 roadmap — no planned sprint
 
 ### Oversight — Verify Before Starting
 
-- [ ] Backend loads: `cd backend && python3 -c "from app.main import app; print('OK')"`
-- [ ] Partners renamed: `curl -s http://localhost:8000/accounts` → Demo Partner A/B/C
-- [ ] Scenario metadata: `curl -s -X POST http://localhost:8000/forecast/all -H "Content-Type: application/json" -d '{"account_id":1,"days":30,"rate_scenario":"stress"}'` → `scenario_description` and `recon_gap_description` present in response
-- [ ] TypeScript clean: `cd apps/web && npx tsc --noEmit` (exit 0)
+- [ ] Backend health: `curl -s http://localhost:8000/health` → `{"status":"ok"}`
+- [ ] Video accessible: `curl -sI http://localhost:3000/videos/backdrop.mp4` → 200 OK
+- [ ] TypeScript clean: `npx tsc --noEmit` in `apps/web/` → exit 0
+- [ ] yield_events: 783 rows
 
 ### Oversight — Verify After Completing
 
-- [ ] Preflight: `python3 scripts/preflight.py` → ALL CHECKS PASSED
-- [ ] Frontend renders demo banner + scenario/recon gap description boxes
-- [ ] `yield_events` still empty: `sqlite3 backend/floatyield.db "SELECT COUNT(*) FROM yield_events"` → 0
+- [ ] All 8 API endpoints return 200/201: accounts, disputes, alerts, rate-discrepancies, portfolio, forecast (POST), regulatory/1099-int/{id}, regulatory/unclaimed-property/{id}
+- [ ] Regression test: `python3 scripts/etl/test_recon_gap_calculation.py` → all PASS
+- [ ] dispute_type validator: `curl -X POST http://localhost:8000/disputes -d '{"dispute_type":"bad",...}'` → 422
+- [ ] Video backdrop visible behind dashboard panels (hard refresh: Ctrl+Shift+R)
+- [ ] All dashboard panels visible: header stats, DEMO MODE banner, disputes, alerts, rate discrepancies, portfolio, forecast, regulatory
 
 ### Blockers
 
-- `yield_events` empty — Sprint 2 blocked on ETL pipeline; cannot demonstrate real ARIMA differentiation or measured reconciliation gap
-- Capital sequencing unresolved — ILC charter (18-24 months) vs. Year 1 operating runway gap
+- Capital sequencing unresolved — ILC charter vs Year 1 revenue runway (journal 0040)
+- No blocking technical items — Sprint 4 complete, all spec items implemented

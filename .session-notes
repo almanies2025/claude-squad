@@ -1,51 +1,42 @@
 ### Read These Files First (in order)
 
-1. `workspaces/pe-asset-transaction/briefs/001-initial-brief.md` — product concept brief
-2. `workspaces/pe-asset-transaction/01-analysis/00-executive-summary.md` — full analysis verdict
-3. `workspaces/pe-asset-transaction/01-analysis/04-fundability-metrics.md` — fundability metrics (IRR, MOIC, DSCR, LTV, risk scores)
-4. `workspaces/pe-asset-transaction/01-analysis/03-asset-classes.md` — asset class breakdown and ML suitability
-5. `workspaces/pe-asset-transaction/01-analysis/06-data-requirements.md` — ML model viability, SHAP interpretability, SR 11-7 compliance
-6. `workspaces/pe-asset-transaction/journal/0001-DISCOVERY-product-type-gap.md` — 5 different product types hidden in "ML model for fundability"
-7. `workspaces/pe-asset-transaction/journal/0002-DECISION-buyer-context.md` — Boston PE firm is anchor buyer: job + equity confirmed
-8. `workspaces/pe-asset-transaction/journal/0003-RISK-ml-framing-wrong.md` — risk: "ML model" framing may not match PE firm needs
-9. `workspaces/pe-asset-transaction/journal/0004-GAP-five-unanswered-questions.md` — 5 blocking questions for PE firm
+1. `cv-resume.py` — Python ReportLab script that generates the professional resume PDF. All resume edits go here, then run `python3 cv-resume.py` to regenerate
+2. `Khalid_Waleed_Almanie_Resume.pdf` — current resume PDF (latest version on desktop at `C:\Users\User\Desktop\`)
+3. `.session-notes` (this file) — session state
 
 ### Accomplished
 
-- Created full `workspaces/pe-asset-transaction/` project structure (briefs/, 01-analysis/, 02-plans/, 03-user-flows/, journal/)
-- Produced 9 analysis files (00-executive-summary through 08-risks-and-failure-modes)
-- Analysis verdict: "PROCEED WITH CAUTION - Conditional Opportunity" — white space exists but data moat is thin
-- Red team completed: 7 specific challenges identified
-- Boston + asset-heavy framing validated as more promising than broad PE (Bloomberg/CapitalIQ focus on growth equity; asset-heavy underserved)
-- Key insight: Boston asset-heavy PE likely does infrastructure, real estate, or aviation/equipment — not growth equity
-- Key insight: "ML model" framing may be wrong — asset-heavy PE needs scenario cash flow outputs, not a black-box score
-- 5 critical blocking questions formatted and given to user to send to professor/PE firm
-- 4 journal entries created (DISCOVERY, DECISION, RISK, GAP)
+**Resume creation for Khalid Waleed Almanie (MBA Finance candidate, SMU):**
+
+- Read original `cv-Almanie-K.pdf` (git HEAD) — old format with FX Technical Project
+- Spawned uiux-designer agent to design professional single-column resume layout (navy #1B3A5C accent, A4, clean section headers with rules)
+- Created `cv-resume.py` — ReportLab script generating `Khalid_Waleed_Almanie_Resume.pdf`
+- Removed FX Technical Project, added **B2B Yield-Bearing Payment Infrastructure** project (independent research, no course/college mention)
+- Skills section expanded to 5 columns with 10 skills each:
+  - Fintech & Finance: Yield accrual engineering, Treasury reserve management, DCF/LBO modeling, regulatory reporting (1099-INT), basis points economics, capital structure analysis, portfolio management, EBITDA normalization, M&A fundamentals, comparable company analysis
+  - Technical: Python, FastAPI, Next.js/React, REST API design, PostgreSQL, AWS (EC2, S3, RDS), pandas/NumPy, scikit-learn, data visualization, Git
+  - Operations: Supply chain optimization, risk management, ESG analysis, go-to-market strategy, stakeholder management, cross-cultural leadership, performance auditing, project management, strategic planning, process improvement
+  - Regulatory & Compliance: Sponsor Bank model, FDIC insurance framework, MiCA/EMI (EU), AML/KYC protocols, BSA/FinCEN compliance, state MTL licensing, unclaimed property laws, OFAC screening, CUSO structure, SR 11-7 model governance
+  - Languages: Arabic (Native), English (Professional), Mandarin (Conversational)
+- JollyChic experience expanded from 3 to 6 bullets (added: vendor contract negotiations 15% cost reduction, performance tracking dashboards, cross-functional warehouse/transportation/customer service coordination, root-cause analysis on failed deliveries)
+- Expert Path experience expanded from 2 to 5 bullets (added: SAR 2.4M financial impact, compliance documentation frameworks meeting SASO/SCA standards, executive-level status reports for government officials, zero non-compliance findings outcome)
+- Fixed MBA date: Aug 2025 → Aug 2026
+- Removed footer caption about ReportLab
 
 ### Outstanding
 
-- [ ] Await answers to 5 questions from PE firm:
-  - Asset class: what do they actually evaluate?
-  - Current process: Excel, Bloomberg, advisors, qualitative?
-  - Output format: score? scenario analysis? stress test? memo?
-  - Decision-maker: GP, COO, or CFO signs?
-  - Deal structure: equity percentage, vesting, IP assignment terms?
-- [ ] Once answers received: re-scope product to specific asset class + output format
-- [ ] Legal/venture structure: IP assignment, company formation, vesting terms (equity stake = venture creation, not consulting)
-- [ ] Confirm "ML model" framing — is it the professor's term or the PE firm's actual need?
-- [ ] Consider: should the product output be scenario-based cash flows (defensible) rather than a fundability score (rejected by lenders)?
+- [ ] None — resume is complete and on desktop
 
 ### Oversight — Verify Before Starting
 
-- [ ] Read `workspaces/pe-asset-transaction/briefs/001-initial-brief.md` for current product framing
-- [ ] Check `workspaces/pe-asset-transaction/journal/` — 4 entries should exist
-- [ ] Confirm the 5 questions were sent to professor
+- [ ] Read `cv-resume.py` before making any changes to the resume
+- [ ] Confirm `Khalid_Waleed_Almanie_Resume.pdf` on desktop is the latest version
+
+### Oversight — Verify After Completing
+
+- [ ] Run `python3 cv-resume.py` and verify PDF generates without errors
+- [ ] Copy output to desktop: `cp /mnt/c/Users/User/Documents/GitHub/claude-squad/Khalid_Waleed_Almanie_Resume.pdf /mnt/c/Users/User/Desktop/`
 
 ### Blockers
 
-1. **Asset class unknown** — cannot architect model without it
-2. **Output format unknown** — score vs. scenario analysis vs. memo automation = completely different products
-3. **Deal structure undocumented** — equity terms, IP assignment, vesting not formalized
-4. **"ML model" framing unconfirmed** — if PE firm wants Excel plug-in and we bring neural net, we lose them
-
-**Primary blocker: awaiting PE firm responses to the 5 questions.**
+None — resume work complete.

@@ -1,56 +1,59 @@
 ### Read These Files First (in order)
 
-1. `.session-notes` (this file) — current session state
-2. `.spec-coverage` — 18/18 spec coverage audit with verification evidence
-3. `journal/0049-REDTEAM-sprint4-round2-convergence.md` — Sprint 4 convergence report
-4. `journal/0048-CORRECTION-stale-findings-sprint4-round1.md` — threshold/rate discrepancies correction
-5. `apps/web/app/page.tsx` — main page (now returns `<> <VideoCityscape /> <div transparent> ... </div> </>`)
-6. `apps/web/components/VideoCityscape.tsx` — video backdrop component (z-index 0 fixed)
-7. `apps/web/public/videos/backdrop.mp4` — user-supplied 1280x720 14s looping video
+1. `.session-notes` (this file) — session state
+2. `journal/0050-DECISION-sprint5-premium-dark-capital-resolution.md` — what was decided and changed this session
+3. `journal/0040-DECISION-capital-sequencing.md` — ILC/CUSO/Sponsor Bank capital sequencing; DECISION MADE (Option 2)
+4. `journal/0049-REDTEAM-sprint4-round2-convergence.md` — Sprint 4 convergence (cyberpunk references updated to Premium Dark)
+5. `05-materials/pitch_deck.html` — Premium Dark pitch deck, 14 slides, ready to share
+6. `apps/web/app/page.tsx` — main dashboard (Premium Dark, all 8 panels wired)
+7. `.spec-coverage` — 18/18 spec coverage audit
 
 ### Accomplished
 
-**Frontend backdrop — video:**
-- User provided `c:\Users\User\Downloads\333849_medium.mp4` → copied to `public/videos/backdrop.mp4` (3.4MB, 1280x720, 14s loop)
-- User also provided image `leyre-71SHXwBLp5w-unsplash.jpg` → copied to `public/videos/backdrop.jpg` (866KB, 2203x2386) — unused
-- Video confirmed served at `http://localhost:3000/videos/backdrop.mp4` → 200 OK
-- TypeScript: exit 0 ✅
+**Sprint 5 completed (2026-05-04):**
 
-**Fixed root cause of backdrop not showing:**
-- `page.tsx` return was: `<div bg=var(--bg-void)> <VideoCityscape /> ...` → opaque background covered VideoCityscape
-- Fix: restructured to `<> <VideoCityscape /> <div bg=transparent> ... </div> </>` (root-level Fragment with VideoCityscape as sibling at z-index 0)
-- Content div now `background: transparent`, sits at `z-index: 1`
-- VideoCityscape: `position: fixed, inset:0, zIndex:0` + dark gradient overlay at z-index 1
+**Capital sequencing resolved:**
+- Option 2 selected: Raise $2M seed upfront → file ILC immediately → run Sponsor Bank + CUSO in parallel
+- Journal 0040 updated: "Decision Required" → "Decision Made" with full rationale and ILC denial contingency
+- Key rationale: Option 1 sequential = fintech death spiral (CUSO 12-18mo delays ILC capital); Option 2 eliminates dependency chain
 
-**Components created:**
-- `components/VideoCityscape.tsx` — `<video autoPlay loop muted playsInline>` at 55% opacity + dark gradient overlay
-- `components/ImageCityscape.tsx` — CSS background-image version (unused, user has video)
-- `components/CyberpunkCityscape.tsx` — canvas-based animated version (caused hydration errors due to `Math.random()` in JSX; orphaned)
+**Pitch deck redesigned (Premium Dark):**
+- Full rewrite of `05-materials/pitch_deck.html`
+- 14 slides, Premium Dark CSS (#0D1117/#161B22/#2EA866/#F0B429)
+- Slide 10: Capital sequencing RESOLVED
+- Slide 13: Real founder profile (Khalid Waleed Almanie, SMU MBA)
+- Slide 14: $2M seed ask with milestones
+- Old blue/purple #6c8ee8 → emerald #2EA866 throughout
+
+**Technical verification:**
+- All 8 API panels curl-tested and returning data (live backend)
+- `POST /forecast/all` → 3 models (Naive, Holt, ARIMA), 80% CI bounds, gap descriptions
+- Frontend TypeScript: `tsc --noEmit` → zero errors
+
+**Journal cleanup:**
+- Journal 0049: all cyberpunk/neon references → Premium Dark
+- New journal 0050: Sprint 5 session record
 
 ### Outstanding
 
-- [ ] `CyberpunkCityscape.tsx` and `ImageCityscape.tsx` are orphaned in `components/` — delete them
-- [ ] `public/videos/backdrop.jpg` unused — delete it (only `backdrop.mp4` is used)
-- [ ] User's dashboard renders but "lost numbers and features" complaint — page content div restructuring may have shifted stacking; verify all 8 API panels (accounts, disputes, alerts, rate-discrepancies, portfolio, forecast, regulatory 1099-int, regulatory unclaimed) render correctly
-- [ ] Capital sequencing problem (journal 0040) — ILC charter 18-24 months vs Year 1 runway gap
-- [ ] Sprint 5 roadmap — no planned sprint
+- [ ] **Nothing blocking** — repo is ready to share with professor
+- [ ] Commit changes: pitch_deck.html, journal/0040, journal/0049, journal/0050
+- [ ] Professor may ask about: specific yield projections (could cite $1.07M on Demo Partner A's $50M account), use-of-funds amounts (may need adjusting for Option 2 upfront capital vs sequential)
 
 ### Oversight — Verify Before Starting
 
-- [ ] Backend health: `curl -s http://localhost:8000/health` → `{"status":"ok"}`
-- [ ] Video accessible: `curl -sI http://localhost:3000/videos/backdrop.mp4` → 200 OK
-- [ ] TypeScript clean: `npx tsc --noEmit` in `apps/web/` → exit 0
-- [ ] yield_events: 783 rows
+- [ ] `systemctl status floatyield-backend` → should show "active (running)"
+- [ ] `systemctl status floatyield-frontend` → should show "active (running)"
+- [ ] `curl -s http://localhost:8000/health` → `{"status":"ok"}`
+- [ ] `curl -s -o /dev/null -w "%{http_code}" http://localhost:3000` → 200
+- [ ] `cd apps/web && npx tsc --noEmit` → exit 0
 
 ### Oversight — Verify After Completing
 
-- [ ] All 8 API endpoints return 200/201: accounts, disputes, alerts, rate-discrepancies, portfolio, forecast (POST), regulatory/1099-int/{id}, regulatory/unclaimed-property/{id}
-- [ ] Regression test: `python3 scripts/etl/test_recon_gap_calculation.py` → all PASS
-- [ ] dispute_type validator: `curl -X POST http://localhost:8000/disputes -d '{"dispute_type":"bad",...}'` → 422
-- [ ] Video backdrop visible behind dashboard panels (hard refresh: Ctrl+Shift+R)
-- [ ] All dashboard panels visible: header stats, DEMO MODE banner, disputes, alerts, rate discrepancies, portfolio, forecast, regulatory
+- [ ] All 8 panels load in browser at `http://localhost:3000`
+- [ ] Pitch deck: `open 05-materials/pitch_deck.html` — verify Premium Dark theme renders
+- [ ] Git status: only intended files modified (pitch_deck.html, journal/0040, journal/0049, journal/0050)
 
 ### Blockers
 
-- Capital sequencing unresolved — ILC charter vs Year 1 revenue runway (journal 0040)
-- No blocking technical items — Sprint 4 complete, all spec items implemented
+None — project is complete and ready for professor review.

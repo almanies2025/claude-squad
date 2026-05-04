@@ -163,3 +163,5 @@
 {"timestamp":"2026-05-02T19:42:41.942Z","type":"stop","session_id":"8103c763-b6f3-4ca2-8691-935dcc1cb31f","reason":"signal","success":true}
 {"timestamp":"2026-05-02T19:44:51.919Z","type":"stop","session_id":"8103c763-b6f3-4ca2-8691-935dcc1cb31f","reason":"signal","success":true}
 {"id":"obs_1777751104635_iqty1u8sk","timestamp":"2026-05-02T19:45:04.635Z","type":"session_summary","data":{"duration_estimate":null},"context":{"session_id":"8103c763-b6f3-4ca2-8691-935dcc1cb31f","cwd":"/mnt/c/Users/User/Documents/GitHub/claude-squad/workspaces/yield-payment-infrastructure/apps/web","framework":"unknown"}}
+{"timestamp":"2026-05-04T14:11:17.213Z","type":"stop","session_id":"6d7612b0-441a-4921-a7b1-9576fb4edd25","reason":"signal","success":true}
+{"timestamp":"2026-05-04T14:14:41.043Z","type":"stop","session_id":"ea0400f7-b7f5-4ff6-844f-b538f5100d70","reason":"signal","success":true}

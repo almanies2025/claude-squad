@@ -27,6 +27,7 @@ This is the **fintech death spiral**: partnerships needed for revenue → partne
 ## The Three Paths
 
 ### Path A: Sponsor Bank Partnership (Required to Exist)
+
 - **Capital**: $50K-$200K/yr in bank fees; no upfront raise
 - **Timeline**: 9-18 months (post-Synapse reality; was 3-6 months pre-Synapse)
 - **Revenue**: Platform fees once live
@@ -34,6 +35,7 @@ This is the **fintech death spiral**: partnerships needed for revenue → partne
 - **ILC relevance**: Must be running to generate fee revenue during ILC runway
 
 ### Path B: CUSO Partnership (Parallel Track)
+
 - **Capital**: ~$500K legal and setup costs
 - **Timeline**: 12-18 months (stated 6-12; realistic is longer per GAP-002)
 - **Mechanism**: FloatYield partners with credit unions as deposit-taking counterparty; NCUA-insured
@@ -41,6 +43,7 @@ This is the **fintech death spiral**: partnerships needed for revenue → partne
 - **ILC relevance**: If successful, eliminates Sponsor Bank dependency. Must be running alongside ILC application.
 
 ### Path C: ILC Charter (Long-Term Strategic Goal)
+
 - **Capital**: $2-5M application + 12-18 months operating runway = **$4-8M total**
 - **Timeline**: 18-36 months to charter approval
 - **Mechanism**: FloatYield obtains own depository institution charter (available in UT, SD, NV)
@@ -70,6 +73,7 @@ This is the **fintech death spiral**: partnerships needed for revenue → partne
 ## The Three Sequencing Options
 
 ### Option 1: Sponsor Bank First, ILC Later (Sequential)
+
 1. Secure Sponsor Bank partnership (9-18 months, $50-200K/yr)
 2. Generate fee revenue for 12-24 months
 3. Raise $4-8M ILC capital once revenue trajectory is established
@@ -78,6 +82,7 @@ This is the **fintech death spiral**: partnerships needed for revenue → partne
 **Risk**: Revenue may not be sufficient to raise IC capital at step 3; ILC window closes.
 
 ### Option 2: Raise ILC Capital Upfront, Run Parallel Tracks
+
 1. Raise $4-8M ILC capital first (dilutive)
 2. File ILC application
 3. Simultaneously pursue CUSO partnerships
@@ -86,6 +91,7 @@ This is the **fintech death spiral**: partnerships needed for revenue → partne
 **Risk**: ILC denial with no fallback use of capital; 29% denial rate means ~70% chance of capital wasted on failed application.
 
 ### Option 3: CUSO-First, ILC as Contingency
+
 1. Pursue CUSO partnerships aggressively (12-18 months)
 2. Use CUSO fee revenue to fund ILC application over time
 3. File ILC when CUSO revenue proves the model
@@ -101,20 +107,38 @@ Per `04-validate/redesign-red-team.md`:
 > "The ILC charter is a strategic goal with a 50% probability of success within the 24-36 month window. The model does not have a contingency for denial."
 
 **Key questions**:
+
 1. Is the $4-8M capital raise contingent on ILC approval or unconditional?
 2. What is the fallback use of capital if ILC is denied at month 18?
 3. Can the ILC application be paused (not abandoned) if capital runs low, then resumed?
 
 ---
 
-## Decision Required
+## Decision Made: Option 2 — Raise ILC Capital Upfront, Run Parallel Tracks
 
-FloatYield must choose how to sequence:
-1. **When to pursue the ILC charter** — before, during, or after CUSO partnerships?
-2. **How to raise ILC capital** — upfront (dilutive) or from CUSO revenue (delayed)?
-3. **What is the ILC denial contingency** — continue with Sponsor Bank? Pivot to CUSO-only?
+**Selected path:**
 
-These are capital structure and strategic timeline decisions that determine whether the ILC goal is realistic or aspirational.
+1. Raise $2M seed round (per pitch deck "The Ask") — covers ILC application + 12-month operating runway
+2. File ILC application immediately — start the 18-36 month regulatory clock
+3. Pursue Sponsor Bank partnership in parallel — generates fee revenue during ILC review
+4. Pursue CUSO partnerships in parallel — reduces Sponsor Bank dependency at Year 2-3
+5. ILC denial contingency: continue with Sponsor Bank + CUSO dual-track; CUSO fee revenue funds indefinite Sponsor Bank operation
+
+**Why Option 2 over Option 1 (Sequential):**
+Option 1's fatal flaw is the dependency chain: CUSO takes 12-18 months (realistic, post-Synapse), not 6-12. Revenue arrives after ILC capital is partially depleted. The ILC application lapses before approval — the "fintech death spiral" documented in §5.4 of the report.
+
+**Why Option 2 over Option 3 (CUSO-first):**
+Option 3 makes the ILC charter contingent on CUSO success — if CUSO appetite is lower than expected, the ILC timeline slips indefinitely. Option 2 runs both tracks simultaneously.
+
+**ILC denial risk (29% approval rate, 2024-2026):**
+With $2M seed covering 12 months operating runway post-IC application, denial at month 18 leaves FloatYield with Sponsor Bank partnership running + CUSO partnerships established. The business survives; ILC becomes a future filing with a larger capital base (CUSO revenue).
+
+**Capital adequacy check:**
+
+- ILC application cost: $500K-$1M (legal + filing fees)
+- 12-month operating runway: $1M-$1.5M
+- Total: $1.5M-$2.5M — within the $2M seed raise
+- Buffer: $0-$500K contingency
 
 ---
 

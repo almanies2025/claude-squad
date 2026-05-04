@@ -1,32 +1,30 @@
-/* ── FloatYield Futuristic Theme ─────────────────────────────────── */
-/* Fonts loaded via next/font in layout.tsx — no external fetch needed */
+/* ── FloatYield Premium Dark Theme ─────────────────────────────────── */
+/* Bloomberg Terminal meets modern fintech */
 
 :root {
-  --bg-void:       #060912;
-  --bg-panel:      #0B1220;
-  --bg-card:       #0F1929;
-  --bg-card-hover: #141F35;
-  --border-dim:    #1E2D45;
-  --border-glow:   #00D4FF33;
+  --bg-void:        #0D1117;
+  --bg-surface:     #161B22;
+  --bg-card:        #161B22;
+  --bg-card-hover:  #1C2128;
+  --border:         #30363D;
+  --border-subtle:  #21262D;
 
-  --cyan:          #00D4FF;
-  --cyan-dim:      #00D4FF66;
-  --cyan-glow:     #00D4FF22;
-  --purple:        #7C3AED;
-  --purple-dim:    #7C3AED66;
-  --green:         #00F5A0;
-  --green-dim:     #00F5A044;
-  --red:           #FF6B6B;
-  --gold:          #FFD93D;
-  --gold-dim:      #FFD93D44;
+  --accent-green:   #2EA866;
+  --accent-green-dim: #2EA86633;
+  --accent-gold:    #F0B429;
+  --accent-gold-dim: #F0B42933;
+  --accent-red:     #F85149;
+  --accent-red-dim: #F8514933;
+  --accent-blue:    #58A6FF;
+  --accent-blue-dim: #58A6FF33;
 
-  --text-primary:  #E8F0FE;
-  --text-secondary:#7A8BA8;
-  --text-dim:      #3D5068;
+  --text-primary:   #E6EDF3;
+  --text-secondary: #8B949E;
+  --text-dim:       #484F58;
 
-  --font-display:  var(--font-orbitron), monospace;
-  --font-body:    var(--font-inter), system-ui, sans-serif;
-  --font-mono:    var(--font-jetbrains-mono), monospace;
+  --font-display:   var(--font-inter), system-ui, sans-serif;
+  --font-body:      var(--font-inter), system-ui, sans-serif;
+  --font-mono:      var(--font-inter), monospace;
 }
 
 *, *::before, *::after {
@@ -44,50 +42,35 @@ html, body {
   overflow-x: hidden;
 }
 
-/* Dot-grid background texture */
+/* Subtle dot-grid background texture */
 body::before {
   content: '';
   position: fixed;
   inset: 0;
   background-image:
-    radial-gradient(circle at 1px 1px, #1E2D45 1px, transparent 0);
-  background-size: 32px 32px;
-  opacity: 0.35;
+    radial-gradient(circle at 1px 1px, #30363D 1px, transparent 0);
+  background-size: 40px 40px;
+  opacity: 0.3;
   pointer-events: none;
   z-index: 0;
 }
 
-/* Neon glow utility — diffuse blur + solid offset for neon tube effect */
-.glow-cyan {
-  text-shadow:
-    0 0 6px var(--cyan),
-    0 0 14px color-mix(in srgb, var(--cyan) 70%, transparent),
-    2px 2px 0 #005577;
-}
-.glow-gold {
-  text-shadow:
-    0 0 6px var(--gold),
-    0 0 14px color-mix(in srgb, var(--gold) 70%, transparent),
-    2px 2px 0 #8B6000;
-}
-.glow-green {
-  text-shadow: 0 0 8px var(--green), 2px 2px 0 #005530;
-}
-.glow-purple {
-  text-shadow: 0 0 8px var(--purple), 2px 2px 0 #3d1a7a;
+/* Card base style */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
 }
 
-/* Dark backing for text rendered over busy backgrounds */
-.text-backing {
-  background: #06030c99;
-  border-radius: 3px;
-  padding: 2px 6px;
-  backdrop-filter: blur(4px);
-}
-
-/* Card glow border */
-.card-glow {
-  border: 1px solid var(--border-dim);
-  box-shadow: 0 0 0 1px var(--border-glow) inset,
-              0 4px 24px #00000066;
+/* Status pill base */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }

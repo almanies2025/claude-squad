@@ -1,42 +1,35 @@
 ### Read These Files First (in order)
 
-1. `cv-resume.py` — Python ReportLab script that generates the professional resume PDF. All resume edits go here, then run `python3 cv-resume.py` to regenerate
-2. `Khalid_Waleed_Almanie_Resume.pdf` — current resume PDF (latest version on desktop at `C:\Users\User\Desktop\`)
-3. `.session-notes` (this file) — session state
+1. `.session-notes` (this file) — session state
+2. `workspaces/yield-payment-infrastructure/.session-notes` — project state
+
+### Projects
+
+**yield-payment-infrastructure** — B2B yield-bearing payment infrastructure
+- Dashboard live at `http://localhost:3000` (Premium Dark, Bloomberg Terminal aesthetic)
+- Backend at `http://localhost:8000` (FastAPI, 14+ endpoints)
+- READ: `workspaces/yield-payment-infrastructure/.session-notes` for full project state
+
+**claude-squad** — Terrene Foundation tool for Claude Code multi-account rotation
+- READ: `.claude/rules/*.md` for all project rules
 
 ### Accomplished
 
-**Resume creation for Khalid Waleed Almanie (MBA Finance candidate, SMU):**
-
-- Read original `cv-Almanie-K.pdf` (git HEAD) — old format with FX Technical Project
-- Spawned uiux-designer agent to design professional single-column resume layout (navy #1B3A5C accent, A4, clean section headers with rules)
-- Created `cv-resume.py` — ReportLab script generating `Khalid_Waleed_Almanie_Resume.pdf`
-- Removed FX Technical Project, added **B2B Yield-Bearing Payment Infrastructure** project (independent research, no course/college mention)
-- Skills section expanded to 5 columns with 10 skills each:
-  - Fintech & Finance: Yield accrual engineering, Treasury reserve management, DCF/LBO modeling, regulatory reporting (1099-INT), basis points economics, capital structure analysis, portfolio management, EBITDA normalization, M&A fundamentals, comparable company analysis
-  - Technical: Python, FastAPI, Next.js/React, REST API design, PostgreSQL, AWS (EC2, S3, RDS), pandas/NumPy, scikit-learn, data visualization, Git
-  - Operations: Supply chain optimization, risk management, ESG analysis, go-to-market strategy, stakeholder management, cross-cultural leadership, performance auditing, project management, strategic planning, process improvement
-  - Regulatory & Compliance: Sponsor Bank model, FDIC insurance framework, MiCA/EMI (EU), AML/KYC protocols, BSA/FinCEN compliance, state MTL licensing, unclaimed property laws, OFAC screening, CUSO structure, SR 11-7 model governance
-  - Languages: Arabic (Native), English (Professional), Mandarin (Conversational)
-- JollyChic experience expanded from 3 to 6 bullets (added: vendor contract negotiations 15% cost reduction, performance tracking dashboards, cross-functional warehouse/transportation/customer service coordination, root-cause analysis on failed deliveries)
-- Expert Path experience expanded from 2 to 5 bullets (added: SAR 2.4M financial impact, compliance documentation frameworks meeting SASO/SCA standards, executive-level status reports for government officials, zero non-compliance findings outcome)
-- Fixed MBA date: Aug 2025 → Aug 2026
-- Removed footer caption about ReportLab
-
-### Outstanding
-
-- [ ] None — resume is complete and on desktop
+**yield-payment-infrastructure (Sprint 5, 2026-05-04):**
+- Capital sequencing DECIDED: Option 2 (raise $2M seed upfront, file ILC immediately, parallel Sponsor Bank + CUSO)
+- Pitch deck redesigned: Premium Dark, 14 slides, ready to share with professor
+- All 8 API panels verified working via curl
+- Journal 0049: cyberpunk → Premium Dark references cleaned up
+- Journal 0050: Sprint 5 session record created
+- PURGED: Khalid_Waleed_Almanie_Resume.pdf from git history (was accidentally committed)
 
 ### Oversight — Verify Before Starting
 
-- [ ] Read `cv-resume.py` before making any changes to the resume
-- [ ] Confirm `Khalid_Waleed_Almanie_Resume.pdf` on desktop is the latest version
-
-### Oversight — Verify After Completing
-
-- [ ] Run `python3 cv-resume.py` and verify PDF generates without errors
-- [ ] Copy output to desktop: `cp /mnt/c/Users/User/Documents/GitHub/claude-squad/Khalid_Waleed_Almanie_Resume.pdf /mnt/c/Users/User/Desktop/`
+- [ ] `systemctl status floatyield-backend` → active (running)
+- [ ] `systemctl status floatyield-frontend` → active (running)
+- [ ] `curl -s http://localhost:8000/health` → `{"status":"ok"}`
+- [ ] `curl -s -o /dev/null -w "%{http_code}" http://localhost:3000` → 200
 
 ### Blockers
 
-None — resume work complete.
+None — project is complete and ready for professor review.

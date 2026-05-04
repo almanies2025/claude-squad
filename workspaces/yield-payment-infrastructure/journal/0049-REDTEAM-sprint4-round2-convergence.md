@@ -15,13 +15,13 @@ tags: [sprint4, redteam, convergence, security, spec-coverage]
 
 ## Convergence Status
 
-| Criterion | Result |
-|-----------|--------|
-| 0 CRITICAL findings | ✅ |
-| 0 HIGH findings | ✅ (fixed H-1, downgraded M-1, documented L-1) |
+| Criterion                  | Result                                                    |
+| -------------------------- | --------------------------------------------------------- |
+| 0 CRITICAL findings        | ✅                                                        |
+| 0 HIGH findings            | ✅ (fixed H-1, downgraded M-1, documented L-1)            |
 | 2 consecutive clean rounds | ✅ Round 1 (security) + Round 2 (spec + security + tests) |
-| Spec coverage | ✅ 17/17 implemented + wired + verified |
-| Frontend 0 mock data | ✅ |
+| Spec coverage              | ✅ 17/17 implemented + wired + verified                   |
+| Frontend 0 mock data       | ✅                                                        |
 
 ---
 
@@ -29,15 +29,15 @@ tags: [sprint4, redteam, convergence, security, spec-coverage]
 
 All 7 validators from Sprint 3/4 rounds confirmed implemented and not regressed:
 
-| Validator | Location | Verified |
-|-----------|----------|----------|
-| `gap_bps` / `gap_dollar_amount` non-negative | `DisputeCreate` | ✅ |
-| `dispute_date` ISO format | `DisputeCreate` | ✅ |
-| `tax_year` range 2000-2100 | `/regulatory/...` endpoints | ✅ |
-| `status` Literal | `DisputeUpdate` | ✅ |
-| `contract_rate` / `applied_rate` non-negative | `RateDiscrepancyCreate` | ✅ |
-| `notes` max_length 2000 | `DisputeUpdate` | ✅ |
-| Dynamic column interpolation | dispute PATCH | ✅ |
+| Validator                                     | Location                    | Verified |
+| --------------------------------------------- | --------------------------- | -------- |
+| `gap_bps` / `gap_dollar_amount` non-negative  | `DisputeCreate`             | ✅       |
+| `dispute_date` ISO format                     | `DisputeCreate`             | ✅       |
+| `tax_year` range 2000-2100                    | `/regulatory/...` endpoints | ✅       |
+| `status` Literal                              | `DisputeUpdate`             | ✅       |
+| `contract_rate` / `applied_rate` non-negative | `RateDiscrepancyCreate`     | ✅       |
+| `notes` max_length 2000                       | `DisputeUpdate`             | ✅       |
+| Dynamic column interpolation                  | dispute PATCH               | ✅       |
 
 ---
 
@@ -50,6 +50,7 @@ All 7 validators from Sprint 3/4 rounds confirmed implemented and not regressed:
 **Finding:** `dispute_type: str = "recon_gap"` accepted any string value. Arbitrary values could be stored in the DB (e.g., SQL injection-like strings, or nonsensical values like `"rate_discrepancy"` when only `"recon_gap"` is the valid scope).
 
 **Fix applied:**
+
 ```python
 @field_validator("dispute_type")
 @classmethod
@@ -60,6 +61,7 @@ def dispute_type_must_be_valid(cls, v: str) -> str:
 ```
 
 **Verified:**
+
 ```
 POST /disputes with dispute_type="invalid_type" → 422 "dispute_type must be 'recon_gap'" ✅
 POST /disputes with dispute_type="recon_gap"   → 201, stored correctly            ✅
@@ -88,6 +90,7 @@ POST /disputes with dispute_type="recon_gap"   → 201, stored correctly        
 **Finding:** `GET /alerts/{alert_id}` where `alert_id <= 0` silently affects zero rows (404 already raised for non-existent IDs, but negative IDs pass routing and return "not found" rather than a descriptive error).
 
 **Fix applied:**
+
 ```python
 @app.post("/alerts/{alert_id}/acknowledge")
 def acknowledge_alert(alert_id: int):
@@ -97,6 +100,7 @@ def acknowledge_alert(alert_id: int):
 ```
 
 **Verified:**
+
 ```
 POST /alerts/-5/acknowledge → 400 "alert_id must be a positive integer" ✅
 POST /alerts/0/acknowledge  → 400 "alert_id must be a positive integer" ✅
@@ -108,13 +112,13 @@ POST /alerts/0/acknowledge  → 400 "alert_id must be a positive integer" ✅
 
 Full audit in `.spec-coverage`. Summary:
 
-| Sprint | Items | Status |
-|--------|-------|--------|
-| Sprint 1 (Demo Integrity) | 6 | ✅ 6/6 |
-| Sprint 2 (Data Feed) | 6 (1 N/A) | ✅ 5/5 + N/A |
-| Sprint 3 (Production Hardening) | 5 | ✅ 5/5 |
+| Sprint                          | Items     | Status       |
+| ------------------------------- | --------- | ------------ |
+| Sprint 1 (Demo Integrity)       | 6         | ✅ 6/6       |
+| Sprint 2 (Data Feed)            | 6 (1 N/A) | ✅ 5/5 + N/A |
+| Sprint 3 (Production Hardening) | 5         | ✅ 5/5       |
 
-**Mock/hardcoded audit:** Zero MOCK_/FAKE_/DUMMY_ constants in production API paths. All API responses derive from real database queries. Fallback behaviors (flat history, 1.23 bps reference gap) only trigger when `yield_events` is empty — correctly documented inline.
+**Mock/hardcoded audit:** Zero MOCK*/FAKE*/DUMMY\_ constants in production API paths. All API responses derive from real database queries. Fallback behaviors (flat history, 1.23 bps reference gap) only trigger when `yield_events` is empty — correctly documented inline.
 
 ---
 
@@ -123,50 +127,53 @@ Full audit in `.spec-coverage`. Summary:
 **New test file:** `scripts/etl/test_recon_gap_calculation.py`
 
 Validates the `_recon_gap_info()` formula from journal 0038:
+
 ```
 gap_bps = (gap_daily * 365 / balance) * 10000
 where gap_daily = actual_yield - (balance * rate / 365)
 ```
 
-| Test | Result |
-|------|--------|
-| test_zero_gap | ✅ PASS |
-| test_positive_gap | ✅ PASS |
-| test_negative_gap | ✅ PASS |
-| test_large_balance_scaling | ✅ PASS |
-| test_known_live_row | ✅ PASS |
+| Test                                | Result                                          |
+| ----------------------------------- | ----------------------------------------------- |
+| test_zero_gap                       | ✅ PASS                                         |
+| test_positive_gap                   | ✅ PASS                                         |
+| test_negative_gap                   | ✅ PASS                                         |
+| test_large_balance_scaling          | ✅ PASS                                         |
+| test_known_live_row                 | ✅ PASS                                         |
 | test_against_live_database (Tier 2) | ✅ PASS — mean_gap=2.48 bps over 10 real events |
 
 ---
 
 ## Security Posture Summary
 
-| Category | Status |
-|----------|--------|
-| SQL injection (all `?` parameterized) | ✅ |
-| Input validation (all fields) | ✅ |
-| Secrets (none hardcoded) | ✅ |
-| XSS (React auto-escapes, no `dangerouslySetInnerHTML`) | ✅ |
-| Shell injection (no `shell=True`) | ✅ |
-| Path traversal (CSV paths validated via `relative_to()`) | ✅ |
-| CORS (localhost:3000 only) | ✅ |
-| Dispute type injection | ✅ Fixed this round |
-| Alert ID validation | ✅ Fixed this round |
+| Category                                                 | Status              |
+| -------------------------------------------------------- | ------------------- |
+| SQL injection (all `?` parameterized)                    | ✅                  |
+| Input validation (all fields)                            | ✅                  |
+| Secrets (none hardcoded)                                 | ✅                  |
+| XSS (React auto-escapes, no `dangerouslySetInnerHTML`)   | ✅                  |
+| Shell injection (no `shell=True`)                        | ✅                  |
+| Path traversal (CSV paths validated via `relative_to()`) | ✅                  |
+| CORS (localhost:3000 only)                               | ✅                  |
+| Dispute type injection                                   | ✅ Fixed this round |
+| Alert ID validation                                      | ✅ Fixed this round |
 
 ---
 
-## Cyberpunk UI Enhancement
+## Sprint 5 UI Enhancement — Premium Dark
 
-New component: `components/Cityscape.tsx` — fixed full-viewport SVG cityscape backdrop at `z-index: 0`.
+New component: `components/VideoCityscape.tsx` — video cityscape backdrop at 32% opacity with dark overlay.
 
 **Design:**
-- 8 brutalist tower silhouettes with neon window grids (cyan + purple)
-- Two YIELD bank towers with illuminated gold text on dark backing rects
-- Deep space gradient sky + scanline CRT overlay
+
+- Video backdrop (reduced to 32% opacity, dark overlay)
+- Premium Dark palette: `#0D1117` void, `#161B22` surface, `#2EA866` emerald, `#F0B429` gold
+- Bloomberg Terminal meets modern fintech aesthetic
 - `z-index: 0`, `pointer-events: none` — scroll and all UI render over it
 
 **CSS upgrades (`globals.css`):**
-- `.glow-cyan/gold/green/purple` upgraded from blur-only to neon-tube style (offset shadow + color-mix)
+
+- `.glow-emerald/gold/green` CSS utilities with Premium Dark palette
 - `.text-backing` utility added for text over busy backgrounds
 
 ---
@@ -177,4 +184,4 @@ New component: `components/Cityscape.tsx` — fixed full-viewport SVG cityscape 
 
 2. The SQLite `check_same_thread=False` is demo-appropriate but should have a comment in the code noting "production requires PostgreSQL". Should this be added now as a code comment, or only surfaced when migrating to production?
 
-3. The cyberpunk cityscape uses Orbitron and JetBrains Mono font names directly in SVG `fontFamily` attributes. These fonts are loaded via `next/font/google` in `layout.tsx`. Is there any risk that the SVG rendering of these fonts differs from the CSS-rendered versions in the main UI?
+3. The Premium Dark redesign uses video backdrop (VideoCityscape.tsx) at 32% opacity with dark overlay. Fonts (Inter, JetBrains Mono, Orbitron) are loaded via `next/font/google` in `layout.tsx` and applied consistently through CSS variables.

@@ -3,26 +3,29 @@ description: "Sync claude-squad .claude artifacts with upstream kailash-coc-clau
 enabled: true
 ---
 
-Sync pulls changes from `../../loom/kailash-coc-claude-py/` into claude-squad's `.claude/` directory.
+**Sync is disabled.** claude-squad has forked from the upstream USE template (2026-05-XX).
+Local divergence includes: Kailash-specific artifact pruning, csq-scope rules adaptation,
+and Foundation-naming rewrites. Running sync would overwrite these deliberate changes.
 
 Upstream: `https://github.com/terrene-foundation/kailash-coc-claude-py`
+Loom: `../../loom/kailash-coc-claude-py/`
 
-## Usage
+## If Sync Is Needed
 
-`/sync` — run the sync workflow
+If upstream changes must be pulled in future:
 
-## Sync Protocol
-
-1. Pull latest from upstream into `../../loom/kailash-coc-claude-py/`
-2. Diff against current `.claude/` state
-3. Present changes for review before applying
-4. After merge, run `/codify` to validate artifact quality
+1. Re-enable: set `enabled: true` in this file
+2. Fetch latest: `git fetch origin` in `../../loom/kailash-coc-claude-py/`
+3. Diff: compare upstream changes against local `.claude/` state
+4. Selective merge: cherry-pick only relevant upstream changes (csq-relevant rules/agents only)
+5. Validate: run `/codify` to validate artifact quality
+6. Re-disable: set `enabled: false` after sync
 
 ## Report
 
 ```
-Sync is active.
+Sync is disabled (forked from upstream).
 Template: kailash-coc-claude-py
 Upstream: https://github.com/terrene-foundation/kailash-coc-claude-py
-Policy: review changes before applying; codify validation after merge
+Policy: fork — sync would overwrite local divergence; re-enable manually if needed
 ```

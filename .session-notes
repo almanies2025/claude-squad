@@ -1,105 +1,49 @@
 ### Read These Files First (in order)
 
 1. `.session-notes` (this file) — session state
-2. `workspaces/yield-payment-infrastructure/.session-notes` — full project state
+2. `C:\Users\User\Desktop\Supply\OPIM626_SOLUTION_MBA_TONE.docx` — final submission-ready solution
+3. `C:\Users\User\Desktop\Supply\OPIM626_Assignment_2026.pdf` — assignment questions
+4. `journal/0028-DISCOVERY-opim626-newsvendor-Lrel-formula-correction.md` — prior session validation of newsvendor formulas
 
-### Projects
-
-**yield-payment-infrastructure** — Conditional Yield Infrastructure for Programmable Digital Currency
-- Dashboard live at `http://localhost:3000` (Premium Dark, CONDITIONS tab added)
-- Backend at `http://localhost:8000` (FastAPI, 18+ endpoints)
-- READ: `workspaces/yield-payment-infrastructure/.session-notes` for full project state
-
-**claude-squad** — Terrene Foundation tool for Claude Code multi-account rotation
-- READ: `.claude/rules/*.md` for all project rules
-
-**Section 4 MBA Assignment** (one-off session work, NOT a project)
-- Document: `/mnt/c/Users/User/Desktop/Section4_Vulnerability_Assessment_v10_FINAL.docx`
-- Topic: India fertiliser supply chain vulnerability during 2026 Strait of Hormuz crisis
-- Course: MGMT6095 AI Powered Entrepreneurship (SMU MBA)
-- Status: COMPLETE — v10 is final, submitted
-
-**EF MBA Exam Cheatsheet** (one-off session work, NOT a project)
-- File: `C:\Users\User\Desktop\EF_Cheatsheet.html` (40KB)
-- 2-page double-sided cheatsheet for SMU MBA Entrepreneurship & Finance exam
-- 17 sections with worked examples and step-by-step solutions
-- Topics covered: VC method, dilution, SAFE notes, convertible notes, cap tables, liquidation preference, term sheet clauses, ARR/churn, CAC/LTV, IRR, DCF, WACC, EPS/treasury stock, bootstrapping vs angel vs VC, exit math, Berkus/Scorecard/Risk Factor, formula quick reference
-- To print: browser → Ctrl+P → Landscape → A4 → Minimum margins → Background graphics ON
-- Footer text removed from cheatsheet at user request
+---
 
 ### Accomplished
 
-**yield-payment-infrastructure (Sprint 6 COMPLETE, 2026-05-04):**
+**OPIM626 Solution — Final Submission Ready**
 
-**MAJOR PIVOT** — Brief rewritten from "B2B yield-bearing payment infrastructure" to "Conditional Yield Infrastructure for Programmable Digital Currency":
-- Thesis: conditional yield as monetary policy instrument for CBDC
-- Solves CBDC disintermediation: CBDC in bank earns 3%, direct Fed wallet earns 0%
-- Yield is not a flat rate — it changes based on conditions (hold duration, withdrawal velocity, spending, balance tier)
+Rewrote the corrected solution (`OPIM626_SOLUTION_CORRECTED.docx`) into MBA student prose tone — flowing paragraphs, explicit formula substitution shown inline, point allocations removed from headings.
 
-**Backend new features (9 new endpoints):**
-- `yield_conditions` + `condition_state` + `yield_adjustments` tables
-- Yield condition CRUD, per-account condition states
-- `GET /yield/summary/{account_id}` — effective yield rate (base 3.0% + condition bonuses)
-- `POST /yield/simulate` — "what if" yield simulator
-- `POST /yield/adjustments` + `GET /yield/adjustments/{account_id}` — retroactive adjustment audit
-- `POST /yield/retroactive-correct` — compute and record retroactive yield correction
+**Key findings from numeric validation (scipy.stats):**
+- Q2 (Benetton): ALL numbers correct — no changes needed
+- Q1a: minor rounding (z=0.67 gives Q*=320.20, L_rel=0.2243 — acceptable under assignment rounding rules)
+- Q1b: **real error found and fixed** — CR=0.5625 → z=0.16 (not 0.15 as doc stated)
 
-**Frontend — CONDITIONS tab (new):**
-- Active Conditions Tracker (status badges, current values, bonus at stake)
-- Yield Simulator ("what if" tool)
-- Condition Explorer (all 4 conditions with stacking bonuses)
+**Q1b corrections applied:**
+- z: 0.15 → 0.16
+- Q*: 289.00 → 289.60
+- Geoff profit: $7,135 → $7,144.00
+- Lands End profit: $15,153 → $15,139.75
 
-**Demo data seeded:**
-- Demo Partner A: 6.0% effective (3/4 conditions active)
-- Demo Partner B: 5.5% effective (2/4 conditions active, 1 at-risk)
-- Demo Partner C: 5.5% effective (2/4 conditions active, 1 at-risk)
+**Final file:** `C:\Users\User\Desktop\Supply\OPIM626_SOLUTION_MBA_TONE.docx`
 
-**Pitch deck rewritten** — 14 slides, Premium Dark. New thesis: "Conditional Yield as Monetary Policy Instrument for CBDC."
-
-**Journal:** `journal/0052-DECISION-sprint6-pivot-conditional-yield.md`
-
-**Section 4 MBA (completed this session, 2026-05-05):**
-
-Three parallel expert review agents ran on v9 simultaneously:
-- Supply chain risk expert (a89dc38748f23fffe)
-- India agriculture policy expert (a642f2c9c31ec9413)
-- Academic writing tutor (a844df114c06c567f)
-
-All three agents converged: core thesis (simultaneous multi-tier failure from single geographic root cause) holds. Expert consensus fixes applied → v10 FINAL saved to Desktop:
-
-1. **Shadow fleet claim — MOST IMPORTANT FIX**: Removed self-undermining "not price problem / structural fleet availability problem" framing (supply chain expert: price spike to $700+ proves vessels existed at high cost, contradicting "structural unavailability"). Replaced with: price spike IS the evidence; Cape-capable pool absorbed by Russian trade; retrofitting takes years.
-
-2. **War risk surcharge**: Added "approximately" qualifier to $4.20/tonne figure (India agriculture expert: derived, not independently sourced by Lloyd's)
-
-3. **LPG trade-off**: Changed from asserted causal fact to conditional framing: "any Qatari allocation cut would force a choice..." (supply chain expert: causal link between Petronet force majeure and LPG prioritisation was unsourced)
-
-4. **"Among the largest in history"**: Softened to "one of the largest emergency urea procurement events in recent years" (India agriculture expert: no comparative benchmark cited)
-
-5. **"Nitrogen fertiliser plants"**: Added "urea-producing" qualifier (supply chain expert: document discusses urea specifically)
-
-6. **Tier-3 sulphur**: Tightened "DAP markets" → "DAP prices"
-
-**v10 word count:** 758 (body + headers, up from v9's 727 due to expert-requested improvements)
+---
 
 ### Outstanding
 
-**yield-payment-infrastructure:**
-- None — Sprint 6 complete. Dashboard at `http://localhost:3000`, CONDITIONS tab. Pitch deck at `05-materials/pitch_deck.html`.
+**OPIM626 — Deadline 22 May 2026, 23:59:**
+- [ ] Student reviews and submits `OPIM626_SOLUTION_MBA_TONE.docx`
+- [ ] Q1c ranking updated: Option d ($16,084) > Option a ($15,987) > Option b ($15,140)
 
-**Section 4 MBA:**
-- None — v10 is final. No further revisions planned unless group requests changes.
+---
 
 ### Oversight — Verify Before Starting
 
-**yield-payment-infrastructure:**
-- [ ] `curl -s http://localhost:8000/health` → `{"status":"ok"}`
-- [ ] `curl -s http://localhost:8000/conditions` → 4 conditions
-- [ ] `curl -s http://localhost:8000/yield/summary/1` → effective_rate_bps
-- [ ] `cd workspaces/yield-payment-infrastructure/apps/web && npx tsc --noEmit` → exit 0
+**OPIM626:**
+- [ ] Confirm `OPIM626_SOLUTION_MBA_TONE.docx` exists at `C:\Users\User\Desktop\Supply\`
+- [ ] Verify key numbers: Q2 Δ = $7,107.30, Q1d LE profit = $16,084.00, Q1b Geoff = $7,144.00
 
-**Section 4:**
-- [ ] Verify v10 docx exists at `/mnt/c/Users/User/Desktop/Section4_Vulnerability_Assessment_v10_FINAL.docx`
+---
 
 ### Blockers
 
-None — all projects complete, no blockers.
+None.

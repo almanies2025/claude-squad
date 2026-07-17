@@ -1,0 +1,68 @@
+<!-- ============================================================
+     SECTION 1: POST-MONEY vs PRE-MONEY VALUATION (VC Method)
+     ============================================================ -->
+
+<!-- REAL TALK -->
+<div class="concept">
+  <strong>Real Talk:</strong> Pre-money valuation is what the company is worth <em>before</em> the investor writes a check. Post-money is what it's worth <em>after</em> — the pre-money plus the fresh capital. The VC Method works backwards from an ambitious exit valuation to tell you what the company is worth today. The trap students fall into: mixing up which number goes where, or forgetting that the option pool lives <em>inside</em> the pre-money (which dilutes founders more than VCs expect).
+</div>
+
+<!-- FORMULA BAR -->
+<div class="formula-bar">
+  POST-MONEY = PRE-MONEY + Investment &nbsp;|&nbsp;
+  PRE-MONEY = POST-MONEY &minus; Investment &nbsp;|&nbsp;
+  VC Method: Pre-money = Exit&nbsp;Value&nbsp;/&nbsp;(1+Target&nbsp;IRR)<sup>n</sup> &nbsp;|&nbsp;
+  Ownership% = Investment&nbsp;/&nbsp;Post-money
+</div>
+
+<!-- WORKED EXAMPLE -->
+<div class="example">
+  <div class="example-header">WORKED EXAMPLE — VC Method (FNCE696 Style)</div>
+
+  <div class="example-givens">
+    <strong>Given:</strong> Angel invests $500K for 20% equity &nbsp;|&nbsp;
+    Target exit: $20M in Year 5 &nbsp;|&nbsp;
+    Target IRR: 40% &nbsp;|&nbsp;
+    Option pool: 10% post-money
+  </div>
+
+  <div class="example-numbers">
+    <!-- Step 1 -->
+    <span class="step">STEP 1 — Find Post-money from ownership stake</span><br>
+    Post-money = Investment / Ownership%<br>
+    <span class="formula-line">Post-money = $500,000 / 20% = $2,500,000</span><br>
+    <em>Intuition: paying 20% for $500K means the whole company is worth $2.5M after the check clears.</em><br><br>
+
+    <!-- Step 2 -->
+    <span class="step">STEP 2 — Back out Pre-money (before the $500K)</span><br>
+    Pre-money = Post-money &minus; Investment<br>
+    <span class="formula-line">Pre-money = $2,500,000 &minus; $500,000 = $2,000,000</span><br>
+    <em>Intuition: $500K is new money — the old ownership pie (founders) was worth $2M before it arrived.</em><br><br>
+
+    <!-- Step 3 -->
+    <span class="step">STEP 3 — Verify with VC Method (present value of exit)</span><br>
+    PV = Exit&nbsp;Value&nbsp;/&nbsp;(1+IRR)<sup>n</sup><br>
+    PV = $20,000,000&nbsp;/&nbsp;(1.40)<sup>5</sup><br>
+    (1.40)<sup>5</sup> = 5.3783<br>
+    <span class="formula-line">PV = $20,000,000 / 5.3783 = $3,719,000 &approx; $3.72M</span><br>
+    <em>Intuition: at 40% annual returns, $3.72M today grows to $20M in 5 years. This is what the 20% stake costs in present-value terms.</em><br><br>
+
+    <!-- Step 4 -->
+    <span class="step">STEP 4 — Check: does the angel's $500K buy 20% of $3.72M?</span><br>
+    $500K / $3.72M = <span class="highlight">13.4%</span> &mdash; not 20%!<br>
+    The angel's $500K buys 20% of the $2.5M post-money (Step 1), which corresponds to a <em>deemed</em> pre-money of $2M.<br>
+    <em>The VC Method here produces a higher valuation ($3.72M) because the 40% IRR target exceeds the implied 4x return from the $500K / $2.5M deal.</em><br><br>
+
+    <!-- Final Answer -->
+    <span class="step">ANSWERS:</span><br>
+    Post-money valuation = <span class="ans-box">$2,500,000</span><br>
+    Pre-money valuation  = <span class="ans-box">$2,000,000</span><br>
+    VC Method implied pre-money (at 40% IRR, 5-year exit) = <span class="ans-box">$3,719,000</span><br>
+    Angel ownership fraction = <span class="ans-box">20.0%</span>
+  </div>
+</div>
+
+<!-- TIP -->
+<div class="tip">
+  <strong>Exam Trick:</strong> When you see "option pool" mentioned, ask — is it pre-money or post-money? YC and most VCs require the option pool <em>inside</em> pre-money, which means founders absorb that dilution, not the incoming investor.
+</div>

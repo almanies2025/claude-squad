@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FNCE696 Entrepreneurial Finance — Exam Cheatsheet</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Georgia, 'Times New Roman', serif; background: #0d1117; color: #e6edf3; padding: 2rem; max-width: 900px; margin: 0 auto; line-height: 1.6; }
+  h1 { text-align: center; color: #58a6ff; font-size: 1.6rem; margin-bottom: 0.3rem; letter-spacing: 0.05em; }
+  .subtitle { text-align: center; color: #8b949e; font-size: 0.85rem; margin-bottom: 2rem; }
+  h2 { color: #79c0ff; font-size: 1.1rem; border-left: 4px solid #1f6feb; padding-left: 0.6rem; margin: 2rem 0 0.8rem; }
+  .concept { color: #d2a8ff; font-style: italic; margin-bottom: 0.5rem; font-size: 0.92rem; }
+  .formula-bar { background: #161b22; border: 1px solid #30363d; border-radius: 6px; padding: 0.7rem 1rem; margin: 0.6rem 0; font-family: 'Courier New', Courier, monospace; color: #ffa657; font-size: 0.9rem; }
+  .example { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 1rem 1.2rem; margin: 1rem 0; }
+  .example-header { color: #7ee787; font-weight: bold; font-size: 0.85rem; margin-bottom: 0.6rem; text-transform: uppercase; letter-spacing: 0.08em; }
+  .example-givens { color: #8b949e; font-size: 0.82rem; margin-bottom: 0.5rem; font-family: 'Courier New', Courier, monospace; }
+  .example-numbers { color: #ffa657; font-family: 'Courier New', Courier, monospace; font-size: 0.88rem; }
+  .step { margin: 0.45rem 0 0.45rem 1rem; padding-left: 0.8rem; border-left: 2px solid #21262d; font-size: 0.88rem; }
+  .step-label { color: #8b949e; font-family: 'Courier New', Courier, monospace; }
+  .ans { background: #1c2128; border-radius: 4px; padding: 0.5rem 0.8rem; margin-top: 0.5rem; color: #7ee787; font-family: 'Courier New', Courier, monospace; font-size: 0.92rem; }
+  .ans-box { background: #238636; color: #fff; padding: 0.1rem 0.4rem; border-radius: 3px; font-weight: bold; }
+  .highlight { background: #1f6feb; color: #fff; padding: 0.1rem 0.4rem; border-radius: 3px; }
+  .warn { background: #2d1f1f; border-left: 3px solid #f85149; padding: 0.5rem 0.8rem; margin: 0.5rem 0; border-radius: 0 4px 4px 0; font-size: 0.85rem; color: #ffa198; }
+  .tip { background: #1f2937; border-left: 3px solid #60a5fa; padding: 0.5rem 0.8rem; margin: 0.5rem 0; border-radius: 0 4px 4px 0; font-size: 0.85rem; color: #93c5fd; }
+  table { width: 100%; border-collapse: collapse; margin: 0.5rem 0; font-size: 0.88rem; }
+  .th { background: #1f2937; color: #79c0ff; font-family: 'Courier New', Courier, monospace; font-weight: bold; padding: 0.5rem 0.7rem; text-align: left; border: 1px solid #30363d; font-size: 0.82rem; }
+  .td { padding: 0.4rem 0.7rem; border: 1px solid #30363d; color: #e6edf3; font-family: 'Courier New', Courier, monospace; font-size: 0.82rem; }
+  .td-label { color: #d2a8ff; }
+  .col2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .qr-table { display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem; margin: 0.5rem 0; }
+  .qr-lbl { color: #8b949e; font-family: 'Courier New', Courier, monospace; font-size: 0.8rem; }
+  .qr-val { color: #ffa657; font-family: 'Courier New', Courier, monospace; font-size: 0.88rem; font-weight: bold; }
+  .spacer { height: 0.5rem; }
+  .divider { border: none; border-top: 1px solid #30363d; margin: 1.5rem 0; }
+  .subsection { margin: 1.5rem 0; }
+  .section-n { color: #58a6ff; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.3rem; display: block; }
+  .subsection h3 { color: #79c0ff; font-size: 0.95rem; margin: 1rem 0 0.5rem; border-left: 3px solid #1f6feb; padding-left: 0.5rem; }
+  @media print { body { background: #fff; color: #000; } h2 { color: #1a1a8e; } .formula-bar { background: #f5f5f5; color: #c44; border: 1px solid #ccc; } .example { background: #f9f9f9; border: 1px solid #ccc; } }
+</style>
+</head>
+<body>
+
+<h1>FNCE696 — ENTREPRENEURIAL FINANCE</h1>
+<div class="subtitle">SMU &bull; Exam Cheatsheet &bull;公式速查</div>
+
+<!-- ============================================================
+     SECTION 1 — WORKING CAPITAL & LIQUIDITY RATIOS
+     ============================================================ -->
+<h2>1. Working Capital &amp; Liquidity Ratios</h2>
+
+<div class="concept">Net Working Capital = how many dollars of liquid assets you have left after paying all short-term bills. If it's negative, you're one bad month away from missing payroll.</div>
+
+<div class="formula-bar">NWC = (Cash + A/R + Inventory) − (A/P + Accrued Expenses + Current Tax Payable)</div>
+
+<div class="col2">
+<div>
+<div class="concept" style="margin-top:0.5rem">Current Ratio measures whether you have enough total current assets to cover every current liability — a ratio below 1.0 means you're technically insolvent on a short-term basis.</div>
+<div class="formula-bar">Current Ratio = Current Assets / Current Liabilities</div>
+</div>
+<div>
+<div class="concept" style="margin-top:0.5rem">Quick Ratio strips inventory because you can't always sell it fast enough to pay a bill tomorrow — it's the "if we got cut off today, could we survive?" ratio.</div>
+<div class="formula-bar">Quick Ratio = (Cash + A/R) / Current Liabilities</div>
+</div>
+</div>
+
+<div class="formula-bar">Cash Ratio = Cash / Current Liabilities &nbsp;&nbsp;(most conservative — cash only)</div>
+
+<div class="example">
+<div class="example-header">Worked Example — Liquidity Analysis</div>
+<div class="example-givens">GIVENS:</div>
+<div class="example-numbers">
+  Cash = $50K &nbsp;&nbsp; A/R = $80K &nbsp;&nbsp; Inventory = $40K<br>
+  A/P = $60K &nbsp;&nbsp; Accrued Expenses = $30K &nbsp;&nbsp; Current Tax = $50K<br>
+  Sales = $500K &nbsp;&nbsp; COGS = $300K
+</div>
+
+<div class="step"><span class="step-label">Step 1 — NWC: </span>CA = 50 + 80 + 40 = $170K &nbsp;|&nbsp; CL = 60 + 30 + 50 = $140K &nbsp;|&nbsp; <strong>NWC = 170 − 140 = $30K</strong></div>
+<div class="step"><span class="step-label">Step 2 — Current Ratio: </span>170 / 140 = <strong>1.21x</strong></div>
+<div class="step"><span class="step-label">Step 3 — Quick Ratio: </span>(50 + 80) / 140 = 130 / 140 = <strong>0.93x</strong> &nbsp;<span style="color:#8b949e">(inventory excluded)</span></div>
+<div class="step"><span class="step-label">Step 4 — Cash Ratio: </span>50 / 140 = <strong>0.36x</strong></div>
+
+<div class="ans">NWC = $30K &nbsp;|&nbsp; Current Ratio = 1.21x &nbsp;|&nbsp; Quick Ratio = 0.93x &nbsp;|&nbsp; Cash Ratio = 0.36x</div>
+</div>
+
+<div class="warn">Quick Ratio &lt; 1.0 means inventory is doing a lot of heavy lifting. Here, 0.93 means you're $10K short of covering all liabilities without selling inventory — a red flag for lenders.</div>
+
+<!-- ============================================================
+     SECTION 2 — CASH CONVERSION CYCLE
+     ============================================================ -->
+<h2>2. Cash Conversion Cycle (CCC)</h2>
+
+<div class="concept">The CCC answers: "How many days does it take from paying for raw materials to collecting from customers?" Fewer days = healthier cash flow. If your CCC is 60 days and a competitor runs it in 30, they're effectively getting a 30-day free loan on every dollar of working capital.</div>
+
+<div class="formula-bar">DSO = (A/R / Sales) × 365 &nbsp;&nbsp;&nbsp; DIO = (Inventory / COGS) × 365 &nbsp;&nbsp;&nbsp; DPO = (A/P / COGS) × 365</div>
+<div class="formula-bar" style="text-align:center; color:#7ee787">CCC = DSO + DIO − DPO</div>
+
+<div class="example">
+<div class="example-header">Worked Example — Cash Conversion Cycle</div>
+<div class="example-givens">GIVENS: A/R = $80K &nbsp;|&nbsp; Inventory = $40K &nbsp;|&nbsp; A/P = $60K &nbsp;|&nbsp; Sales = $500K &nbsp;|&nbsp; COGS = $300K</div>
+
+<div class="step"><span class="step-label">Step 1 — DSO (Days Sales Outstanding): </span>(80 / 500) × 365 = 0.16 × 365 = <strong>58.4 days</strong></div>
+<div class="step"><span class="step-label">Step 2 — DIO (Days Inventory Outstanding): </span>(40 / 300) × 365 = 0.1333 × 365 = <strong>48.7 days</strong></div>
+<div class="step"><span class="step-label">Step 3 — DPO (Days Payable Outstanding): </span>(60 / 300) × 365 = 0.20 × 365 = <strong>73.0 days</strong></div>
+<div class="step"><span class="step-label">Step 4 — CCC: </span>58.4 + 48.7 − 73.0 = <strong>34.1 days</strong></div>
+
+<div class="ans">DSO = 58.4d &nbsp;|&nbsp; DIO = 48.7d &nbsp;|&nbsp; DPO = 73.0d &nbsp;|&nbsp; CCC = 34.1 days</div>
+</div>
+
+<div class="tip">DPO &gt; DSO is ideal — you're stretching out what you owe while collecting faster than you restock. Here, DPO (73d) exceeds DIO (49d) by 24 days, a sign of strong payables management.</div>
+
+<!-- ============================================================
+     SECTION 3 — VESTING SCHEDULES
+     ============================================================ -->
+<h2>3. Vesting Schedules</h2>
+
+<div class="concept">Vesting aligns founder/employee incentives with the company's long-term survival. The cliff exists so nobody can quit in month 2 and walk away with 16.7% of the company. After the cliff, equity accumulates monthly — you earn it a little bit every day you're still there.</div>
+
+<div class="formula-bar">Monthly vesting rate (after cliff) = (100% − Cliff%) / (Total Months − Cliff Month)</div>
+<div class="formula-bar">Alternatively: Cliff% + (Months After Cliff × Post-Cliff Monthly Rate)</div>
+
+<div class="example">
+<div class="example-header">Vesting — Founder Leaves at Month 25 (4-Year / 14-Month Cliff / 20% Cliff)</div>
+<div class="example-givens">GIVENS: 4-year total (48 months) &nbsp;|&nbsp; 14-month cliff &nbsp;|&nbsp; 20% vests at cliff &nbsp;|&nbsp; monthly thereafter</div>
+
+<div class="step"><span class="step-label">Step 1 — Cliff check: </span>Month 25 &gt; Month 14 &rarr; <strong>cliff has been crossed</strong> &rarr; 20% cliff shares are vested</div>
+<div class="step"><span class="step-label">Step 2 — Monthly rate after cliff: </span>20% / 34 remaining months = <strong>0.5882% per month</strong></div>
+<div class="step"><span class="step-label">Step 3 — Months after cliff: </span>25 − 14 = <strong>11 months</strong> of additional vesting</div>
+<div class="step"><span class="step-label">Step 4 — Post-cliff vesting: </span>11 × 0.5882% = <strong>6.47%</strong></div>
+<div class="step"><span class="step-label">Step 5 — Total: </span>20.00% + 6.47% = <strong>26.47%</strong> &nbsp;<span style="color:#8b949e">(confirms: 20% + 11×(20%/34) = 26.47%)</span></div>
+
+<div class="ans">Vested at Month 25 = <strong>26.47%</strong></div>
+</div>
+
+<div class="example">
+<div class="example-header">Vesting — Founder Leaves at Month 6 (Before Cliff)</div>
+<div class="step"><span class="step-label">Cliff check: </span>Month 6 &lt; Month 14 &rarr; <strong>cliff NOT yet reached</strong></div>
+
+<div class="ans">Vested at Month 6 = <strong>0%</strong> &mdash; founder forfeits all equity</div>
+</div>
+
+<div class="tip">The monthly rate is calculated on the REMAINING pool after the cliff: (100% &minus; 20%) / (48 &minus; 14) = 2.353% per month if expressed as cumulative monthly rate. Note: some texts express this as a flat monthly % of the original grant (20%/48 = 0.4167%), which yields different answers &mdash; use the post-cliff method above for cliffed schedules.</div>
+
+<!-- ============================================================
+     SECTION 4 — EXIT MATH
+     ============================================================ -->
+<h2>4. Exit Math: M&amp;A vs IPO vs Secondary</h2>
+
+<div class="concept">In a liquidity event, everyone's payout depends on two things: the exit enterprise value and where you sit in the cap table. The liquidation waterfall determines whether your equity is worth the paper it's printed on.</div>
+
+<div class="formula-bar">Equity Value at Exit = Exit EV &minus; Net Debt &minus; Preferred Liquidation Preference</div>
+<div class="formula-bar">Your Proceeds = Equity Value × Your Ownership % &nbsp;&nbsp;&nbsp; ROI = (Proceeds / Investment) − 1</div>
+<div class="formula-bar">MOIC = Proceeds / Investment &nbsp;&nbsp;&nbsp; IRR solves: &Sigma;(Cash Flow_t / (1+IRR)^t) = 0</div>
+
+<div class="example">
+<div class="example-header">M&amp;A Exit — $50M Acquisition, 4 Years, 1.5x Liquidation Pref</div>
+<div class="example-givens">Exit EV = $50M &nbsp;|&nbsp; Net Debt = $10M &nbsp;|&nbsp; Series A liquidation pref = 1.5x &nbsp;|&nbsp; Series A investment = $5M &nbsp;|&nbsp; Founder common = 40%</div>
+
+<div class="step"><span class="step-label">Step 1 — Liquidation preference: </span>$5M × 1.5x = <strong>$7.5M</strong> (Series A gets paid first)</div>
+<div class="step"><span class="step-label">Step 2 — Remaining after pref: </span>$50M &minus; $7.5M = <strong>$42.5M</strong> (common equity pool)</div>
+<div class="step"><span class="step-label">Step 3 — Founder proceeds (common): </span>$42.5M × 40% = <strong>$17.0M</strong></div>
+<div class="step"><span class="step-label">Step 4 — Series A total proceeds: </span>$7.5M (pref) + $42.5M × 60% = $7.5M + $25.5M = <strong>$33.0M</strong></div>
+<div class="step"><span class="step-label">Step 5 — Series A ROI: </span>($33M / $5M) &minus; 1 = <strong>5.6x</strong> &nbsp;|&nbsp; IRR &approx; <strong>53.7%</strong></div>
+
+<div class="ans">Founder: $17.0M &nbsp;|&nbsp; Series A: $33.0M &nbsp;|&nbsp; Series A ROI: 5.6x / 53.7% IRR</div>
+</div>
+
+<div class="example">
+<div class="example-header">IPO vs M&amp;A — Impact of Structure</div>
+<div class="example-givens">Company exit = $100M &nbsp;|&nbsp; Preferred stock = $30M (1.0x non-participating) &nbsp;|&nbsp; Common = 70%</div>
+
+<div class="step"><span class="step-label">M&amp;A (liquidation pref triggers): </span>Pref gets $30M + common pool = $30M + $70M = $100M total &rarr; common gets <strong>$0</strong></div>
+<div class="step"><span class="step-label">IPO (no liquidation pref, direct listing): </span>All equity participates at market &rarr; common value = <strong>$100M × 70% = $70M</strong></div>
+
+<div class="ans">M&amp;A common: <strong>$0</strong> &nbsp;|&nbsp; IPO common: <strong>$70M</strong> &mdash; structure matters enormously</div>
+</div>
+
+<div class="warn">Participating preferred (Dividends accruing + participation in common) can dramatically reduce common-founder proceeds in M&amp;A. Always read whether the preferred "participates" after receiving its preference.</div>
+
+<!-- ============================================================
+     SECTION 5 — TERM SHEET CLAUSES
+     ============================================================ -->
+<h2>5. Term Sheet Clause Quick Reference</h2>
+
+<table>
+  <tr>
+    <th class="th">CLAUSE</th>
+    <th class="th">WHAT IT MEANS</th>
+    <th class="th">FOUNDER RISK</th>
+    <th class="th">INVESTOR RISK</th>
+  </tr>
+  <tr><td class="td td-label">Pro Rata Rights</td><td class="td">Right to invest in future rounds to maintain ownership %</td><td class="td">Dilution protection</td><td class="td">Anti-dilution</td></tr>
+  <tr><td class="td td-label">Liquidation Pref</td><td class="td">How much pref holders get paid before common in M&amp;A</td><td class="td">Can get $0 in M&amp;A</td><td class="td">Downside protection</td></tr>
+  <tr><td class="td td-label">1x Non-Participating</td><td class="td">Pref gets 1x back OR converts to common — not both</td><td class="td">Founder-friendly</td><td class="td">Less upside participation</td></tr>
+  <tr><td class="td td-label">Participating Preferred</td><td class="td">Pref gets preference AND shares in remaining equity</td><td class="td">Very dilutive in M&amp;A</td><td class="td">Maximizes investor return</td></tr>
+  <tr><td class="td td-label">Anti-Dilution (Ratchet)</td><td class="td">Full ratchet: all old shares repriced to new lower price</td><td class="td">Massively dilutive</td><td class="td">Maximum protection</td></tr>
+  <tr><td class="td td-label">Anti-Dilution (Weighted Avg)</td><td class="td">Broad-based: adjusted price = (Old Price × Old Shares + New Price × New Shares) / (Old + New)</td><td class="td">Moderate protection</td><td class="td">Fair compromise</td></tr>
+  <tr><td class="td td-label">Board Composition</td><td class="td">% of board seats by class (e.g., 2 founder, 1 investor, 2 independent)</td><td class="td">Control</td><td class="td">Governance</td></tr>
+  <tr><td class="td td-label">Vesting (Standard)</td><td class="td">4-year with 1-year cliff — 25% at month 12, monthly after</td><td class="td">Retention incentive</td><td class="td">Alignment</td></tr>
+  <tr><td class="td td-label">Vesting (Acceleration)</td><td class="td">Single/double trigger — equity vests faster upon M&amp;A</td><td class="td">Job security net</td><td class="td">Talent retention</td></tr>
+  <tr><td class="td td-label">Pay-to-Play</td><td class="td">Investors who don't participate in future rounds lose rights or get converted</td><td class="td">Forces participation</td><td class="td">Prevents free-riding</td></tr>
+  <tr><td class="td td-label">Drag-Along Rights</td><td class="td">Majority can force minority to sell in M&amp;A</td><td class="td">Can be forced to sell</td><td class="td">Enables clean exits</td></tr>
+  <tr><td class="td td-label">Tag-Along Rights</td><td class="td">Minority can join when majority sells (co-sale right)</td><td class="td">Exit alongside lead</td><td class="td">Protects minority</td></tr>
+  <tr><td class="td td-label">Information Rights</td><td class="td">Right to receive financial statements, cap table, board materials</td><td class="td">Privacy tradeoff</td><td class="td">Oversight</td></tr>
+  <tr><td class="td td-label">No-Shop / Exclusivity</td><td class="td">Founder cannot solicit other investors for a period (typically 30-45 days)</td><td class="td">Limits alternatives</td><td class="td">Deal certainty</td></tr>
+</table>
+
+<div class="tip">Full Ratchet anti-dilution is almost never founder-friendly. If a down round occurs, every old investor share gets repriced to the new (lower) price, sometimes completely wiping out founder equity. Push for Weighted Average Broad-Based instead.</div>
+
+<!-- ============================================================
+     SECTION 6 — EPS & TREASURY STOCK METHOD
+     ============================================================ -->
+<h2>6. EPS &amp; Treasury Stock Method</h2>
+
+<div class="concept">EPS tells you how much profit each share of common stock "owns." Diluted EPS goes further and assumes every option, warrant, and convertible security has been exercised — because in a real exit, they all convert and dilute common shareholders.</div>
+
+<div class="formula-bar">Basic EPS = (Net Income − Preferred Dividends) / Weighted Average Common Shares Outstanding</div>
+<div class="formula-bar">Diluted EPS = (Net Income − Preferred Dividends) / (Weighted Avg Shares + Net New Shares from TS Method)</div>
+
+<div class="formula-bar" style="color:#d2a8ff">Treasury Stock Method (for options/warrants):<br>
+Step 1: Assume all in-the-money options exercised at average exercise price<br>
+Step 2: Assume proceeds used to buy back shares at average market price<br>
+Step 3: Net new shares = Options Exercised − Shares Repurchased</div>
+<div class="formula-bar">Dilutive shares = ((Exercise Price / Market Price) × Options) &lt; Options &mdash; always net-positive</div>
+
+<div class="example">
+<div class="example-header">EPS — Basic vs Diluted</div>
+<div class="example-givens">Net Income = $2M &nbsp;|&nbsp; Preferred Dividends = $200K &nbsp;|&nbsp; Avg Common Shares = 800,000<br>
+In-the-money options: 100,000 shares &nbsp;|&nbsp; Avg exercise price = $20 &nbsp;|&nbsp; Avg market price = $50</div>
+
+<div class="step"><span class="step-label">Step 1 — Basic EPS: </span>($2M − $200K) / 800K = $1.8M / 800K = <strong>$2.25 per share</strong></div>
+<div class="step"><span class="step-label">Step 2 — TS Method: </span>Proceeds = 100K × $20 = $2M &nbsp;|&nbsp; Shares repurchased = $2M / $50 = 40K shares</div>
+<div class="step"><span class="step-label">Step 3 — Net dilutive shares: </span>100K − 40K = <strong>60,000 net new shares</strong></div>
+<div class="step"><span class="step-label">Step 4 — Diluted EPS: </span>$1.8M / (800K + 60K) = $1.8M / 860K = <strong>$2.09 per share</strong></div>
+
+<div class="ans">Basic EPS = $2.25 &nbsp;|&nbsp; Diluted EPS = $2.09 &nbsp;|&nbsp; Dilution = 7.1%</div>
+</div>
+
+<div class="example">
+<div class="example-header">Dilutive Convertible Notes</div>
+<div class="example-givens">$5M convertible note, converts to 200,000 shares at $25/share &nbsp;|&nbsp; Market price at conversion = $40/share</div>
+
+<div class="step"><span class="step-label">If-converted method: </span>Assume conversion at issuance &rarr; adds 200K shares to denominator immediately</div>
+<div class="step"><span class="step-label">Treasury stock method check: </span>200K shares × ($40 − $25) / $40 = 200K × 0.375 = <strong>75K net dilutive shares</strong></div>
+<div class="step"><span class="step-label">Rule: </span>Use whichever method gives HIGHER EPS (less dilution) &mdash; but for full dilution use if-converted</div>
+
+<div class="ans">Convertible note dilutes by 200K shares (if-converted) &mdash; check if anti-dilutive first</div>
+</div>
+
+<div class="warn">Anti-dilutive securities are EXCLUDED from diluted EPS. If exercise price &gt; average market price, the option is out-of-the-money and adds zero dilution. Always check: is the option in or out of the money before calculating.</div>
+
+<!-- ============================================================
+     SECTION 7 — VC METHOD / POST-MONEY / PRE-MONEY
+     ============================================================ -->
+<h2>7. Post-Money vs Pre-Money Valuation (VC Method)</h2>
+
+<div class="concept">Pre-money valuation is what the company is worth <em>before</em> the investor writes a check. Post-money is what it's worth <em>after</em> — the pre-money plus the fresh capital. The VC Method works backwards from an ambitious exit valuation to tell you what the company is worth today. The trap: mixing up which number goes where, or forgetting that the option pool lives <em>inside</em> the pre-money (which dilutes founders more than VCs expect).</div>
+
+<div class="formula-bar">POST-MONEY = PRE-MONEY + Investment &nbsp;|&nbsp; PRE-MONEY = POST-MONEY &minus; Investment</div>
+<div class="formula-bar">VC Method: Pre-money = Exit&nbsp;Value&nbsp;/&nbsp;(1+Target&nbsp;IRR)<sup>n</sup></div>
+<div class="formula-bar">Ownership% = Investment&nbsp;/&nbsp;Post-money</div>
+
+<div class="example">
+<div class="example-header">Worked Example — VC Method (FNCE696 Style)</div>
+<div class="example-givens">Angel invests $500K for 20% equity &nbsp;|&nbsp; Target exit: $20M in Year 5 &nbsp;|&nbsp; Target IRR: 40% &nbsp;|&nbsp; Option pool: 10% post-money</div>
+
+<div class="step"><span class="step-label">Step 1 — Find Post-money from ownership stake: </span>Post-money = Investment / Ownership% = $500K / 20% = <strong>$2,500,000</strong></div>
+<div class="step"><span class="step-label">Step 2 — Back out Pre-money (before the $500K): </span>Pre-money = Post-money &minus; Investment = $2.5M &minus; $500K = <strong>$2,000,000</strong></div>
+<div class="step"><span class="step-label">Step 3 — VC Method (present value of exit): </span>PV = $20M / (1.40)<sup>5</sup> = $20M / 5.3783 = <strong>$3,719,000</strong></div>
+<div class="step"><span class="step-label">Step 4 — Check implied ownership at VC Method price: </span>$500K / $3.72M = <strong>13.4%</strong> (not 20% — the VC Method produces a higher valuation)</div>
+
+<div class="ans">Post-money = <span class="ans-box">$2,500,000</span> &nbsp;|&nbsp; Pre-money = <span class="ans-box">$2,000,000</span> &nbsp;|&nbsp; VC Method implied pre-money = <span class="ans-box">$3,719,000</span></div>
+</div>
+
+<div class="tip"><strong>Exam Trick:</strong> When you see "option pool" mentioned, ask — is it pre-money or post-money? YC and most VCs require the option pool <em>inside</em> pre-money, which means founders absorb that dilution, not the incoming investor.</div>
+
+<!-- ============================================================
+     SECTION 8 — SAFE NOTES
+     ============================================================ -->
+<h2>8. SAFE Notes (Valuation Cap vs Discount)</h2>
+
+<div class="concept">A SAFE (Simple Agreement for Future Equity) is Y Combinator's lightweight alternative to a convertible note — it is <em>not debt</em>, has no interest rate, no maturity date, and no repayment obligation. The founder wins because there's no countdown clock. The investor wins because they get either a discount or a valuation cap — whichever gives them more shares. The math contest: cap beats discount when the round is at a high enough valuation that the cap-price is below the discounted round price.</div>
+
+<div class="formula-bar">SAFE conversion price = MIN(Cap&nbsp;/&nbsp;Pre-money&nbsp;shares,&nbsp;Round&nbsp;price&nbsp;×&nbsp;(1&minus;Discount))</div>
+<div class="formula-bar">Shares received = SAFE&nbsp;amount&nbsp;/&nbsp;Conversion&nbsp;price &nbsp;|&nbsp; Discount price = Round&nbsp;price&nbsp;×&nbsp;(1&minus;d)</div>
+<div class="formula-bar">Cap price = Cap&nbsp;/&nbsp;Pre-money&nbsp;shares outstanding</div>
+
+<div class="example">
+<div class="example-header">Worked Example — SAFE: Cap vs Discount Showdown</div>
+<div class="example-givens">SAFE amount = $200,000 &nbsp;|&nbsp; Valuation cap = $3,000,000 &nbsp;|&nbsp; Discount = 20% &nbsp;|&nbsp; Series A pre-money = $8,000,000 &nbsp;|&nbsp; Existing shares = 4,000,000 (founders) &nbsp;|&nbsp; New option pool = 1,000,000</div>
+
+<div class="step"><span class="step-label">Step 1 — Round price per share: </span>Total shares = 4M + 1M = 5M &nbsp;|&nbsp; Round price = $8M / 5M = <strong>$1.60/share</strong></div>
+<div class="step"><span class="step-label">Step 2 — Path A (Discount): </span>Discount price = $1.60 × 0.80 = <strong>$1.28/share</strong></div>
+<div class="step"><span class="step-label">Step 2 — Path B (Cap): </span>Cap price = $3M / 4M shares = <strong>$0.75/share</strong></div>
+<div class="step"><span class="step-label">Step 3 — Pick LOWER price (more shares): </span>MIN($1.28,&nbsp;$0.75) = <span class="highlight">$0.75/share</span> &mdash; Cap wins</div>
+<div class="step"><span class="step-label">Step 4 — SAFE shares received: </span>$200K / $0.75 = <strong>266,667 shares</strong></div>
+<div class="step"><span class="step-label">Step 5 — Ownership %: </span>266,667 / (5M + 266,667) = <strong>5.06%</strong></div>
+
+<div class="ans">SAFE conversion price = <span class="ans-box">$0.75/share</span> (cap wins) &nbsp;|&nbsp; Shares = <span class="ans-box">266,667</span> &nbsp;|&nbsp; Ownership = <span class="ans-box">5.06%</span></div>
+</div>
+
+<div class="tip"><strong>Key Insight:</strong> SAFE caps reference <em>pre-money shares</em> (excluding the new option pool). A $3M cap on 4M founder shares = $0.75/share equivalent. The Series A investor pays $1.60/share. The SAFE investor saves $0.85/share — this is the economic benefit of the cap.</div>
+
+<div class="warn"><strong>Common Mistake:</strong> Dividing the cap by <em>post-option-pool</em> shares is wrong! SAFE caps always reference pre-money shares at the time of conversion.</div>
+
+<!-- ============================================================
+     SECTION 9 — CONVERTIBLE NOTES
+     ============================================================ -->
+<h2>9. Convertible Notes (Interest + Cap + Discount)</h2>
+
+<div class="concept">Convertible notes are <em>actual debt</em> — they accrue interest and have a maturity date when they must be repaid (or converted). Unlike SAFEs, the interest earned compounds the principal, so the investor effectively converts more shares at the next round. The cap and discount stack: the note holder gets whichever produces <em>more shares</em> — the lower of (cap-hit price) vs (discounted round price). The classic founder mistake: ignoring the interest accrual, which silently inflates the conversion amount.</div>
+
+<div class="formula-bar">Accrued interest = Principal&nbsp;×&nbsp;Rate&nbsp;×&nbsp;Years &nbsp;|&nbsp; Total conversion amount = Principal + Accrued interest</div>
+<div class="formula-bar">Conversion price = MIN(Cap&nbsp;/&nbsp;Pre-money&nbsp;shares,&nbsp;Round&nbsp;price&nbsp;×&nbsp;(1&minus;d))</div>
+<div class="formula-bar">Shares received = Total conversion amount&nbsp;/&nbsp;Conversion price</div>
+
+<div class="example">
+<div class="example-header">Worked Example — Convertible Note: Interest + Cap + Discount</div>
+<div class="example-givens">Principal = $500,000 &nbsp;|&nbsp; Coupon rate = 8% per annum &nbsp;|&nbsp; Holding period = 2 years &nbsp;|&nbsp; Valuation cap = $4,000,000 &nbsp;|&nbsp; Discount = 20% &nbsp;|&nbsp; Series B pre-money = $15,000,000 &nbsp;|&nbsp; Pre-money shares = 2,000,000</div>
+
+<div class="step"><span class="step-label">Step 1 — Accrued interest: </span>$500K × 8% × 2 = <strong>$80,000</strong></div>
+<div class="step"><span class="step-label">Step 2 — Total conversion amount: </span>$500K + $80K = <strong>$580,000</strong></div>
+<div class="step"><span class="step-label">Step 3 — Round price: </span>$15M / 2M = <strong>$7.50/share</strong></div>
+<div class="step"><span class="step-label">Step 4 — Path A (Discount): </span>$7.50 × 0.80 = <strong>$6.00/share</strong></div>
+<div class="step"><span class="step-label">Step 4 — Path B (Cap): </span>$4M / 2M = <strong>$2.00/share</strong></div>
+<div class="step"><span class="step-label">Step 5 — Pick LOWER price: </span>MIN($6.00,&nbsp;$2.00) = <span class="highlight">$2.00/share</span> &mdash; Cap wins decisively</div>
+<div class="step"><span class="step-label">Step 6 — Shares received: </span>$580K / $2.00 = <strong>290,000 shares</strong></div>
+<div class="step"><span class="step-label">Step 7 — Effective discount vs Series B: </span>($7.50 − $2.00) / $7.50 = <strong>73.3%</strong></div>
+
+<div class="ans">Accrued interest = <span class="ans-box">$80,000</span> &nbsp;|&nbsp; Conversion amount = <span class="ans-box">$580,000</span> &nbsp;|&nbsp; Price = <span class="ans-box">$2.00/share</span> &nbsp;|&nbsp; Shares = <span class="ans-box">290,000</span></div>
+</div>
+
+<div class="tip"><strong>Compare to SAFE:</strong> A $500K SAFE with same $4M cap and 20% discount — no interest accrual, so SAFE converts $500K (not $580K). The note holder gets 290K shares vs SAFE holder's 250K shares. The 2 years of interest bought 40,000 extra shares.</div>
+
+<div class="warn"><strong>Exam Trap:</strong> Forgetting to add accrued interest to principal before computing shares = undercount. Always compound-first, then convert. Interest is typically simple annual unless stated otherwise.</div>
+
+<!-- ============================================================
+     SECTION 10 — OPTION POOL SHUFFLE
+     ============================================================ -->
+<h2>10. Option Pool Shuffle</h2>
+
+<div class="concept">The option pool shuffle is the quietest dilution trap in startup fundraising. When VCs require a post-money option pool (e.g., "10% post-money"), they mean: AFTER the new investment, 10% of the total shares must be reserved for employees. The shuffle is WHO absorbs those shares — and the answer is always founders, not the VC.</div>
+
+<div class="formula-bar">Option pool (post-money) = New options / (Existing shares + New options + New investor shares)</div>
+<div class="formula-bar">Founder ownership (post-shuffle) = Founder shares / Total shares (including new pool)</div>
+<div class="formula-bar">VC ownership = Investment / Post-money valuation</div>
+<div class="formula-bar">Pre-money = Post-money &minus; Investment &nbsp;|&nbsp; Post-money = Pre-money + Investment</div>
+
+<div class="example">
+<div class="example-header">Option Pool Shuffle — Pre-Money vs Post-Money Pool</div>
+<div class="example-givens">Founders: 4,000,000 shares &nbsp;|&nbsp; VC invests $2M at $8M pre-money &nbsp;|&nbsp; VC requires 10% post-money option pool</div>
+
+<div class="step"><span class="step-label">CASE A — Option pool carved from PRE-money (founder absorbs): </span>Pool = 10% × (4M + New shares) &nbsp;|&nbsp; Let New = x &nbsp;|&nbsp; x = 0.10 × (4M + x) &nbsp;|&nbsp; 0.9x = 400K &nbsp;|&nbsp; x = 444,444 &rarr; <strong>444,444 new options</strong></div>
+<div class="step"><span class="step-label">Total shares: </span>4M + 444K + 2M/$8M × 4M = 4M + 444K + 1M = <strong>5,444,444</strong></div>
+<div class="step"><span class="step-label">Founder ownership: </span>4M / 5,444,444 = <strong>73.5%</strong> &nbsp;|&nbsp; VC ownership = 1M/5.44M = <strong>18.4%</strong></div>
+<div class="step"><span class="step-label">CASE B — Option pool carved from POST-money (VC absorbs): </span>VC buys 2M/8M = 20% &nbsp;|&nbsp; Post-money = $10M &nbsp;|&nbsp; Options = 10% × $10M = $1M equivalent &nbsp;|&nbsp; In shares: $1M / ($8M/4M) = 500,000 options</div>
+<div class="step"><span class="step-label">Total shares: </span>4M + 500K + 1M (VC) = <strong>5,500,000</strong></div>
+<div class="step"><span class="step-label">Founder ownership: </span>4M / 5.5M = <strong>72.7%</strong> &nbsp;|&nbsp; VC = 1M/5.5M = <strong>18.2%</strong> &nbsp;|&nbsp; slight difference</div>
+
+<div class="ans">Pre-money pool (founder absorbs): founder = 73.5%, VC = 18.4% &nbsp;|&nbsp; Post-money pool: founder = 72.7%, VC = 18.2%</div>
+</div>
+
+<div class="tip"><strong>Real Talk:</strong> VCs always negotiate for a post-money pool because it comes out of the pre-money pie (i.e., from founders). Founders should push back: "We'll agree to 10% post-money if you increase the pre-money to compensate." The VC's response tells you everything about their alignment.</div>
+
+<div class="warn"><strong>Key Number:</strong> Pre-money option pool = more founder dilution. Post-money option pool = same dilution to pre-money value but founders keep slightly more. Always clarify: is the option pool pre-money or post-money in the term sheet?</div>
+
+<!-- ============================================================
+     SECTION 11 — LIQUIDATING EQUITY / WATERFALL
+     ============================================================ -->
+<h2>11. Liquidating Equity &amp; Waterfall Analysis</h2>
+
+<div class="concept">In a liquidation event (M&amp;A, bankruptcy, forced sale), everyone gets paid in a specific order. The waterfall determines how much each class of equity receives before the next class gets anything. Understanding the waterfall explains why a founder with 60% ownership might walk away with $0 in a bad M&amp;A deal.</div>
+
+<div class="formula-bar">Waterfall order: Secured Debt &rarr; Unsecured Debt &rarr; Preferred Stock (liquidation pref) &rarr; Common Stock</div>
+<div class="formula-bar">Seniority stack: Participating Preferred &rarr; Non-Participating Preferred &rarr; Common</div>
+<div class="formula-bar">Proceeds to common = Max(0, Total Proceeds &minus; All Preferred Preferences)</div>
+<div class="formula-bar">1x Non-participating: MAX(preference amount, converted common value) — picks the bigger number</div>
+<div class="formula-bar">Participating preferred: receives preference AND participates in remainder (double-dip)</div>
+
+<div class="example">
+<div class="example-header">Waterfall Analysis — $50M M&amp;A with Multiple Rounds</div>
+<div class="example-givens">Exit EV = $50M &nbsp;|&nbsp; Net Debt = $5M &nbsp;|&nbsp; Available for equity = $45M<br>
+Series A: $5M at 1x liquidation pref = $5M &nbsp;|&nbsp; Series B: $10M at 2x participating pref<br>
+Founder common: 8,000,000 shares &nbsp;|&nbsp; Employee options: 2,000,000 shares<br>
+Total fully-diluted shares: 10,000,000</div>
+
+<div class="step"><span class="step-label">Step 1 — Series A (1x non-participating): </span>Pref = $5M &nbsp;|&nbsp; Check conversion: $5M vs 20% × $45M = $9M &rarr; takes <strong>$9M as common</strong></div>
+<div class="step"><span class="step-label">Step 2 — Series B (2x participating): </span>Pref = $20M &nbsp;|&nbsp; Remaining = $45M &minus; $9M = $36M &nbsp;|&nbsp; Series B participation = 40% × $36M = $14.4M &nbsp;|&nbsp; Total = $20M + $14.4M = <strong>$34.4M</strong></div>
+<div class="step"><span class="step-label">Step 3 — Common pool (leftover): </span>$45M &minus; $9M &minus; $14.4M = <strong>$21.6M</strong></div>
+<div class="step"><span class="step-label">Step 4 — Per-share price: </span>$21.6M / 10M shares = <strong>$2.16/share</strong></div>
+<div class="step"><span class="step-label">Step 5 — Option exercise check: </span>Assume options at $0.50 exercise &rarr; in-the-money &rarr; treasury stock method applies</div>
+
+<div class="ans">Series A: $9M (converted to common) &nbsp;|&nbsp; Series B: $34.4M &nbsp;|&nbsp; Common pool: $21.6M &nbsp;|&nbsp; Per share: $2.16</div>
+</div>
+
+<div class="tip"><strong>Cap Table Tip:</strong> Build the waterfall from the top down. Each class's decision (convert to common or take preference) affects what everyone below them receives. Non-participating preferred is "rich enough" to convert when the upside exceeds the preference. Participating preferred ALWAYS converts if there's any upside, because they get both the preference AND a share of the remainder.</div>
+
+<div class="warn"><strong>Trap:</strong> A 2x participating preferred can actually receive MORE than 2x their investment in a large exit. Example: $10M invested, $100M exit, 50% participating &rarr; $10M (pref) + $45M (participation) = $55M total. Always model the waterfall explicitly.</div>
+
+<!-- ============================================================
+     SECTION 12 — DILUTION & CAP TABLE MATH
+     ============================================================ -->
+<h2>12. Dilution &amp; Cap Table Math</h2>
+
+<div class="concept">Cap table math is the backbone of every founder/investor negotiation. Every new round, option grant, or convertible instrument changes the ownership pie. The key insight: percentage ownership is only meaningful when you know the fully-diluted denominator.</div>
+
+<div class="formula-bar">Ownership% = Your Shares / Fully-Diluted Shares (founders + investors + options + converts)</div>
+<div class="formula-bar">New ownership% (after round) = Old ownership% × (Pre-money / Post-money)</div>
+<div class="formula-bar">Dilution from new options = New options / (Old shares + New options)</div>
+<div class="formula-bar">Post-money ownership = Investment / Post-money valuation</div>
+<div class="formula-bar">Anti-dilution (weighted avg): New price = Old price × (Old shares + New shares at new price) / (Old shares + New shares)</div>
+
+<div class="example">
+<div class="example-header">Cap Table Evolution — Seed to Series A</div>
+<div class="example-givens">Founders: 6,000,000 shares (post-vesting) &nbsp;|&nbsp; Option pool: 1,000,000 (10%) &nbsp;|&nbsp; Seed investor: $1M at $4M pre-money</div>
+
+<div class="step"><span class="step-label">Pre-money shares: </span>6M (founders) + 1M (pool) = <strong>7,000,000</strong></div>
+<div class="step"><span class="step-label">Pre-money valuation: </span><strong>$4,000,000</strong></div>
+<div class="step"><span class="step-label">Price per share: </span>$4M / 7M = <strong>$0.5714/share</strong></div>
+<div class="step"><span class="step-label">Seed investor shares: </span>$1M / $0.5714 = <strong>1,750,000 shares</strong></div>
+<div class="step"><span class="step-label">Post-money: </span>$4M + $1M = <strong>$5,000,000</strong></div>
+<div class="step"><span class="step-label">Post-money shares: </span>7M + 1.75M = <strong>8,750,000</strong></div>
+<div class="step"><span class="step-label">Post-Series A ownership: </span>Founder: 6M/8.75M = <strong>68.6%</strong> &nbsp;|&nbsp; Options: 1M/8.75M = <strong>11.4%</strong> &nbsp;|&nbsp; Seed: 1.75M/8.75M = <strong>20.0%</strong></div>
+
+<div class="ans">Founder: 68.6% &nbsp;|&nbsp; Option pool: 11.4% &nbsp;|&nbsp; Seed investor: 20.0% &nbsp;|&nbsp; Price/share: $0.5714</div>
+</div>
+
+<div class="example">
+<div class="example-header">Down Round — Weighted Average Anti-Dilution Adjustment</div>
+<div class="example-givens">Old price = $2.00 &nbsp;|&nbsp; Old shares = 5,000,000 &nbsp;|&nbsp; New price = $1.00 &nbsp;|&nbsp; New shares = 3,000,000</div>
+
+<div class="step"><span class="step-label">Broad-based weighted avg: </span>Adjusted price = (($2.00 × 5M) + ($1.00 × 3M)) / (5M + 3M) = ($10M + $3M) / 8M = <strong>$1.625/share</strong></div>
+<div class="step"><span class="step-label">Old investor receives: </span>5M shares × ($1.625 − $1.00) = <strong>3,125,000 equivalent new shares</strong> worth $3.125M at new price</div>
+
+<div class="ans">Adjusted exercise price = <span class="ans-box">$1.625/share</span> &nbsp;|&nbsp; Old investors made whole on $0.625/share of dilution</div>
+</div>
+
+<div class="warn"><strong>Trap:</strong> Option pool expansion at a new round = additional dilution to existing holders. If you expand the option pool from 10% to 15% at Series A, the 5% difference comes out of founders' and earlier investors' pockets, not the new investor's.</div>
+
+<!-- ============================================================
+     SECTION 13 — VESTING & OPTION MATH (EXPANDED)
+     ============================================================ -->
+<h2>13. Vesting &amp; Option Math (Expanded)</h2>
+
+<div class="concept">Beyond basic vesting schedules, real option math involves early exercise, disqualified dispositions, and the choice between ISO vs NSO taxation. The difference can be worth hundreds of thousands of dollars in taxes.</div>
+
+<div class="formula-bar">Intrinsic value = (Market price &minus; Exercise price) × Number of options</div>
+<div class="formula-bar">Taxable spread (NSO/ISO AMT): FMV at exercise &minus; Exercise price</div>
+<div class="formula-bar">ISO qualifying disposition: held 2 years from grant + 1 year from exercise &rarr; long-term capital gains</div>
+<div class="formula-bar">Disqualifying disposition (ISO): sold before holding periods met &rarr; ordinary income on spread</div>
+<div class="formula-bar">Early exercise (83(b)): elect within 30 days of grant &rarr; taxed at grant date FMV, not future appreciation</div>
+
+<div class="example">
+<div class="example-header">Option Exercise — ISO vs NSO Tax Consequences</div>
+<div class="example-givens">Granted: 100,000 options at $1.00/share &nbsp;|&nbsp; FMV at exercise: $10.00/share &nbsp;|&nbsp; Sale price: $15.00/share</div>
+
+<div class="step"><span class="step-label">NSO — at exercise: </span>Spread = ($10 &minus; $1) × 100K = <strong>$900,000 ordinary income</strong> (taxed immediately)</div>
+<div class="step"><span class="step-label">NSO — at sale: </span>Gain = ($15 &minus; $10) × 100K = $500K capital gain (held &gt;1yr = LTCG)</div>
+<div class="step"><span class="step-label">ISO qualifying — at sale (2yr/1yr met): </span>Entire gain = ($15 &minus; $1) × 100K = <strong>$1.4M all long-term capital gains</strong></div>
+<div class="step"><span class="step-label">ISO disqualifying — sold early: </span>Spread at exercise = $900K ordinary income &nbsp;|&nbsp; Remaining = $400K capital gain</div>
+<div class="step"><span class="step-label">Tax comparison (assume 37% + 20% FICA saved): </span>NSO OI: $900K × 37% = $333K &nbsp;|&nbsp; ISO qualifying: $1.4M × 20% = $280K &nbsp;|&nbsp; <strong>ISO saves ~$53K</strong></div>
+
+<div class="ans">ISO qualifying: $1.4M all LTCG &nbsp;|&nbsp; NSO: $900K OI + $500K LTCG &nbsp;|&nbsp; ISO advantage: ~$53K in this scenario</div>
+</div>
+
+<div class="example">
+<div class="example-header">83(b) Election — Early Exercise Strategy</div>
+<div class="example-givens">Options: 1,000,000 &nbsp;|&nbsp; Grant price: $0.001/share &nbsp;|&nbsp; FMV at grant: $0.10/share &nbsp;|&nbsp; 83(b) election filed day 1</div>
+
+<div class="step"><span class="step-label">83(b) taxable amount: </span>(FMV &minus; Exercise) × Shares = ($0.10 &minus; $0.001) × 1M = <strong>$99,000 ordinary income</strong></div>
+<div class="step"><span class="step-label">Future appreciation excluded: </span>If company exits at $10M (10M shares), FMV = $1.00/share &nbsp;|&nbsp; Without 83(b): $1M ordinary income at exercise &nbsp;|&nbsp; With 83(b): already paid $99K, rest is capital gain</div>
+<div class="step"><span class="step-label">83(b) savings: </span>($1,000,000 &minus; $99,000) × 37% = <strong>$333,370 saved</strong></div>
+
+<div class="ans">83(b) election locks in low ordinary income tax now vs potentially much higher ordinary income at exercise</div>
+</div>
+
+<div class="tip"><strong>Rule of thumb:</strong> File 83(b) when the spread is small (startup at low valuation) or when you expect the FMV to appreciate dramatically before you can exercise. The 30-day window is unforgiving — missed deadline = no second chance.</div>
+
+<div class="warn"><strong>AMT trap for ISOs:</strong> The spread on ISO exercise is an AMT preference item. If you exercise ISOs in a year where the spread is large and the company is doing well (high FMV), you may owe AMT even if you haven't sold the shares. Model this before large early exercises.</div>
+
+<!-- ============================================================
+     SECTION 14 — WORKING CAPITAL METRICS (EXPANDED)
+     ============================================================ -->
+<h2>14. Working Capital Metrics</h2>
+
+<div class="concept">Working capital measures operational efficiency and short-term liquidity. Current Ratio &gt; 1.5 is generally healthy. Quick Ratio (Acid Test) excludes inventory — more conservative. Cash Conversion Cycle (CCC) measures how fast you turn investments into cash receipts. Negative CCC = you're getting paid before you pay suppliers!</div>
+<div class="concept"><strong>Common mistake:</strong> Thinking "profit means cash." A profitable company can still fail if it runs out of working capital to fund growth.</div>
+
+<div class="formula-bar">NWC = Current Assets - Current Liabilities</div>
+<div class="formula-bar">Current Ratio = Current Assets / Current Liabilities</div>
+<div class="formula-bar">Quick Ratio = (Current Assets - Inventory) / Current Liabilities</div>
+<div class="formula-bar">CCC = DSO + DIO - DPO [days]</div>
+<div class="formula-bar">DSO = (Accounts Receivable / Revenue) × 365</div>
+<div class="formula-bar">DIO = (Inventory / COGS) × 365</div>
+<div class="formula-bar">DPO = (Accounts Payable / COGS) × 365</div>
+
+<div class="example">
+<div class="example-header">Worked Example — Working Capital Analysis</div>
+<div class="example-givens">Revenue = $365K &nbsp;|&nbsp; COGS = $182K &nbsp;|&nbsp; A/R = $50K &nbsp;|&nbsp; Inventory = $30K &nbsp;|&nbsp; A/P = $25K</div>
+
+<div class="step"><span class="step-label">Step 1 — DSO: </span>($50K / $365K) × 365 = <strong>50 days</strong></div>
+<div class="step"><span class="step-label">Step 2 — DIO: </span>($30K / $182K) × 365 = <strong>60 days</strong></div>
+<div class="step"><span class="step-label">Step 3 — DPO: </span>($25K / $182K) × 365 = <strong>50 days</strong></div>
+<div class="step"><span class="step-label">Step 4 — CCC: </span>DSO + DIO - DPO = 50 + 60 - 50 = <strong>60 days</strong></div>
+<div class="step"><span class="step-label">Step 5 — Ratios (assume CA = $100K, CL = $60K): </span>Current Ratio = $100K / $60K = <strong>1.67</strong> &nbsp;|&nbsp; Quick Ratio = ($100K - $30K) / $60K = <strong>1.17</strong></div>
+
+<div class="ans">CCC = 60 days &nbsp;|&nbsp; Current Ratio = 1.67 &nbsp;|&nbsp; Quick Ratio = 1.17 &nbsp;|&nbsp; DSO = 50d &nbsp;|&nbsp; DIO = 60d &nbsp;|&nbsp; DPO = 50d</div>
+</div>
+
+<div class="tip">Negative CCC (DPO &gt; DSO + DIO) means you're getting paid BEFORE you have to pay suppliers — the best possible cash position. Amazon famously ran negative CCC for years, effectively using supplier float to fund operations.</div>
+
+<!-- ============================================================
+     SECTION 15 — SAAS METRICS (FULL)
+     ============================================================ -->
+<h2>15. SaaS Metrics — ARR, Churn, CAC/LTV</h2>
+
+<div class="concept">These are the scorecard numbers for any subscription business. Investors obsess over them because they're the leading indicators of whether the business model actually works or is just burning cash to stand still. Rule: LTV should be at least 3x CAC. CAC payback should be under 12 months. Monthly churn above 5% is essentially a death spiral — you lose 60% of customers in a year.</div>
+
+<div class="formula-bar">ARR = MRR × 12 &nbsp;&nbsp;&nbsp; MRR = Customers × ARPU</div>
+<div class="formula-bar">Gross Churn Rate = (Lost Customers / Starting Customers) × 100%</div>
+<div class="formula-bar">Net Revenue Churn = ((MRR Lost − MRR Expansion) / Starting MRR) × 100%</div>
+<div class="formula-bar">CAC (Customer Acquisition Cost) = Total Sales &amp; Marketing Spend / New Customers Acquired</div>
+<div class="formula-bar">LTV = ARPU × Gross Margin % / Churn Rate &nbsp;&nbsp;&nbsp; OR &nbsp;&nbsp; ARPU × Average Customer Lifespan</div>
+<div class="formula-bar">LTV:CAC = LTV / CAC &nbsp;&nbsp;&nbsp; &gt;3:1 healthy &nbsp;|&nbsp; &lt;1:1 means you're burning more than you ever recover</div>
+<div class="formula-bar">CAC Payback (months) = CAC / (ARPU × Gross Margin) &nbsp;&nbsp;&nbsp; Target: &lt;12 months</div>
+<div class="formula-bar">Net Promoter Score (NPS) = % Promoters − % Detractors</div>
+<div class="formula-bar">Magic Number = Net New MRR / Previous Quarter's Sales &amp; Marketing Spend &nbsp;&nbsp;&nbsp; &gt;1.0 is efficient</div>
+
+<div class="example">
+<div class="example-header">SaaS Metrics — Full Worked Example</div>
+<div class="example-givens">Monthly Revenue = $120K &nbsp;|&nbsp; 200 customers &nbsp;|&nbsp; ARPU = $600/mo &nbsp;|&nbsp; Gross Margin = 75%<br>
+New customers this month = 25 &nbsp;|&nbsp; Sales &amp; Marketing spend = $30K &nbsp;|&nbsp; Churned MRR = $4K &nbsp;|&nbsp; Expansion MRR = $2K<br>
+Previous Q S&amp;M spend = $80K &nbsp;|&nbsp; Net new MRR this Q = $15K</div>
+
+<div class="step"><span class="step-label">ARR: </span>$120K × 12 = <strong>$1,440,000</strong></div>
+<div class="step"><span class="step-label">CAC: </span>$30K / 25 customers = <strong>$1,200 per customer</strong></div>
+<div class="step"><span class="step-label">LTV (gross margin method): </span>$600 × 75% / (4K/120K) = $450 / 0.0333 = <strong>$13,500</strong></div>
+<div class="step"><span class="step-label">LTV:CAC: </span>$13,500 / $1,200 = <strong>11.25x</strong> &nbsp;<span style="color:#8b949e">(excellent — 11.25x return per customer)</span></div>
+<div class="step"><span class="step-label">Net Revenue Churn: </span>($4K − $2K) / $120K = $2K / $120K = <strong>1.67% monthly</strong></div>
+<div class="step"><span class="step-label">CAC Payback: </span>$1,200 / ($600 × 75%) = $1,200 / $450 = <strong>2.67 months</strong></div>
+<div class="step"><span class="step-label">Magic Number: </span>$15K net new MRR / $80K S&amp;M = <strong>0.19</strong> &nbsp;<span style="color:#8b949e">(needs improvement — aim for &gt;1.0)</span></div>
+
+<div class="ans">ARR = $1.44M &nbsp;|&nbsp; CAC = $1,200 &nbsp;|&nbsp; LTV = $13,500 &nbsp;|&nbsp; LTV:CAC = 11.25x &nbsp;|&nbsp; Net Churn = 1.67% &nbsp;|&nbsp; Payback = 2.67 mo &nbsp;|&nbsp; Magic # = 0.19</div>
+</div>
+
+<div class="tip"><strong>Negative net churn</strong> (expansion MRR &gt; churned MRR) means you're growing even when no new customers sign up — the holy grail of SaaS. Zscaler, Twilio, and Snowflake all achieved this. Positive net churn means you're on a treadmill, replacing every lost customer just to stand still.</div>
+
+<div class="warn"><strong>Monthly churn kill curve:</strong> 5% monthly churn = 54% annual retention (you lose half your customers in a year). 2% monthly churn = 79% annual retention. 1% monthly churn = 89% annual retention. The difference between 2% and 1% sounds small but is worth millions at scale.</div>
+
+<!-- ============================================================
+     SECTION 16 — QUICK REFERENCE FORMULA SHEET
+     ============================================================ -->
+<h2>16. Quick Reference Formula Sheet</h2>
+
+<div class="col2">
+<div>
+<h2 style="font-size:0.9rem; color:#8b949e; margin-top:0.3rem">Liquidity</h2>
+<div class="qr-lbl">NWC</div><div class="qr-val">(Cash+A/R+Inv) − (A/P+AccrExp+Tax)</div>
+<div class="spacer"></div>
+<div class="qr-lbl">Current Ratio</div><div class="qr-val">CA / CL</div>
+<div class="spacer"></div>
+<div class="qr-lbl">Quick Ratio</div><div class="qr-val">(Cash+A/R) / CL</div>
+<div class="spacer"></div>
+<div class="qr-lbl">Cash Ratio</div><div class="qr-val">Cash / CL</div>
+<div class="spacer"></div>
+
+<h2 style="font-size:0.9rem; color:#8b949e; margin-top:0.8rem">Cash Conversion</h2>
+<div class="qr-lbl">DSO</div><div class="qr-val">(A/R / Sales) × 365</div>
+<div class="spacer"></div>
+<div class="qr-lbl">DIO</div><div class="qr-val">(Inventory / COGS) × 365</div>
+<div class="spacer"></div>
+<div class="qr-lbl">DPO</div><div class="qr-val">(A/P / COGS) × 365</div>
+<div class="spacer"></div>
+<div class="qr-lbl">CCC</div><div class="qr-val">DSO + DIO − DPO</div>
+<div class="spacer"></div>
+
+<h2 style="font-size:0.9rem; color:#8b949e; margin-top:0.8rem">Vesting</h2>
+<div class="qr-lbl">Post-cliff monthly rate</div><div class="qr-val">(100%−Cliff%) / (TotalMo−CliffMo)</div>
+<div class="spacer"></div>
+<div class="qr-lbl">Vested % (after cliff)</div><div class="qr-val">Cliff% + (MoAfter × Rate)</div>
+<div class="spacer"></div>
+<div class="qr-lbl">Before cliff</div><div class="qr-val">0%</div>
+<div class="spacer"></div>
+
+<h2 style="font-size:0.9rem; color:#8b949e; margin-top:0.8rem">VC / SAFE / Note</h2>
+<div class="qr-lbl">Post-money</div><div class="qr-val">Pre-money + Investment</div>
+<div class="spacer"></div>
+<div class="qr-lbl">SAFE price</div><div class="qr-val">MIN(Cap/Pre$, Round×(1−d))</div>
+<div class="spacer"></div>
+<div class="qr-lbl">Note accrued int.</div><div class="qr-val">Principal × Rate × Years</div>
+<div class="spacer"></div>
+<div class="qr-lbl">Conversion shares</div><div class="qr-val">(Prin+Int) / Conv Price</div>
+<div class="spacer"></div>
+</div>
+
+<div>
+<h2 style="font-size:0.9rem; color:#8b949e; margin-top:0.3rem">Exit Math</h2>
+<div class="qr-lbl">Equity Value</div><div class="qr-val">Exit EV − Net Debt − LiqPref</div>
+<div class="spacer"></div>
+<div class="qr-lbl">MOIC</div><div class="qr-val">Proceeds / Investment</div>
+<div class="spacer"></div>
+<div class="qr-lbl">ROI</div><div class="qr-val">(Proceeds/Investment) − 1</div>
+<div class="spacer"></div>
+<div class="qr-lbl">IRR</div><div class="qr-val">Solves: CF/(1+IRR)^t = 0</div>
+<div class="spacer"></div>
+
+<h2 style="font-size:0.9rem; color:#8b949e; margin-top:0.8rem">SaaS Metrics</h2>
+<div class="qr-lbl">ARR</div><div class="qr-val">MRR × 12</div>
+<div class="spacer"></div>
+<div class="qr-lbl">Net Rev Churn</div><div class="qr-val">(MRRLost−MRRExp) / StartMRR</div>
+<div class="spacer"></div>
+<div class="qr-lbl">LTV</div><div class="qr-val">ARPU × GM% / ChurnRate</div>
+<div class="spacer"></div>
+<div class="qr-lbl">LTV:CAC</div><div class="qr-val">LTV / CAC &nbsp;&gt;3:1 good</div>
+<div class="spacer"></div>
+<div class="qr-lbl">CAC Payback</div><div class="qr-val">CAC / (ARPU×GM%)</div>
+<div class="spacer"></div>
+<div class="qr-lbl">Magic Number</div><div class="qr-val">Net New MRR / Prior Q S&amp;M</div>
+<div class="spacer"></div>
+
+<h2 style="font-size:0.9rem; color:#8b949e; margin-top:0.8rem">EPS &amp; Dilution</h2>
+<div class="qr-lbl">Basic EPS</div><div class="qr-val">(NI − PrefDiv) / WtdAvgShares</div>
+<div class="spacer"></div>
+<div class="qr-lbl">TS Method dilutive shs</div><div class="qr-val">Options − (Proceeds/AvgPrice)</div>
+<div class="spacer"></div>
+<div class="qr-lbl">Diluted EPS</div><div class="qr-val">(NI − PrefDiv) / (Wtd+Dil)</div>
+<div class="spacer"></div>
+<div class="qr-lbl">Ownership%</div><div class="qr-val">Shares / Fully-Diluted Total</div>
+<div class="spacer"></div>
+</div>
+</div>
+
+<hr class="divider">
+
+<div style="text-align:center; color:#484f58; font-size:0.75rem; margin-top:1rem;">
+FNCE696 &bull; Entrepreneurial Finance &bull; SMU &bull; formulas assume 365-day year unless otherwise stated &bull; verify exam convention before submitting
+</div>
+
+</body>
+</html>

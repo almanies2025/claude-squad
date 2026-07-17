@@ -1,0 +1,82 @@
+<!-- ============================================================
+     SECTION 2: SAFE NOTES (Valuation Cap vs Discount)
+     ============================================================ -->
+
+<!-- REAL TALK -->
+<div class="concept">
+  <strong>Real Talk:</strong> A SAFE (Simple Agreement for Future Equity) is Y Combinator's lightweight alternative to a convertible note — it is <em>not debt</em>, has no interest rate, no maturity date, and no repayment obligation. The founder wins because there's no countdown clock. The investor wins because they get either a discount or a valuation cap — whichever gives them more shares. The math contest: cap beats discount when the round is at a high enough valuation that the cap-price is below the discounted round price.
+</div>
+
+<!-- FORMULA BAR -->
+<div class="formula-bar">
+  SAFE conversion price = MIN(Cap&nbsp;/&nbsp;Pre-money&nbsp;shares,&nbsp;Round&nbsp;price&nbsp;&times;&nbsp;(1&minus;Discount)) &nbsp;|&nbsp;
+  Shares received = SAFE&nbsp;amount&nbsp;/&nbsp;Conversion&nbsp;price &nbsp;|&nbsp;
+  Discount price = Round&nbsp;price&nbsp;&times;&nbsp;(1&minus;d)&nbsp;; Cap price = Cap&nbsp;/&nbsp;Pre-money&nbsp;shares outstanding
+</div>
+
+<!-- WORKED EXAMPLE -->
+<div class="example">
+  <div class="example-header">WORKED EXAMPLE — SAFE: Cap vs Discount Showdown</div>
+
+  <div class="example-givens">
+    <strong>Given:</strong> SAFE amount = $200,000 &nbsp;|&nbsp;
+    Valuation cap = $3,000,000 &nbsp;|&nbsp;
+    Discount = 20% &nbsp;|&nbsp;
+    Series A pre-money = $8,000,000 &nbsp;|&nbsp;
+    Existing shares outstanding = 4,000,000 (founders) &nbsp;|&nbsp;
+    New option pool = 1,000,000 shares (carved out of pre-money)
+  </div>
+
+  <div class="example-numbers">
+    <!-- Step 1 -->
+    <span class="step">STEP 1 — Compute round price per share (Series A)</span><br>
+    Total shares post-option-pool = 4,000,000 + 1,000,000 = 5,000,000<br>
+    Round price = Pre-money&nbsp;/&nbsp;Total&nbsp;shares<br>
+    <span class="formula-line">Round price = $8,000,000 / 5,000,000 = $1.60/share</span><br>
+    <em>Intuition: the option pool is carved out of pre-money, so it increases the share count but not the dollar pre-money.</em><br><br>
+
+    <!-- Step 2 -->
+    <span class="step">STEP 2 — Compute the two SAFE conversion prices</span><br>
+    <strong>Path A — Discount method:</strong><br>
+    Discount price = Round&nbsp;price&nbsp;&times;&nbsp;(1&minus;Discount)<br>
+    <span class="formula-line">Discount price = $1.60 &times; 0.80 = $1.28/share</span><br><br>
+
+    <strong>Path B — Cap method:</strong><br>
+    Cap price = Cap&nbsp;/&nbsp;Pre-money&nbsp;shares<br>
+    <span class="formula-line">Cap price = $3,000,000 / 4,000,000 = $0.75/share</span><br>
+    <em>Intuition: the $3M cap on a company with 4M pre-money shares means the SAFE investor gets to pretend they bought at $0.75/share — way cheaper than the $1.60 Series A price.</em><br><br>
+
+    <!-- Step 3 -->
+    <span class="step">STEP 3 — Pick the LOWER price (better for the SAFE investor)</span><br>
+    MIN($1.28,&nbsp;$0.75) = <span class="highlight">$0.75/share</span> &mdash; Cap wins<br>
+    <em>Intuition: the cap kicks in because the $3M cap implies a valuation far below the $8M Series A pre-money.</em><br><br>
+
+    <!-- Step 4 -->
+    <span class="step">STEP 4 — Compute SAFE shares received</span><br>
+    Shares = SAFE&nbsp;amount&nbsp;/&nbsp;Conversion&nbsp;price<br>
+    <span class="formula-line">Shares = $200,000 / $0.75 = 266,667 shares</span><br><br>
+
+    <!-- Step 5 -->
+    <span class="step">STEP 5 — Verify dilution impact</span><br>
+    Total shares after SAFE conversion = 5,000,000 + 266,667 = 5,266,667<br>
+    SAFE ownership% = 266,667&nbsp;/&nbsp;5,266,667<br>
+    <span class="formula-line">SAFE ownership = 5.06%</span><br>
+    <em>Compare: if discount had won, shares = $200K/$1.28 = 156,250 shares = 2.97% — the cap earns 2.1 percentage points more equity.</em><br><br>
+
+    <!-- Final Answer -->
+    <span class="step">ANSWERS:</span><br>
+    SAFE conversion price = <span class="ans-box">$0.75/share</span> (cap wins over 20% discount)<br>
+    SAFE shares received  = <span class="ans-box">266,667 shares</span><br>
+    SAFE ownership (post-conversion) = <span class="ans-box">5.06%</span>
+  </div>
+</div>
+
+<!-- TIP -->
+<div class="tip">
+  <strong>Key Insight:</strong> The SAFE cap is anchored to <em>pre-money shares</em> (excluding the new option pool). A $3M cap on 4M founder shares = $0.75/share equivalent. The Series A investor pays $1.60/share. The SAFE investor saves $0.85/share — this is the economic benefit of the cap.
+</div>
+
+<!-- WARN -->
+<div class="warn">
+  <strong>Common Mistake:</strong> Students sometimes divide the cap by <em>post-option-pool</em> shares. Wrong! SAFE caps always reference pre-money shares at the time of conversion — the option pool hasn't been issued yet from the SAFE's perspective.
+</div>

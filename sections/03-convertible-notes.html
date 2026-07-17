@@ -1,0 +1,94 @@
+<!-- ============================================================
+     SECTION 3: CONVERTIBLE NOTES (Interest + Cap + Discount)
+     ============================================================ -->
+
+<!-- REAL TALK -->
+<div class="concept">
+  <strong>Real Talk:</strong> Convertible notes are <em>actual debt</em> — they accrue interest and have a maturity date when they must be repaid (or converted). Unlike SAFEs, the interest earned compounds the principal, so the investor effectively converts more shares at the next round. The cap and discount stack: the note holder gets whichever produces <em>more shares</em> — the lower of (cap-hit price) vs (discounted round price). The classic founder mistake: ignoring the interest accrual, which silently inflates the conversion amount.
+</div>
+
+<!-- FORMULA BAR -->
+<div class="formula-bar">
+  Accrued interest = Principal&nbsp;&times;&nbsp;Rate&nbsp;&times;&nbsp;Years &nbsp;|&nbsp;
+  Total conversion amount = Principal + Accrued interest &nbsp;|&nbsp;
+  Conversion price = MIN(Cap&nbsp;/&nbsp;Pre-money&nbsp;shares,&nbsp;Round&nbsp;price&nbsp;&times;&nbsp;(1&minus;d)) &nbsp;|&nbsp;
+  Shares received = Total conversion amount&nbsp;/&nbsp;Conversion price
+</div>
+
+<!-- WORKED EXAMPLE -->
+<div class="example">
+  <div class="example-header">WORKED EXAMPLE — Convertible Note: Interest + Cap + Discount</div>
+
+  <div class="example-givens">
+    <strong>Given:</strong> Principal = $500,000 &nbsp;|&nbsp;
+    Coupon rate = 8% per annum &nbsp;|&nbsp;
+    Holding period = 2 years &nbsp;|&nbsp;
+    Valuation cap = $4,000,000 &nbsp;|&nbsp;
+    Discount = 20% &nbsp;|&nbsp;
+    Series B pre-money = $15,000,000 &nbsp;|&nbsp;
+    Pre-money shares outstanding = 2,000,000 (Seed + SAFEs + Founders)
+  </div>
+
+  <div class="example-numbers">
+    <!-- Step 1 -->
+    <span class="step">STEP 1 — Compute accrued interest (compound, simple annual)</span><br>
+    Accrued interest = Principal&nbsp;&times;&nbsp;Rate&nbsp;&times;&nbsp;Years<br>
+    <span class="formula-line">Accrued interest = $500,000 &times; 8% &times; 2 = $80,000</span><br>
+    <em>Intuition: interest is the cost of delaying equity conversion. The VC round is 2 years away, so the investor is "owed" $80K on top of principal.</em><br><br>
+
+    <!-- Step 2 -->
+    <span class="step">STEP 2 — Compute total conversion amount (principal + interest)</span><br>
+    <span class="formula-line">Total = $500,000 + $80,000 = $580,000</span><br>
+    <em>Intuition: the note investor converts $580K, not $500K — the interest buys extra shares.</em><br><br>
+
+    <!-- Step 3 -->
+    <span class="step">STEP 3 — Compute round price per share (Series B)</span><br>
+    Round price = Pre-money&nbsp;/&nbsp;Pre-money&nbsp;shares<br>
+    <span class="formula-line">Round price = $15,000,000 / 2,000,000 = $7.50/share</span><br><br>
+
+    <!-- Step 4 -->
+    <span class="step">STEP 4 — Compute the two conversion prices</span><br>
+    <strong>Path A — Discount method:</strong><br>
+    Discount price = Round&nbsp;price&nbsp;&times;&nbsp;(1&minus;Discount)<br>
+    <span class="formula-line">Discount price = $7.50 &times; 0.80 = $6.00/share</span><br><br>
+
+    <strong>Path B — Cap method:</strong><br>
+    Cap price = Cap&nbsp;/&nbsp;Pre-money&nbsp;shares<br>
+    <span class="formula-line">Cap price = $4,000,000 / 2,000,000 = $2.00/share</span><br>
+    <em>Intuition: the cap of $4M on 2M shares means $2.00/share equivalent — the investor gets in at a 73% discount to the $7.50 Series B price!</em><br><br>
+
+    <!-- Step 5 -->
+    <span class="step">STEP 5 — Pick the LOWER price (more shares for the note holder)</span><br>
+    MIN($6.00,&nbsp;$2.00) = <span class="highlight">$2.00/share</span> — Cap wins decisively<br>
+    <em>Intuition: when a startup does very well (Series B at $15M pre), the cap saves the note investor from paying full price. They convert at $2 instead of $6.</em><br><br>
+
+    <!-- Step 6 -->
+    <span class="step">STEP 6 — Compute shares received on conversion</span><br>
+    Shares = Total conversion amount&nbsp;/&nbsp;Conversion price<br>
+    <span class="formula-line">Shares = $580,000 / $2.00 = 290,000 shares</span><br><br>
+
+    <!-- Step 7 -->
+    <span class="step">STEP 7 — Check effective price paid vs Series B investors</span><br>
+    Series B investors pay $7.50/share. Note investor effectively pays:<br>
+    $580,000&nbsp;/&nbsp;290,000 = $2.00/share (because cap wins)<br>
+    <em>Savings: $5.50/share vs Series B investors, or $1,595,000 in foregone investment on 290,000 shares.</em><br><br>
+
+    <!-- Final Answer -->
+    <span class="step">ANSWERS:</span><br>
+    Accrued interest = <span class="ans-box">$80,000</span><br>
+    Total conversion amount = <span class="ans-box">$580,000</span><br>
+    Conversion price = <span class="ans-box">$2.00/share</span> (cap wins over 20% discount)<br>
+    Note holder shares received = <span class="ans-box">290,000 shares</span><br>
+    Note holder effective discount vs Series B = <span class="ans-box">73.3%</span>
+  </div>
+</div>
+
+<!-- TIP -->
+<div class="tip">
+  <strong>Compare to SAFE:</strong> A $500K SAFE with same $4M cap and 20% discount in the same Series B round — no interest accrual, so SAFE converts $500K (not $580K). The note holder gets 290K shares vs SAFE holder's 250K shares. The 2 years of interest bought 40,000 extra shares.
+</div>
+
+<!-- WARN -->
+<div class="warn">
+  <strong>Exam Trap:</strong> If you forget to add accrued interest to principal before computing shares, you'll undercount the note holder's shares. Always compound-first, then convert. Also note: interest is typically simple annual (not compound) unless stated otherwise in the note terms.
+</div>
